@@ -123,8 +123,12 @@ def generate_levels(
         imp_up = cash_open + params.sigma_mult * sigma_day
         imp_dn = cash_open - params.sigma_mult * sigma_day
 
+        # Pine updates ibH/ibL for the bar at exactly `ibStart + ibMins` *before*
+        # checking `time - ibStart >= ibMins*60*1000` and setting ibDone — so
+        # that bar's high/low IS included in the IB range (off-by-one if you
+        # use a strict `<` cutoff here).
         ib_cutoff = day_bars.index[0] + pd.Timedelta(minutes=params.ib_minutes)
-        ib_bars = day_bars[day_bars.index < ib_cutoff]
+        ib_bars = day_bars[day_bars.index <= ib_cutoff]
         if ib_bars.empty:
             continue
         ib_high = float(ib_bars["high"].max())
