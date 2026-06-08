@@ -1,5 +1,95 @@
 # Initial test results — μ ± k·σ/√(dev) levels on GC, 2023-06 → 2026-05
 
+## LATEST — FracDiff filter dropped; ATR-scaled reversion sweep on raw levels (2026-06-08)
+
+**Per direct user instruction: forget continuation, fade/reversion-only. We
+first tried gating fades with the user's second indicator (FracDiff Gate, 5m
+z-score, "trend sense": lower-level fade needs z ≥ +band, upper-level fade
+needs z ≤ −band — see `indicator/fracdiff_gate.pine` / `volgen/fracdiff.py` /
+`volgen/fracdiff_reversion.py`). Both agents independently found the SAME
+problem and the user told us to drop it: the joint event (level touch AND
+FracDiff trend-sense confirmation) is rare — confirmed-touch counts ranged
+from ~3 (instant) to ~50-200 (loose 30m lookback) out of ~900 raw touches over
+3 years, the configs with the best-looking raw stats turned negative or paper-
+thin under a realistic bracket simulation, and several of the "good" small
+samples were dominated by clusters of near-simultaneous, correlated touches
+(the same underlying price move counted as 3-5 separate "trades").**
+
+So: **dropped FracDiff entirely, went back to the raw, unfiltered levels**, and
+ran the user's requested ATR-scaled reversion (fade-only, both sides) sweep:
+`target_pts = atr_pct × prior-session ATR(14)`, `stop_pts = target_pts / rr`
+for `rr ∈ {1, 1.5, 2, 3, 4}` and `atr_pct` from 10% to 60% of ATR — see
+`volgen/atr.py`, `volgen/atr_reversion.py`,
+`scripts/atr_reversion_sweep.py`. No slippage/commission modeled (per the
+user, not present in this environment). Full grid in `out/atr_fade_sweep.csv`
+/ `out/atr_fade_sweep_by_year.csv` / `out/lower_fade_sweep.csv`.
+
+**Headline results:**
+
+1. **Every single (atr_pct, rr) combo loses money when fading BOTH sides**
+   (n=908 fades each, totals ranging from −160 to −1,300 pts). Fading is not
+   a viable blanket strategy on these levels, full stop.
+
+2. **But there's a robust upper/lower asymmetry**: lower-level fades (buying
+   support) are consistently much less bad — and in some configs net
+   positive — while upper-level fades (selling resistance) are robust,
+   consistent losers (e.g. atr_pct=0.40/rr=4: lower +256 pts vs upper −456
+   pts; atr_pct=0.20/rr=2: lower +86 vs upper −287). This is the same
+   "resistance keeps breaking, support sees real bounces" asymmetry already
+   seen in the earlier reaction/continuation and raw-edge analyses — gold has
+   been trending up hard, so it's most parsimoniously a **regime property**,
+   not something specific to the lower-level formula.
+
+3. **Isolating lower-only fades and doing the "perturb y/y" robustness check
+   the user asked for is where this falls apart**: every apparently-decent
+   lower-fade config's total P&L is overwhelmingly carried by **2026 alone**.
+   E.g. the best lower-fade combo (atr_pct=0.40, rr=1.0, ~21pt brackets):
+
+   | year | n  | win% | avg pts | total pts |
+   |---|---|---|---|---|
+   | 2023 | 78  | 21.8% | +0.40 | +31.4 |
+   | 2024 | 132 | 16.7% | −0.05 | −6.3 |
+   | 2025 | 132 | 25.8% | +1.08 | +142.9 |
+   | 2026 | 66  | 25.8% | **+5.71** | **+376.9** |
+
+   2026 is 16% of the trades and ~70% of the total points; in several other
+   top combos it's 80-90%+. **2023-2024 are flat-to-negative for every
+   config we tried.**
+
+4. **Drilling into *why* 2026 looks good is the real finding**: of the 66
+   lower-fade trades in 2026, the **top 5 winners alone contribute +348.6 of
+   the +376.9 total** (i.e. the other 61 trades roughly cancel out). Several
+   of those "wins" are also clustered/duplicated — e.g. four nearly-identical
+   entries within 5 minutes on 2026-01-16 (one stop, three ~+30pt targets —
+   the same underlying spike counted 4x), two on 2026-04-12 at the exact same
+   minute. And because `atr_pct=0.40` against 2026's blown-out ATR produces
+   50-90pt-wide brackets, more than half the "trades" (36/66) never resolve
+   within the 4-hour window and are just marked-to-market at an arbitrary
+   cutoff — not real completed trades.
+
+**Bottom line — answering "what's the common denominator of a real
+reversion?": there isn't one that generalizes here.** The only thing that
+looks like an "edge" is a handful (≈5) of enormous, partly-correlated tail
+moves clustered in early-to-mid 2026 — i.e. **a regime/tail-event artifact of
+one unusually volatile stretch**, not a structural property of these levels
+that would survive out-of-sample or hold up in a calmer market. Scaling
+TP/SL to ATR doesn't fix this — it just makes the brackets wide enough to
+occasionally catch one of those tail moves, at the cost of being un-tradeable
+(50-90pt stops) the rest of the time.
+
+**Suggested next direction** (not yet run): rather than more bracket-config
+sweeps, characterize the ~5 winning 2026 setups directly — what time of day,
+what GVZ level, was there a specific catalyst/news regime, how far had price
+already moved before the touch — to see if there's a *filterable*
+precondition that would have flagged "this specific touch is different," or
+whether they're simply unpredictable tail events that happened to land near a
+level. If it's the latter, that's a strong signal to stop iterating on this
+indicator's levels for a reversion strategy and look elsewhere.
+
+---
+
+# Initial test results — μ ± k·σ/√(dev) levels on GC, 2023-06 → 2026-05 (superseded sections below)
+
 Status: **ran a significance/permutation control — the honest headline is
 that the indicator's specific level placement is mostly indistinguishable
 from a random reference point of similar size near the day's open. The "raw
