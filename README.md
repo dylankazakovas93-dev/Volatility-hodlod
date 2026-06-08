@@ -9,6 +9,12 @@ whether price reacts at these levels (2026 in particular shows several huge
 top/bottom-tick reactions on GC). Goal #2, only after #1 looks real, is to
 turn this into a tradeable strategy.
 
+**→ See [`FINDINGS.md`](FINDINGS.md) for the first-pass backtest results**
+(run on Aidan's 2023-06→2026-05 1m GC dump + GVZ daily data): touch rates,
+reaction-vs-continuation breakdowns by year and by side, and what looks
+promising vs. what still needs checking. That's the shared scratchpad for
+where this stands — read it before re-running things from scratch.
+
 ## Layout
 
 - `indicator/mu_k_sigma.pine` — the original Pine v6 source, verbatim.
@@ -22,6 +28,15 @@ turn this into a tradeable strategy.
   GC OHLCV + GVZ daily data, it generates the session levels and reports
   touch rates and reaction sizes at several horizons (5/15/30/60/120m by
   default).
+- `scripts/build_gc_continuous.py` — turns a raw multi-contract Databento
+  GLBX MDP3 1m dump (which has every GC/MGC contract + spreads overlapping)
+  into a single continuous front-month series suitable for `backtest_levels.py`.
+  Picks the highest-volume standard GC contract per day; **not back-adjusted**
+  across rolls (every bar is tagged with its source `contract` and a `roll_day`
+  flag so roll-day gaps stay auditable — see FINDINGS.md item #1).
+- `scripts/analyze_by_year_side.py` — slices `backtest_levels.py`'s per-level
+  output by year and by upper/lower side; this is what surfaced the
+  trend-dependent asymmetry described in FINDINGS.md.
 - `scripts/fetch_gvz.py` — refreshes `data/gvz_daily.csv`.
 - `scripts/selftest.py` — smoke test against synthetic data (no large files
   needed); run this first to confirm the environment is sane.
@@ -33,10 +48,13 @@ turn this into a tradeable strategy.
   publishes the close), so that's the source `fetch_gvz.py` uses. If you can
   reach FRED directly, pulling `GVZCLS` and diffing against this file would
   be a good sanity check — the two should match almost exactly on close.
-- `data/gc_1m/` — **empty / gitignored.** This is where the user's 1-minute
-  GC OHLCV (2023–2026) goes locally. It's too large for the repo, so it's
-  never committed — drop the CSV here when working locally and point
-  `--ohlcv` at it.
+- `data/gc_1m/` — **gitignored, populate locally.** Drop the 1-minute GC
+  OHLCV here. The source dataset Aidan shared
+  (`glbx-mdp3-20230601-20260531.ohlcv-1m.csv.zst`, 2023-06→2026-05, ~73MB
+  zstd / ~715MB decompressed / ~6.4M rows) contains *every* GC/MGC contract
+  and calendar spreads at once — run it through `build_gc_continuous.py`
+  first to get a single clean front-month series (`gc_continuous_1m.csv`,
+  ~104MB, also gitignored) before pointing `backtest_levels.py` at it.
 
 ## Running the test
 

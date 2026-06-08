@@ -128,9 +128,15 @@ def evaluate_levels(
                 "bars_to_touch": res.bars_to_touch,
             }
             for h in horizons_minutes:
-                rec[f"reaction_{h}m"] = res.reaction_pts.get(h, np.nan)
-                rec[f"continuation_{h}m"] = res.continuation_pts.get(h, np.nan)
+                reaction = res.reaction_pts.get(h, np.nan)
+                continuation = res.continuation_pts.get(h, np.nan)
+                rec[f"reaction_{h}m"] = reaction
+                rec[f"continuation_{h}m"] = continuation
                 rec[f"reversed_{h}m"] = res.reversed_within.get(h, np.nan)
+                # net_bias > 0 means price moved further in the "reaction" (reversal)
+                # direction than the "continuation" (breakout) direction — i.e. a
+                # genuine rejection, not just noise wobbling both ways.
+                rec[f"net_bias_{h}m"] = reaction - continuation
             records.append(rec)
 
     return pd.DataFrame(records)
@@ -146,14 +152,13 @@ def summarize(results: pd.DataFrame, horizons_minutes: tuple[int, ...] = (5, 15,
     rows.append({"metric": "touch rate", "value": n_touched / n_total if n_total else float("nan")})
 
     for h in horizons_minutes:
-        rcol, ccol, vcol = f"reaction_{h}m", f"continuation_{h}m", f"reversed_{h}m"
+        rcol, ccol, ncol = f"reaction_{h}m", f"continuation_{h}m", f"net_bias_{h}m"
         sub = touched.dropna(subset=[rcol])
         if sub.empty:
             continue
-        rows.append({"metric": f"[{h}m] reversal rate (>= threshold)", "value": sub[vcol].mean()})
-        rows.append({"metric": f"[{h}m] median reaction (pts, +=toward reversal)", "value": sub[rcol].median()})
-        rows.append({"metric": f"[{h}m] median continuation (pts, +=through level)", "value": sub[ccol].median()})
-        rows.append({"metric": f"[{h}m] mean reaction (pts)", "value": sub[rcol].mean()})
-        rows.append({"metric": f"[{h}m] mean continuation (pts)", "value": sub[ccol].mean()})
+        rows.append({"metric": f"[{h}m] median reaction / continuation (pts)", "value": f"{sub[rcol].median():.2f} / {sub[ccol].median():.2f}"})
+        rows.append({"metric": f"[{h}m] mean reaction / continuation (pts)", "value": f"{sub[rcol].mean():.2f} / {sub[ccol].mean():.2f}"})
+        rows.append({"metric": f"[{h}m] net bias: reaction-continuation (median, mean)", "value": f"{sub[ncol].median():+.2f}, {sub[ncol].mean():+.2f}"})
+        rows.append({"metric": f"[{h}m] % of touches where reaction > continuation", "value": float((sub[ncol] > 0).mean())})
 
     return pd.DataFrame(rows)

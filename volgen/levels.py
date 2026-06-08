@@ -50,17 +50,21 @@ def load_1m_ohlcv(path: str, tz: str = "America/New_York") -> pd.DataFrame:
     else:
         idx = idx.dt.tz_convert(tz)
 
+    # NOTE: use .to_numpy() (not the bare Series) for the column data — passing
+    # Series with their original RangeIndex alongside an explicit `index=` makes
+    # pandas align on labels, and since a RangeIndex never matches a
+    # DatetimeIndex, every value silently becomes NaN.
     out = pd.DataFrame(
         {
-            "open": df[cols["open"]].astype(float),
-            "high": df[cols["high"]].astype(float),
-            "low": df[cols["low"]].astype(float),
-            "close": df[cols["close"]].astype(float),
+            "open": df[cols["open"]].astype(float).to_numpy(),
+            "high": df[cols["high"]].astype(float).to_numpy(),
+            "low": df[cols["low"]].astype(float).to_numpy(),
+            "close": df[cols["close"]].astype(float).to_numpy(),
         },
         index=idx,
     )
     if "volume" in cols:
-        out["volume"] = df[cols["volume"]].astype(float)
+        out["volume"] = df[cols["volume"]].astype(float).to_numpy()
 
     out = out.sort_index()
     out.index.name = "time"
