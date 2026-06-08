@@ -141,10 +141,17 @@ def main() -> None:
     policies = [
         choose_policy(df, "always_reversal", set()),
         choose_policy(df, "continue_cpi", {"cpi"}),
+        choose_policy(df, "continue_home_sales", {"home_sales"}),
         choose_policy(df, "continue_tariff", {"tariff_headline"}),
         choose_policy(df, "continue_cpi_tariff", {"cpi", "tariff_headline"}),
+        choose_policy(df, "continue_cpi_home", {"cpi", "home_sales"}),
         choose_policy(df, "continue_cpi_tariff_home", {"cpi", "tariff_headline", "home_sales"}),
+        choose_policy(df, "continue_iran_window", {"iran_window"}),
+        choose_policy(df, "continue_venezuela_window", {"venezuela_window"}),
+        choose_policy(df, "continue_shock_windows", {"iran_window", "venezuela_window"}),
+        choose_policy(df, "continue_cpi_home_shocks", {"cpi", "home_sales", "iran_window", "venezuela_window"}),
         choose_policy(df, "skip_tariff", set(), {"tariff_headline"}),
+        choose_policy(df, "skip_shock_windows", set(), {"iran_window", "venezuela_window"}),
         choose_policy(df, "skip_all_events", set(), {"cpi", "fomc", "home_sales", "mag7_earnings", "nfp", "tariff_headline"}),
     ]
 

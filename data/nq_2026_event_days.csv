@@ -1,0 +1,60 @@
+date,event_type,label
+2026-01-09,nfp,Employment Situation
+2026-02-06,nfp,Employment Situation
+2026-03-06,nfp,Employment Situation
+2026-04-03,nfp,Employment Situation
+2026-05-08,nfp,Employment Situation
+2026-06-05,nfp,Employment Situation
+2026-01-13,cpi,Consumer Price Index
+2026-02-12,cpi,Consumer Price Index
+2026-03-11,cpi,Consumer Price Index
+2026-04-10,cpi,Consumer Price Index
+2026-05-12,cpi,Consumer Price Index
+2026-01-28,fomc,FOMC decision
+2026-03-18,fomc,FOMC decision
+2026-04-29,fomc,FOMC decision
+2026-01-14,home_sales,Existing Home Sales
+2026-02-12,home_sales,Existing Home Sales
+2026-03-10,home_sales,Existing Home Sales
+2026-04-13,home_sales,Existing Home Sales
+2026-05-11,home_sales,Existing Home Sales
+2026-01-28,mag7_earnings,TSLA META MSFT earnings window
+2026-01-29,mag7_earnings,AAPL earnings window
+2026-02-03,mag7_earnings,GOOGL earnings window
+2026-02-05,mag7_earnings,AMZN earnings window
+2026-02-25,mag7_earnings,NVDA earnings window
+2026-04-22,mag7_earnings,TSLA earnings window
+2026-04-23,mag7_earnings,GOOGL earnings window
+2026-04-29,mag7_earnings,META MSFT earnings window
+2026-04-30,mag7_earnings,AAPL AMZN earnings window
+2026-05-27,mag7_earnings,NVDA earnings window
+2026-01-03,venezuela_window,User-defined Venezuela macro shock window
+2026-01-04,venezuela_window,User-defined Venezuela macro shock window
+2026-01-05,venezuela_window,User-defined Venezuela macro shock window
+2026-01-06,venezuela_window,User-defined Venezuela macro shock window
+2026-01-07,venezuela_window,User-defined Venezuela macro shock window
+2026-01-08,venezuela_window,User-defined Venezuela macro shock window
+2026-01-09,venezuela_window,User-defined Venezuela macro shock window
+2026-01-10,venezuela_window,User-defined Venezuela macro shock window
+2026-01-11,venezuela_window,User-defined Venezuela macro shock window
+2026-01-12,venezuela_window,User-defined Venezuela macro shock window
+2026-01-13,venezuela_window,User-defined Venezuela macro shock window
+2026-01-14,venezuela_window,User-defined Venezuela macro shock window
+2026-01-15,venezuela_window,User-defined Venezuela macro shock window
+2026-01-16,venezuela_window,User-defined Venezuela macro shock window
+2026-01-17,venezuela_window,User-defined Venezuela macro shock window
+2026-02-28,iran_window,User-defined Iran macro shock window
+2026-03-01,iran_window,User-defined Iran macro shock window
+2026-03-02,iran_window,User-defined Iran macro shock window
+2026-03-03,iran_window,User-defined Iran macro shock window
+2026-03-04,iran_window,User-defined Iran macro shock window
+2026-03-05,iran_window,User-defined Iran macro shock window
+2026-03-06,iran_window,User-defined Iran macro shock window
+2026-03-07,iran_window,User-defined Iran macro shock window
+2026-03-08,iran_window,User-defined Iran macro shock window
+2026-03-09,iran_window,User-defined Iran macro shock window
+2026-03-10,iran_window,User-defined Iran macro shock window
+2026-03-11,iran_window,User-defined Iran macro shock window
+2026-03-12,iran_window,User-defined Iran macro shock window
+2026-03-13,iran_window,User-defined Iran macro shock window
+2026-03-14,iran_window,User-defined Iran macro shock window
