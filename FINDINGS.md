@@ -1,16 +1,77 @@
 # Initial test results — μ ± k·σ/√(dev) levels on GC, 2023-06 → 2026-05
 
-Status: **raw edge test gives a clear, decisive answer — see "Raw edge test"
-below. tl;dr: fading levels (especially upper levels) is a robust loser;
-playing the continuation/breakout off a touch — especially on upper levels —
-shows a real, consistent raw edge across every bracket size tested.**
+Status: **ran a significance/permutation control — the honest headline is
+that the indicator's specific level placement is mostly indistinguishable
+from a random reference point of similar size near the day's open. The "raw
+edge" found in the bracket-trade test below most likely reflects the
+2023-2026 GC uptrend regime (any reference point near the open tends to see
+continuation-biased follow-through in a strong trend), not something specific
+to this indicator's sigma/IB math. Read the "Significance test" section first
+— it reframes everything that follows it.**
 
-> Update: a Pine-parity bug was found and fixed (the IB range was off-by-one —
-> Pine includes the bar at exactly `ibStart + ibMins` in the high/low range,
-> the original Python excluded it; see `volgen/levels.py`). Numbers below are
-> post-fix.
+## Significance test — is this distinguishable from luck/regime?
+
+`scripts/significance_test.py`: a permutation/randomization control. For each
+session, keep the real `cash_open` and `created_at` (so timing & context stay
+real), but replace `level − cash_open` with an offset **resampled from the
+empirical distribution of real offsets, shuffled across sessions** — same
+typical size/touch-likelihood, but the link between *that day's specific
+sigma/IB inputs* and the resulting level is broken. Re-run the identical
+touch + net-bias measurement on these "fake" levels 100 times to build a null
+distribution, then check where the real indicator's result falls in it
+(empirical p-value = fraction of random trials at least as extreme).
+
+| metric (60m horizon) | real | random-offset null (mean ± std) | p-value |
+|---|---|---|---|
+| upper mean net bias | −0.96 | −0.62 ± 0.67 | 0.59 |
+| upper median net bias | −0.59 | −0.56 ± 0.51 | 0.95 |
+| upper % reaction wins | 46.6% | 47.4% ± 2.4% | 0.71 |
+| lower mean net bias | +0.12 | −1.43 ± 1.07 | 0.20 |
+| lower median net bias | +1.00 | +0.58 ± 0.57 | 0.39 |
+| lower % reaction wins | 57.1% | 52.5% ± 2.3% | **0.05** |
+
+**5 of 6 metrics land squarely inside the null distribution** (p from 0.20 to
+0.95 — statistically indistinguishable from a randomly-sized-and-placed
+reference point). The one borderline result (lower % reaction wins, p=0.05)
+is exactly what you'd expect to see by chance when testing 6 metrics
+(multiple-comparisons) — not strong evidence on its own.
+
+**Conclusion: I cannot currently show that the indicator's specific
+sigma/IB-derived level placement does anything a random offset of similar
+size wouldn't.** The earlier "continuation wins on upper levels" pattern is
+most parsimoniously explained as **a property of the regime** — GC trended
+hard over this whole window, so *any* reference point near the day's open
+would tend to see continuation-biased follow-through — rather than something
+the indicator's specific math contributes.
+
+This doesn't mean "the indicator is useless" — it means **we haven't yet
+found evidence it beats a naive random/structural baseline** on this dataset.
+Worth checking before concluding either way:
+- Re-run the permutation test over a flatter/choppier sub-period (if one
+  exists in this window) — a real level-placement effect should show up (or
+  at least not vanish) outside of a strong trend; a regime artifact should
+  weaken or flip.
+- Compare against *structural* (non-random) baselines too — e.g. prior day's
+  high/low, overnight session high/low, round numbers — since "any nearby
+  reference point works in a trend" is itself a useful (if humbling) finding,
+  but a structural baseline comparison tells you whether *this specific
+  formula* adds anything over simpler, well-known reference levels.
+- Increase `--n-perm` (currently 100, giving ~0.01 p-value resolution) for
+  tighter confidence on the borderline lower-level result.
+
+---
 
 ## Raw edge test — "is there ANY edge, or is something just a clear loser?"
+
+> **Read the significance-test section above first.** The numbers below were
+> the basis for the "fade upper = loser, continuation = winner" framing, but
+> the permutation test suggests this is very likely a regime effect (GC
+> trending hard) rather than something specific to these levels — i.e. a
+> randomly-placed reference point of similar size would likely show a similar
+> pattern over this same window. Keeping this section for the raw mechanics
+> and because the *magnitude* findings (huge 2026 moves) still stand
+> regardless of *which* reference point you measure from.
+
 
 Per the user's ask: skip trend-conditioning for now, just test the dumbest
 possible thing — at every first touch of a level, simulate a fixed
