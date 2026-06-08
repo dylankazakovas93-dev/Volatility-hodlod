@@ -58,6 +58,111 @@ def choose_policy(df: pd.DataFrame, name: str, continuation_events: set[str], sk
     return pd.DataFrame(rows).drop(columns=["_key"], errors="ignore")
 
 
+def in_rth(index: pd.DatetimeIndex) -> pd.Series:
+    return pd.Series(
+        ((index.hour > 9) | ((index.hour == 9) & (index.minute >= 30))) & (index.hour < 16),
+        index=index,
+    )
+
+
+def rth_date(index: pd.DatetimeIndex) -> pd.Series:
+    return pd.Series(index.tz_convert("America/New_York").date.astype(str), index=index)
+
+
+def completed_rth_atr(bars: pd.DataFrame, atr_len: int) -> pd.Series:
+    rth = bars[in_rth(bars.index)]
+    dates = rth_date(rth.index)
+    daily = rth.groupby(dates).agg(high=("high", "max"), low=("low", "min"), close=("close", "last"))
+    prev_close = daily["close"].shift(1)
+    tr = pd.concat(
+        [
+            daily["high"] - daily["low"],
+            (daily["high"] - prev_close).abs(),
+            (daily["low"] - prev_close).abs(),
+        ],
+        axis=1,
+    ).max(axis=1)
+    return tr.rolling(atr_len, min_periods=atr_len).mean().shift(1)
+
+
+def rth_opens(bars: pd.DataFrame) -> pd.Series:
+    rth = bars[in_rth(bars.index)]
+    dates = rth_date(rth.index)
+    return rth.groupby(dates)["open"].first()
+
+
+def expansion_ratio_at_touch(bars: pd.DataFrame, touched_at: pd.Timestamp, open_price: float, prior_atr: float) -> float | None:
+    if prior_atr <= 0 or pd.isna(prior_atr):
+        return None
+    date_key = touched_at.tz_convert("America/New_York").strftime("%Y-%m-%d")
+    rth = bars[in_rth(bars.index)]
+    day = rth[rth_date(rth.index).eq(date_key)]
+    path = day.loc[:touched_at]
+    if path.empty:
+        return None
+    max_move = max(float((path["high"] - open_price).abs().max()), float((path["low"] - open_price).abs().max()))
+    return max_move / float(prior_atr)
+
+
+def load_bars(path: str) -> pd.DataFrame:
+    df = pd.read_csv(path)
+    ts_col = "timestamp" if "timestamp" in df.columns else "ts_event"
+    idx = pd.to_datetime(df[ts_col], utc=True)
+    out = pd.DataFrame(
+        {
+            "open": pd.to_numeric(df["open"]).to_numpy(),
+            "high": pd.to_numeric(df["high"]).to_numpy(),
+            "low": pd.to_numeric(df["low"]).to_numpy(),
+            "close": pd.to_numeric(df["close"]).to_numpy(),
+        },
+        index=idx,
+    )
+    return out.tz_convert("America/New_York")
+
+
+def add_expansion_ratio(df: pd.DataFrame, bars_path: str, atr_len: int) -> pd.DataFrame:
+    bars = load_bars(bars_path)
+    atr = completed_rth_atr(bars, atr_len)
+    opens = rth_opens(bars)
+    out = df.copy()
+    ratios = []
+    for ts in out["touched_at"]:
+        date_key = ts.tz_convert("America/New_York").strftime("%Y-%m-%d")
+        prior_atr = atr.get(date_key)
+        open_price = opens.get(date_key)
+        if open_price is None or pd.isna(prior_atr):
+            ratios.append(float("nan"))
+            continue
+        ratio = expansion_ratio_at_touch(bars, ts, float(open_price), float(prior_atr))
+        ratios.append(float("nan") if ratio is None else ratio)
+    out["expansion_ratio"] = ratios
+    return out
+
+
+def choose_nfp_atr_policy(df: pd.DataFrame, threshold: float) -> pd.DataFrame:
+    always = df[df["mode"].eq("always_reversal")].copy()
+    continuation = df[df["mode"].eq("event_continuation")].copy()
+    always["_key"] = trade_key(always)
+    continuation["_key"] = trade_key(continuation)
+    cont_by_key = continuation.set_index("_key")
+
+    rows = []
+    for _, row in always.iterrows():
+        event_types = {part for part in str(row["event_types"]).split("|") if part}
+        use_cont = False
+        if "cpi" in event_types:
+            use_cont = True
+        elif "nfp" in event_types and pd.notna(row.get("expansion_ratio")) and float(row["expansion_ratio"]) >= threshold:
+            use_cont = True
+        if use_cont and row["_key"] in cont_by_key.index:
+            picked = cont_by_key.loc[row["_key"]].copy()
+        else:
+            picked = row.copy()
+        picked["policy"] = f"continue_cpi_nfp_atr_{threshold:g}"
+        rows.append(picked)
+    return pd.DataFrame(rows).drop(columns=["_key"], errors="ignore")
+
+
 def apply_max_trades_per_day(df: pd.DataFrame, n: int) -> pd.DataFrame:
     return df.sort_values("touched_at").groupby("date_et").head(n)
 
@@ -131,12 +236,17 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--trades", required=True)
     parser.add_argument("--out-prefix", required=True)
+    parser.add_argument("--bars", default=None, help="Optional OHLCV bars for ATR-conditional policies.")
+    parser.add_argument("--atr-len", type=int, default=14)
+    parser.add_argument("--nfp-atr-thresholds", default="1.2,1.5")
     args = parser.parse_args()
 
     df = pd.read_csv(args.trades)
     df["touched_at"] = pd.to_datetime(df["touched_at"], utc=True)
     df["date_et"] = df["touched_at"].dt.tz_convert("America/New_York").dt.strftime("%Y-%m-%d")
     df["month"] = df["touched_at"].dt.tz_convert("America/New_York").dt.strftime("%Y-%m")
+    if args.bars:
+        df = add_expansion_ratio(df, args.bars, args.atr_len)
 
     policies = [
         choose_policy(df, "always_reversal", set()),
@@ -154,6 +264,9 @@ def main() -> None:
         choose_policy(df, "skip_shock_windows", set(), {"iran_window", "venezuela_window"}),
         choose_policy(df, "skip_all_events", set(), {"cpi", "fomc", "home_sales", "mag7_earnings", "nfp", "tariff_headline"}),
     ]
+    if args.bars:
+        for threshold in [float(part) for part in args.nfp_atr_thresholds.split(",") if part.strip()]:
+            policies.append(choose_nfp_atr_policy(df, threshold))
 
     summary_rows = []
     trade_outputs = []
