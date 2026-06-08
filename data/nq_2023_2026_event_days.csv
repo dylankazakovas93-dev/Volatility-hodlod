@@ -1,0 +1,258 @@
+date,event_type,label
+2023-01-06,nfp,Employment Situation
+2023-02-03,nfp,Employment Situation
+2023-03-10,nfp,Employment Situation
+2023-04-07,nfp,Employment Situation
+2023-05-05,nfp,Employment Situation
+2023-06-02,nfp,Employment Situation
+2023-07-07,nfp,Employment Situation
+2023-08-04,nfp,Employment Situation
+2023-09-01,nfp,Employment Situation
+2023-10-06,nfp,Employment Situation
+2023-11-03,nfp,Employment Situation
+2023-12-08,nfp,Employment Situation
+2023-01-12,cpi,Consumer Price Index
+2023-02-14,cpi,Consumer Price Index
+2023-03-14,cpi,Consumer Price Index
+2023-04-12,cpi,Consumer Price Index
+2023-05-10,cpi,Consumer Price Index
+2023-06-13,cpi,Consumer Price Index
+2023-07-12,cpi,Consumer Price Index
+2023-08-10,cpi,Consumer Price Index
+2023-09-13,cpi,Consumer Price Index
+2023-10-12,cpi,Consumer Price Index
+2023-11-14,cpi,Consumer Price Index
+2023-12-12,cpi,Consumer Price Index
+2023-02-01,fomc,FOMC decision
+2023-03-22,fomc,FOMC decision
+2023-05-03,fomc,FOMC decision
+2023-06-14,fomc,FOMC decision
+2023-07-26,fomc,FOMC decision
+2023-09-20,fomc,FOMC decision
+2023-11-01,fomc,FOMC decision
+2023-12-13,fomc,FOMC decision
+2023-01-20,home_sales,Existing Home Sales
+2023-02-21,home_sales,Existing Home Sales
+2023-03-21,home_sales,Existing Home Sales
+2023-04-20,home_sales,Existing Home Sales
+2023-05-18,home_sales,Existing Home Sales
+2023-06-22,home_sales,Existing Home Sales
+2023-07-20,home_sales,Existing Home Sales
+2023-08-22,home_sales,Existing Home Sales
+2023-09-21,home_sales,Existing Home Sales
+2023-10-19,home_sales,Existing Home Sales
+2023-11-21,home_sales,Existing Home Sales
+2023-12-20,home_sales,Existing Home Sales
+2023-01-24,mag7_earnings,MSFT earnings
+2023-01-25,mag7_earnings,TSLA earnings
+2023-02-01,mag7_earnings,META earnings
+2023-02-02,mag7_earnings,AAPL AMZN GOOGL earnings
+2023-02-22,mag7_earnings,NVDA earnings
+2023-04-19,mag7_earnings,TSLA earnings
+2023-04-25,mag7_earnings,MSFT GOOGL earnings
+2023-04-26,mag7_earnings,META earnings
+2023-04-27,mag7_earnings,AMZN earnings
+2023-05-04,mag7_earnings,AAPL earnings
+2023-05-24,mag7_earnings,NVDA earnings
+2023-07-19,mag7_earnings,TSLA earnings
+2023-07-25,mag7_earnings,MSFT GOOGL earnings
+2023-07-26,mag7_earnings,META earnings
+2023-08-03,mag7_earnings,AAPL AMZN earnings
+2023-08-23,mag7_earnings,NVDA earnings
+2023-10-18,mag7_earnings,TSLA earnings
+2023-10-24,mag7_earnings,MSFT GOOGL earnings
+2023-10-25,mag7_earnings,META earnings
+2023-10-26,mag7_earnings,AMZN earnings
+2023-11-02,mag7_earnings,AAPL earnings
+2023-11-21,mag7_earnings,NVDA earnings
+2024-01-05,nfp,Employment Situation
+2024-02-02,nfp,Employment Situation
+2024-03-08,nfp,Employment Situation
+2024-04-05,nfp,Employment Situation
+2024-05-03,nfp,Employment Situation
+2024-06-07,nfp,Employment Situation
+2024-07-05,nfp,Employment Situation
+2024-08-02,nfp,Employment Situation
+2024-09-06,nfp,Employment Situation
+2024-10-04,nfp,Employment Situation
+2024-11-01,nfp,Employment Situation
+2024-12-06,nfp,Employment Situation
+2024-01-11,cpi,Consumer Price Index
+2024-02-13,cpi,Consumer Price Index
+2024-03-12,cpi,Consumer Price Index
+2024-04-10,cpi,Consumer Price Index
+2024-05-15,cpi,Consumer Price Index
+2024-06-12,cpi,Consumer Price Index
+2024-07-11,cpi,Consumer Price Index
+2024-08-14,cpi,Consumer Price Index
+2024-09-11,cpi,Consumer Price Index
+2024-10-10,cpi,Consumer Price Index
+2024-11-13,cpi,Consumer Price Index
+2024-12-11,cpi,Consumer Price Index
+2024-01-31,fomc,FOMC decision
+2024-03-20,fomc,FOMC decision
+2024-05-01,fomc,FOMC decision
+2024-06-12,fomc,FOMC decision
+2024-07-31,fomc,FOMC decision
+2024-09-18,fomc,FOMC decision
+2024-11-07,fomc,FOMC decision
+2024-12-18,fomc,FOMC decision
+2024-01-19,home_sales,Existing Home Sales
+2024-02-22,home_sales,Existing Home Sales
+2024-03-21,home_sales,Existing Home Sales
+2024-04-18,home_sales,Existing Home Sales
+2024-05-22,home_sales,Existing Home Sales
+2024-06-21,home_sales,Existing Home Sales
+2024-07-23,home_sales,Existing Home Sales
+2024-08-22,home_sales,Existing Home Sales
+2024-09-19,home_sales,Existing Home Sales
+2024-10-23,home_sales,Existing Home Sales
+2024-11-21,home_sales,Existing Home Sales
+2024-12-19,home_sales,Existing Home Sales
+2024-01-24,mag7_earnings,TSLA earnings
+2024-01-30,mag7_earnings,MSFT GOOGL earnings
+2024-02-01,mag7_earnings,AAPL AMZN META earnings
+2024-02-21,mag7_earnings,NVDA earnings
+2024-04-23,mag7_earnings,TSLA earnings
+2024-04-24,mag7_earnings,META earnings
+2024-04-25,mag7_earnings,MSFT GOOGL earnings
+2024-04-30,mag7_earnings,AMZN earnings
+2024-05-02,mag7_earnings,AAPL earnings
+2024-05-22,mag7_earnings,NVDA earnings
+2024-07-23,mag7_earnings,TSLA GOOGL earnings
+2024-07-30,mag7_earnings,MSFT earnings
+2024-07-31,mag7_earnings,META earnings
+2024-08-01,mag7_earnings,AAPL AMZN earnings
+2024-08-28,mag7_earnings,NVDA earnings
+2024-10-23,mag7_earnings,TSLA earnings
+2024-10-29,mag7_earnings,GOOGL earnings
+2024-10-30,mag7_earnings,META MSFT earnings
+2024-10-31,mag7_earnings,AAPL AMZN earnings
+2024-11-20,mag7_earnings,NVDA earnings
+2025-01-10,nfp,Employment Situation
+2025-02-07,nfp,Employment Situation
+2025-03-07,nfp,Employment Situation
+2025-04-04,nfp,Employment Situation
+2025-05-02,nfp,Employment Situation
+2025-06-06,nfp,Employment Situation
+2025-07-03,nfp,Employment Situation
+2025-08-01,nfp,Employment Situation
+2025-09-05,nfp,Employment Situation
+2025-11-20,nfp,Employment Situation delayed September release
+2025-12-16,nfp,Employment Situation delayed November release
+2025-01-15,cpi,Consumer Price Index
+2025-02-12,cpi,Consumer Price Index
+2025-03-12,cpi,Consumer Price Index
+2025-04-10,cpi,Consumer Price Index
+2025-05-13,cpi,Consumer Price Index
+2025-06-11,cpi,Consumer Price Index
+2025-07-15,cpi,Consumer Price Index
+2025-08-12,cpi,Consumer Price Index
+2025-09-11,cpi,Consumer Price Index
+2025-10-24,cpi,Consumer Price Index delayed September release
+2025-12-18,cpi,Consumer Price Index delayed November release
+2025-01-29,fomc,FOMC decision
+2025-03-19,fomc,FOMC decision
+2025-05-07,fomc,FOMC decision
+2025-06-18,fomc,FOMC decision
+2025-07-30,fomc,FOMC decision
+2025-09-17,fomc,FOMC decision
+2025-10-29,fomc,FOMC decision
+2025-12-10,fomc,FOMC decision
+2025-01-24,home_sales,Existing Home Sales
+2025-02-21,home_sales,Existing Home Sales
+2025-03-20,home_sales,Existing Home Sales
+2025-04-24,home_sales,Existing Home Sales
+2025-05-22,home_sales,Existing Home Sales
+2025-06-23,home_sales,Existing Home Sales
+2025-07-23,home_sales,Existing Home Sales
+2025-08-21,home_sales,Existing Home Sales
+2025-09-25,home_sales,Existing Home Sales
+2025-10-23,home_sales,Existing Home Sales
+2025-11-20,home_sales,Existing Home Sales
+2025-12-23,home_sales,Existing Home Sales
+2025-01-29,mag7_earnings,META MSFT TSLA earnings
+2025-01-30,mag7_earnings,AAPL earnings
+2025-02-04,mag7_earnings,GOOGL earnings
+2025-02-06,mag7_earnings,AMZN earnings
+2025-02-26,mag7_earnings,NVDA earnings
+2025-04-22,mag7_earnings,TSLA earnings
+2025-04-24,mag7_earnings,GOOGL earnings
+2025-04-30,mag7_earnings,META MSFT earnings
+2025-05-01,mag7_earnings,AAPL AMZN earnings
+2025-05-28,mag7_earnings,NVDA earnings
+2025-07-23,mag7_earnings,GOOGL TSLA earnings
+2025-07-30,mag7_earnings,META MSFT earnings
+2025-07-31,mag7_earnings,AAPL AMZN earnings
+2025-08-27,mag7_earnings,NVDA earnings
+2025-10-22,mag7_earnings,TSLA earnings
+2025-10-29,mag7_earnings,GOOGL META MSFT earnings
+2025-10-30,mag7_earnings,AAPL AMZN earnings
+2025-11-19,mag7_earnings,NVDA earnings
+2025-04-02,tariff_headline,Liberation Day tariff announcement
+2025-04-03,tariff_headline,Tariff headline shock
+2025-04-04,tariff_headline,Tariff headline shock
+2025-04-07,tariff_headline,Tariff headline shock
+2025-04-08,tariff_headline,Tariff headline shock
+2025-04-09,tariff_headline,Tariff headline shock
+2025-04-10,tariff_headline,Tariff headline shock
+2025-10-10,tariff_headline,China tariff headline shock
+2026-01-09,nfp,Employment Situation
+2026-02-06,nfp,Employment Situation
+2026-03-06,nfp,Employment Situation
+2026-04-03,nfp,Employment Situation
+2026-05-08,nfp,Employment Situation
+2026-06-05,nfp,Employment Situation
+2026-01-13,cpi,Consumer Price Index
+2026-02-12,cpi,Consumer Price Index
+2026-03-11,cpi,Consumer Price Index
+2026-04-10,cpi,Consumer Price Index
+2026-05-12,cpi,Consumer Price Index
+2026-01-28,fomc,FOMC decision
+2026-03-18,fomc,FOMC decision
+2026-04-29,fomc,FOMC decision
+2026-01-14,home_sales,Existing Home Sales
+2026-02-12,home_sales,Existing Home Sales
+2026-03-10,home_sales,Existing Home Sales
+2026-04-13,home_sales,Existing Home Sales
+2026-05-11,home_sales,Existing Home Sales
+2026-01-28,mag7_earnings,TSLA META MSFT earnings window
+2026-01-29,mag7_earnings,AAPL earnings window
+2026-02-03,mag7_earnings,GOOGL earnings window
+2026-02-05,mag7_earnings,AMZN earnings window
+2026-02-25,mag7_earnings,NVDA earnings window
+2026-04-22,mag7_earnings,TSLA earnings window
+2026-04-23,mag7_earnings,GOOGL earnings window
+2026-04-29,mag7_earnings,META MSFT earnings window
+2026-04-30,mag7_earnings,AAPL AMZN earnings window
+2026-05-27,mag7_earnings,NVDA earnings window
+2026-01-03,venezuela_window,User-defined Venezuela macro shock window
+2026-01-04,venezuela_window,User-defined Venezuela macro shock window
+2026-01-05,venezuela_window,User-defined Venezuela macro shock window
+2026-01-06,venezuela_window,User-defined Venezuela macro shock window
+2026-01-07,venezuela_window,User-defined Venezuela macro shock window
+2026-01-08,venezuela_window,User-defined Venezuela macro shock window
+2026-01-09,venezuela_window,User-defined Venezuela macro shock window
+2026-01-10,venezuela_window,User-defined Venezuela macro shock window
+2026-01-11,venezuela_window,User-defined Venezuela macro shock window
+2026-01-12,venezuela_window,User-defined Venezuela macro shock window
+2026-01-13,venezuela_window,User-defined Venezuela macro shock window
+2026-01-14,venezuela_window,User-defined Venezuela macro shock window
+2026-01-15,venezuela_window,User-defined Venezuela macro shock window
+2026-01-16,venezuela_window,User-defined Venezuela macro shock window
+2026-01-17,venezuela_window,User-defined Venezuela macro shock window
+2026-02-28,iran_window,User-defined Iran macro shock window
+2026-03-01,iran_window,User-defined Iran macro shock window
+2026-03-02,iran_window,User-defined Iran macro shock window
+2026-03-03,iran_window,User-defined Iran macro shock window
+2026-03-04,iran_window,User-defined Iran macro shock window
+2026-03-05,iran_window,User-defined Iran macro shock window
+2026-03-06,iran_window,User-defined Iran macro shock window
+2026-03-07,iran_window,User-defined Iran macro shock window
+2026-03-08,iran_window,User-defined Iran macro shock window
+2026-03-09,iran_window,User-defined Iran macro shock window
+2026-03-10,iran_window,User-defined Iran macro shock window
+2026-03-11,iran_window,User-defined Iran macro shock window
+2026-03-12,iran_window,User-defined Iran macro shock window
+2026-03-13,iran_window,User-defined Iran macro shock window
+2026-03-14,iran_window,User-defined Iran macro shock window

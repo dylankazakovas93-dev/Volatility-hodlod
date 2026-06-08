@@ -1,0 +1,67 @@
+date,event_type,label
+2023-01-06,nfp,Employment Situation
+2023-02-03,nfp,Employment Situation
+2023-03-10,nfp,Employment Situation
+2023-04-07,nfp,Employment Situation
+2023-05-05,nfp,Employment Situation
+2023-06-02,nfp,Employment Situation
+2023-07-07,nfp,Employment Situation
+2023-08-04,nfp,Employment Situation
+2023-09-01,nfp,Employment Situation
+2023-10-06,nfp,Employment Situation
+2023-11-03,nfp,Employment Situation
+2023-12-08,nfp,Employment Situation
+2023-01-12,cpi,Consumer Price Index
+2023-02-14,cpi,Consumer Price Index
+2023-03-14,cpi,Consumer Price Index
+2023-04-12,cpi,Consumer Price Index
+2023-05-10,cpi,Consumer Price Index
+2023-06-13,cpi,Consumer Price Index
+2023-07-12,cpi,Consumer Price Index
+2023-08-10,cpi,Consumer Price Index
+2023-09-13,cpi,Consumer Price Index
+2023-10-12,cpi,Consumer Price Index
+2023-11-14,cpi,Consumer Price Index
+2023-12-12,cpi,Consumer Price Index
+2023-02-01,fomc,FOMC decision
+2023-03-22,fomc,FOMC decision
+2023-05-03,fomc,FOMC decision
+2023-06-14,fomc,FOMC decision
+2023-07-26,fomc,FOMC decision
+2023-09-20,fomc,FOMC decision
+2023-11-01,fomc,FOMC decision
+2023-12-13,fomc,FOMC decision
+2023-01-20,home_sales,Existing Home Sales
+2023-02-21,home_sales,Existing Home Sales
+2023-03-21,home_sales,Existing Home Sales
+2023-04-20,home_sales,Existing Home Sales
+2023-05-18,home_sales,Existing Home Sales
+2023-06-22,home_sales,Existing Home Sales
+2023-07-20,home_sales,Existing Home Sales
+2023-08-22,home_sales,Existing Home Sales
+2023-09-21,home_sales,Existing Home Sales
+2023-10-19,home_sales,Existing Home Sales
+2023-11-21,home_sales,Existing Home Sales
+2023-12-20,home_sales,Existing Home Sales
+2023-01-24,mag7_earnings,MSFT earnings
+2023-01-25,mag7_earnings,TSLA earnings
+2023-02-01,mag7_earnings,META earnings
+2023-02-02,mag7_earnings,AAPL AMZN GOOGL earnings
+2023-02-22,mag7_earnings,NVDA earnings
+2023-04-19,mag7_earnings,TSLA earnings
+2023-04-25,mag7_earnings,MSFT GOOGL earnings
+2023-04-26,mag7_earnings,META earnings
+2023-04-27,mag7_earnings,AMZN earnings
+2023-05-04,mag7_earnings,AAPL earnings
+2023-05-24,mag7_earnings,NVDA earnings
+2023-07-19,mag7_earnings,TSLA earnings
+2023-07-25,mag7_earnings,MSFT GOOGL earnings
+2023-07-26,mag7_earnings,META earnings
+2023-08-03,mag7_earnings,AAPL AMZN earnings
+2023-08-23,mag7_earnings,NVDA earnings
+2023-10-18,mag7_earnings,TSLA earnings
+2023-10-24,mag7_earnings,MSFT GOOGL earnings
+2023-10-25,mag7_earnings,META earnings
+2023-10-26,mag7_earnings,AMZN earnings
+2023-11-02,mag7_earnings,AAPL earnings
+2023-11-21,mag7_earnings,NVDA earnings
