@@ -184,7 +184,7 @@ def main() -> None:
     parser.add_argument("--tp-mults", default="1.0,0.5")
     parser.add_argument("--rr", default="1,2,3,4")
     parser.add_argument("--range-minutes", default="60", help="Comma-separated completed range anchors, e.g. 60,240")
-    parser.add_argument("--max-bars", type=int, default=24, help="5m bars; 24 = 120 minutes")
+    parser.add_argument("--max-bars", type=int, default=24, help="Bars in the input timeframe; 24 = 24 minutes on 1m data or 120 minutes on 5m data.")
     parser.add_argument("--search-window-days", type=int, default=5)
     parser.add_argument("--out-trades", default=None)
     parser.add_argument("--out-summary", default=None)

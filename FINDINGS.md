@@ -1,6 +1,71 @@
 # Initial test results — μ ± k·σ/√(dev) levels on GC, 2023-06 → 2026-05
 
-Status: **first pass complete, results are mixed — not a clean "yes the levels react"**
+Status: **raw edge test gives a clear, decisive answer — see "Raw edge test"
+below. tl;dr: fading levels (especially upper levels) is a robust loser;
+playing the continuation/breakout off a touch — especially on upper levels —
+shows a real, consistent raw edge across every bracket size tested.**
+
+> Update: a Pine-parity bug was found and fixed (the IB range was off-by-one —
+> Pine includes the bar at exactly `ibStart + ibMins` in the high/low range,
+> the original Python excluded it; see `volgen/levels.py`). Numbers below are
+> post-fix.
+
+## Raw edge test — "is there ANY edge, or is something just a clear loser?"
+
+Per the user's ask: skip trend-conditioning for now, just test the dumbest
+possible thing — at every first touch of a level, simulate a fixed
+target/stop bracket trade in **both** directions (no filters at all):
+
+- **fade** = bet price reverses off the level (the "obvious" reversal trade)
+- **continuation** = bet price blows through the level (the breakout trade)
+
+Run with `scripts/raw_edge_test.py --target N --stop N`. Tested 5 bracket
+configs (5/5, 10/10, 20/20, 15/10, 10/15 — i.e. R:R from 0.67 to 1.5), n≈919
+trades per direction each time. **The result is the same shape every time:**
+
+| config (target/stop) | ALL continuation: total pts (win%) | ALL fade: total pts (win%) | upper continuation | upper fade |
+|---|---|---|---|---|
+| 5 / 5   | **+76.6**  (47.0%) | −276.6 (43.0%) | **+284.9** (52.4%) | −334.9 (40.2%) |
+| 10 / 10 | **+350.0** (36.2%) | −450.0 (30.7%) | **+424.4** (38.4%) | −464.4 (29.1%) |
+| 20 / 20 | **+948.8** (20.3%) | −988.8 (15.9%) | **+886.9** (19.9%) | −886.9 (14.5%) |
+| 15 / 10 | **+607.1** (23.7%) | −482.7 (18.9%) | **+476.0** (23.5%) | −437.0 (18.9%) |
+| 10 / 15 | **+432.7** (39.9%) | −657.1 (33.7%) | **+437.0** (42.0%) | −476.0 (33.1%) |
+
+**Every single config, with zero exceptions:**
+- **Continuation (breakout) is net positive overall**, and **fade is net
+  negative overall**.
+- The effect is **driven almost entirely by upper levels**: upper-level
+  continuation is positive and upper-level fade is sharply, consistently
+  negative (−335 to −887 pts depending on bracket). Lower levels are much
+  closer to a wash and flip sign across configs (mildly +/− depending on R:R) —
+  i.e. the "support bounces" intuition is *not* showing up as a robust raw
+  edge, but "resistance keeps breaking" very much is.
+- This is the opposite of the "obvious" trade (fading a level that looks like
+  resistance) — and it's consistent with the trend-asymmetry already seen in
+  the reaction/continuation breakdown: gold has been in a strong uptrend, so
+  upper levels function as continuation/breakout markers, not walls.
+
+**Bottom line: don't build a fade strategy off these levels — it's a robust
+loser, especially on the upper side. The raw, untuned edge is in trading the
+breakout through upper levels.** That's a strong, decisive starting point for
+strategy design — a much better place to be than "everything's a coin flip."
+
+Caveats before getting too excited: (1) this is *raw* — no slippage/commission,
+single fixed bracket, first-touch only, no position sizing; (2) it's tested
+over a single strong-uptrend regime (2023-06→2026-05) so it may be partly
+"long bias wins in an uptrend" rather than something specific to these levels —
+worth checking against a flat/down period or comparing to a naive "always buy
+breakouts of any round-number level" baseline to isolate the indicator's value-add.
+
+---
+
+## Earlier pass: reaction-vs-continuation analysis (kept for context)
+
+The headline numbers below were from before the raw-edge test above — they
+showed the *aggregate* picture looked like a coin flip, which under-sold the
+real, robust asymmetry the bracket-trade test surfaced. Keeping this section
+because the year/side breakdown is still useful color (e.g. why 2026 felt so
+violent), but **the raw edge test above is the more decisive read**.
 
 ## Data used
 
