@@ -1,0 +1,69 @@
+date,event_type,label
+2025-01-10,nfp,Employment Situation
+2025-02-07,nfp,Employment Situation
+2025-03-07,nfp,Employment Situation
+2025-04-04,nfp,Employment Situation
+2025-05-02,nfp,Employment Situation
+2025-06-06,nfp,Employment Situation
+2025-07-03,nfp,Employment Situation
+2025-08-01,nfp,Employment Situation
+2025-09-05,nfp,Employment Situation
+2025-11-20,nfp,Employment Situation delayed September release
+2025-12-16,nfp,Employment Situation delayed November release
+2025-01-15,cpi,Consumer Price Index
+2025-02-12,cpi,Consumer Price Index
+2025-03-12,cpi,Consumer Price Index
+2025-04-10,cpi,Consumer Price Index
+2025-05-13,cpi,Consumer Price Index
+2025-06-11,cpi,Consumer Price Index
+2025-07-15,cpi,Consumer Price Index
+2025-08-12,cpi,Consumer Price Index
+2025-09-11,cpi,Consumer Price Index
+2025-10-24,cpi,Consumer Price Index delayed September release
+2025-12-18,cpi,Consumer Price Index delayed November release
+2025-01-29,fomc,FOMC decision
+2025-03-19,fomc,FOMC decision
+2025-05-07,fomc,FOMC decision
+2025-06-18,fomc,FOMC decision
+2025-07-30,fomc,FOMC decision
+2025-09-17,fomc,FOMC decision
+2025-10-29,fomc,FOMC decision
+2025-12-10,fomc,FOMC decision
+2025-01-24,home_sales,Existing Home Sales
+2025-02-21,home_sales,Existing Home Sales
+2025-03-20,home_sales,Existing Home Sales
+2025-04-24,home_sales,Existing Home Sales
+2025-05-22,home_sales,Existing Home Sales
+2025-06-23,home_sales,Existing Home Sales
+2025-07-23,home_sales,Existing Home Sales
+2025-08-21,home_sales,Existing Home Sales
+2025-09-25,home_sales,Existing Home Sales
+2025-10-23,home_sales,Existing Home Sales
+2025-11-20,home_sales,Existing Home Sales
+2025-12-23,home_sales,Existing Home Sales
+2025-01-29,mag7_earnings,META MSFT TSLA earnings
+2025-01-30,mag7_earnings,AAPL earnings
+2025-02-04,mag7_earnings,GOOGL earnings
+2025-02-06,mag7_earnings,AMZN earnings
+2025-02-26,mag7_earnings,NVDA earnings
+2025-04-22,mag7_earnings,TSLA earnings
+2025-04-24,mag7_earnings,GOOGL earnings
+2025-04-30,mag7_earnings,META MSFT earnings
+2025-05-01,mag7_earnings,AAPL AMZN earnings
+2025-05-28,mag7_earnings,NVDA earnings
+2025-07-23,mag7_earnings,GOOGL TSLA earnings
+2025-07-30,mag7_earnings,META MSFT earnings
+2025-07-31,mag7_earnings,AAPL AMZN earnings
+2025-08-27,mag7_earnings,NVDA earnings
+2025-10-22,mag7_earnings,TSLA earnings
+2025-10-29,mag7_earnings,GOOGL META MSFT earnings
+2025-10-30,mag7_earnings,AAPL AMZN earnings
+2025-11-19,mag7_earnings,NVDA earnings
+2025-04-02,tariff_headline,Liberation Day tariff announcement
+2025-04-03,tariff_headline,Tariff headline shock
+2025-04-04,tariff_headline,Tariff headline shock
+2025-04-07,tariff_headline,Tariff headline shock
+2025-04-08,tariff_headline,Tariff headline shock
+2025-04-09,tariff_headline,Tariff headline shock
+2025-04-10,tariff_headline,Tariff headline shock
+2025-10-10,tariff_headline,China tariff headline shock

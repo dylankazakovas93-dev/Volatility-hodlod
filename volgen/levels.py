@@ -27,6 +27,7 @@ class InstrumentParams:
 
 # Auto-detect table from the Pine script, GC row.
 GC_PARAMS = InstrumentParams(sigma_mult=1.15, offset_pct=0.02, ib_minutes=30)
+NQ_PARAMS = InstrumentParams(sigma_mult=1.25, offset_pct=0.07, ib_minutes=60, fixed_offset=15.75)
 
 
 def load_1m_ohlcv(path: str, tz: str = "America/New_York") -> pd.DataFrame:
@@ -44,7 +45,12 @@ def load_1m_ohlcv(path: str, tz: str = "America/New_York") -> pd.DataFrame:
     if ts_col is None:
         raise ValueError(f"no timestamp column found in {path}; have {list(df.columns)}")
 
-    idx = pd.to_datetime(df[ts_col], utc=False)
+    try:
+        idx = pd.to_datetime(df[ts_col], utc=False)
+    except ValueError as exc:
+        if "Mixed timezones" not in str(exc):
+            raise
+        idx = pd.to_datetime(df[ts_col], utc=True)
     if idx.dt.tz is None:
         idx = idx.dt.tz_localize(tz)
     else:
@@ -123,8 +129,12 @@ def generate_levels(
         imp_up = cash_open + params.sigma_mult * sigma_day
         imp_dn = cash_open - params.sigma_mult * sigma_day
 
+        # Pine updates ibH/ibL for the bar at exactly `ibStart + ibMins` *before*
+        # checking `time - ibStart >= ibMins*60*1000` and setting ibDone — so
+        # that bar's high/low IS included in the IB range (off-by-one if you
+        # use a strict `<` cutoff here).
         ib_cutoff = day_bars.index[0] + pd.Timedelta(minutes=params.ib_minutes)
-        ib_bars = day_bars[day_bars.index < ib_cutoff]
+        ib_bars = day_bars[day_bars.index <= ib_cutoff]
         if ib_bars.empty:
             continue
         ib_high = float(ib_bars["high"].max())

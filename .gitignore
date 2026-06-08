@@ -1,5 +1,8 @@
 data/gc_1m/*
 !data/gc_1m/.gitkeep
+data/nq_parquet/
+data/nq_1m/
+data/nq_5m/
 out/
 __pycache__/
 *.pyc
