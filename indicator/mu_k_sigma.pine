@@ -1,0 +1,282 @@
+//@version=6
+indicator("μ ± k·σ/√(dev)", overlay=true, max_lines_count=500)
+
+tfMinutes = timeframe.in_seconds() / 60
+tfValid   = tfMinutes >= 1 and tfMinutes <= 15
+
+isNQ = str.contains(syminfo.ticker, "NQ")
+isES = str.contains(syminfo.ticker, "ES")
+isYM = str.contains(syminfo.ticker, "YM")
+isGC = str.contains(syminfo.ticker, "GC")
+isSI = str.contains(syminfo.ticker, "SI")
+
+// CBOE:VXN   — Nasdaq-100 Volatility Index
+// CBOE:VIX   — S&P 500 Volatility Index
+// CBOE:VXD   — Dow Jones Volatility Index
+// CBOE:GVZ   — Gold Volatility Index
+// CBOE:VXSLV — Silver Volatility Index
+autoVolSym =
+     isNQ ? "CBOE:VXN"   :
+     isES ? "CBOE:VIX"   :
+     isYM ? "CBOE:VXD"   :
+     isGC ? "CBOE:GVZ"   :
+     isSI ? "CBOE:VXSLV" :
+     "CBOE:VIX"
+
+autoSigmaMult =
+     isNQ ? 1.25 :
+     isES ? 1.25 :
+     isYM ? 1.25 :
+     isGC ? 1.15 :
+     isSI ? 1.35 :
+     1.25
+
+autoOffsetPct =
+     isNQ ? 0.07 :
+     isES ? 0.02 :
+     isYM ? 0.10 :
+     isGC ? 0.02 :
+     isSI ? 0.01 :
+     0.07
+
+autoIBMins =
+     isGC or isSI ? 30 :
+     60
+
+// ═══════════════════════════════════════════════════════════════
+// INPUTS
+// ═══════════════════════════════════════════════════════════════
+vixSym      = input.symbol("CBOE:VIX",   "Vol Symbol (manual override)")
+impMult     = input.float(1.25,          "Sigma Multiplier",      minval=0.5,  maxval=3.0,   step=0.05)
+ibMinsInput = input.int(60,              "IB Length (minutes)",   minval=5,    maxval=240)
+offsetInput = input.float(0.07,          "Offset % of Sigma",     minval=0.001,maxval=0.50,  step=0.001)
+rthSess     = input.session("0930-1600", "RTH Session")
+lineDays    = input.int(20,              "Days of levels to show",minval=1,    maxval=365)
+lineColor   = input.color(color.purple,  "Line Color")
+lineWidth   = input.int(2,               "Line Width",            minval=1,    maxval=5)
+useAuto     = input.bool(true,           "Auto-detect instrument params")
+
+resolvedVolSym    = useAuto ? autoVolSym    : vixSym
+resolvedSigmaMult = useAuto ? autoSigmaMult : impMult
+resolvedOffsetPct = useAuto ? autoOffsetPct : offsetInput
+resolvedIBMins    = useAuto ? autoIBMins    : ibMinsInput
+
+// ═══════════════════════════════════════════════════════════════
+// SESSION
+// ═══════════════════════════════════════════════════════════════
+inRTH  = not na(time(timeframe.period, rthSess, "America/New_York"))
+newRTH = inRTH and not inRTH[1]
+
+var int todayStart = na
+if newRTH
+    todayStart := time
+
+// ═══════════════════════════════════════════════════════════════
+// CASH OPEN
+// First bar of RTH open — correct anchor for IB and sigma.
+// Both reference the same RTH origin, keeping the math consistent.
+// ═══════════════════════════════════════════════════════════════
+var float cashOpen = na
+if newRTH
+    cashOpen := open
+
+// ═══════════════════════════════════════════════════════════════
+// VIX-IMPLIED DAILY SIGMA
+// cashOpen × (VIX/100) / √252 = 1-day 1σ expected move
+// Prior day vol close, no lookahead
+// ═══════════════════════════════════════════════════════════════
+vixClose = request.security(
+     resolvedVolSym, "D", close[1],
+     lookahead=barmerge.lookahead_off)
+
+sigmaDay =
+     not na(vixClose) and not na(cashOpen) ?
+     cashOpen * (vixClose / 100.0) / math.sqrt(252) :
+     na
+
+impUp = not na(sigmaDay) ? cashOpen + resolvedSigmaMult * sigmaDay : na
+impDn = not na(sigmaDay) ? cashOpen - resolvedSigmaMult * sigmaDay : na
+
+// ═══════════════════════════════════════════════════════════════
+// INITIAL BALANCE
+// High/low of the first N minutes of RTH.
+// IB extension = IB range projected beyond IB high/low.
+// ═══════════════════════════════════════════════════════════════
+var float ibH     = na
+var float ibL     = na
+var bool  ibDone  = false
+var int   ibStart = na
+
+if newRTH
+    ibH    := high
+    ibL    := low
+    ibDone := false
+    ibStart := time
+else if inRTH and not ibDone
+    ibH := math.max(ibH, high)
+    ibL := math.min(ibL, low)
+    if time - ibStart >= resolvedIBMins * 60 * 1000
+        ibDone := true
+
+ibRange = not na(ibH) and not na(ibL) ? ibH - ibL : na
+ibExtUp = ibDone and not na(ibRange)  ? ibH + ibRange : na
+ibExtDn = ibDone and not na(ibRange)  ? ibL - ibRange : na
+
+// ═══════════════════════════════════════════════════════════════
+// SIGMA OFFSET
+// NQ: always exactly 15.75 points — hardcoded, never scales
+// All others: sigmaDay × offsetPct, which auto-scales with
+// price and volatility so the buffer stays proportional
+// ═══════════════════════════════════════════════════════════════
+sigmaOffset =
+     isNQ ?
+     15.75 :
+     not na(sigmaDay) ?
+     sigmaDay * resolvedOffsetPct :
+     na
+
+// ═══════════════════════════════════════════════════════════════
+// STORAGE ARRAYS
+// ═══════════════════════════════════════════════════════════════
+var array<line>  upperLines      = array.new<line>()
+var array<line>  lowerLines      = array.new<line>()
+var array<float> upperLevels     = array.new<float>()
+var array<float> lowerLevels     = array.new<float>()
+var array<bool>  upperTouched    = array.new<bool>()
+var array<bool>  lowerTouched    = array.new<bool>()
+var array<int>   lineSessionTime = array.new<int>()
+
+// ═══════════════════════════════════════════════════════════════
+// CREATE LINES — once per session at IB completion
+// ═══════════════════════════════════════════════════════════════
+ibJustDone = ibDone and not ibDone[1]
+
+allReady =
+     not na(ibExtUp)     and not na(impUp) and
+     not na(ibExtDn)     and not na(impDn) and
+     not na(sigmaOffset)
+
+if tfValid and ibJustDone and allReady
+    upperMid   = (ibExtUp + impUp) / 2
+    lowerMid   = (ibExtDn + impDn) / 2
+    upperLevel = upperMid - sigmaOffset
+    lowerLevel = lowerMid + sigmaOffset
+
+    upperLine = line.new(
+         bar_index, upperLevel,
+         bar_index + 1, upperLevel,
+         color=lineColor, width=lineWidth,
+         extend=extend.right)
+    lowerLine = line.new(
+         bar_index, lowerLevel,
+         bar_index + 1, lowerLevel,
+         color=lineColor, width=lineWidth,
+         extend=extend.right)
+
+    array.push(upperLines,      upperLine)
+    array.push(lowerLines,      lowerLine)
+    array.push(upperLevels,     upperLevel)
+    array.push(lowerLevels,     lowerLevel)
+    array.push(upperTouched,    false)
+    array.push(lowerTouched,    false)
+    array.push(lineSessionTime, todayStart)
+
+    if array.size(upperLines) > lineDays
+        line.delete(array.shift(upperLines))
+        line.delete(array.shift(lowerLines))
+        array.shift(upperLevels)
+        array.shift(lowerLevels)
+        array.shift(upperTouched)
+        array.shift(lowerTouched)
+        array.shift(lineSessionTime)
+
+// ═══════════════════════════════════════════════════════════════
+// TOUCH DETECTION
+// Untouched levels stay extended indefinitely — an untested
+// level is still a live statistical target regardless of age
+// ═══════════════════════════════════════════════════════════════
+if tfValid and array.size(upperLines) > 0
+    for i = 0 to array.size(upperLines) - 1
+         if not array.get(upperTouched, i)
+            uLevel = array.get(upperLevels, i)
+            uTouch =
+                 (high >= uLevel and low <= uLevel) or
+                 (close >= uLevel and close[1] < uLevel) or
+                 (close <= uLevel and close[1] > uLevel)
+            if uTouch
+                ul = array.get(upperLines, i)
+                line.set_x2(ul, bar_index)
+                line.set_extend(ul, extend.none)
+                array.set(upperTouched, i, true)
+
+         if not array.get(lowerTouched, i)
+            lLevel = array.get(lowerLevels, i)
+            lTouch =
+                 (high >= lLevel and low <= lLevel) or
+                 (close >= lLevel and close[1] < lLevel) or
+                 (close <= lLevel and close[1] > lLevel)
+            if lTouch
+                ll = array.get(lowerLines, i)
+                line.set_x2(ll, bar_index)
+                line.set_extend(ll, extend.none)
+                array.set(lowerTouched, i, true)
+
+// ═══════════════════════════════════════════════════════════════
+// INFO TABLE
+// ═══════════════════════════════════════════════════════════════
+var table infoTable = table.new(
+     position.top_right, 2, 8,
+     bgcolor=color.new(color.black, 70),
+     border_width=1)
+
+if barstate.islast
+    table.cell(infoTable, 0, 0, "Instrument",
+         text_color=color.gray,  text_size=size.small)
+    table.cell(infoTable, 1, 0, syminfo.ticker,
+         text_color=color.white, text_size=size.small)
+
+    table.cell(infoTable, 0, 1, "Vol Index",
+         text_color=color.gray,   text_size=size.small)
+    table.cell(infoTable, 1, 1, resolvedVolSym,
+         text_color=color.yellow, text_size=size.small)
+
+    table.cell(infoTable, 0, 2, "Sigma Mult",
+         text_color=color.gray,  text_size=size.small)
+    table.cell(infoTable, 1, 2,
+         str.tostring(resolvedSigmaMult, "#.##"),
+         text_color=color.white, text_size=size.small)
+
+    table.cell(infoTable, 0, 3, "Offset",
+         text_color=color.gray,  text_size=size.small)
+    table.cell(infoTable, 1, 3,
+         isNQ ? "15.75 pts" :
+         str.tostring(resolvedOffsetPct * 100, "#.##") + "%",
+         text_color=color.white, text_size=size.small)
+
+    table.cell(infoTable, 0, 4, "IB Mins",
+         text_color=color.gray,  text_size=size.small)
+    table.cell(infoTable, 1, 4,
+         str.tostring(resolvedIBMins),
+         text_color=color.white, text_size=size.small)
+
+    table.cell(infoTable, 0, 5, "Sigma/day",
+         text_color=color.gray,  text_size=size.small)
+    table.cell(infoTable, 1, 5,
+         not na(sigmaDay) ?
+         str.tostring(sigmaDay, "#.##") : "n/a",
+         text_color=color.white, text_size=size.small)
+
+    table.cell(infoTable, 0, 6, "Timeframe",
+         text_color=color.gray, text_size=size.small)
+    table.cell(infoTable, 1, 6,
+         tfValid ?
+         timeframe.period + "m  OK" : "USE 1-15m!",
+         text_color=tfValid ? color.lime : color.red,
+         text_size=size.small)
+
+    table.cell(infoTable, 0, 7, "Auto Mode",
+         text_color=color.gray, text_size=size.small)
+    table.cell(infoTable, 1, 7,
+         useAuto ? "ON" : "OFF",
+         text_color=useAuto ? color.lime : color.white,
+         text_size=size.small)

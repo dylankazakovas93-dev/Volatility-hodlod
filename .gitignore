@@ -1,0 +1,5 @@
+data/gc_1m/*
+!data/gc_1m/.gitkeep
+out/
+__pycache__/
+*.pyc
