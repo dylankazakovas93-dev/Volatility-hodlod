@@ -45,7 +45,7 @@ def attach_prior_vxn(df: pd.DataFrame, vxn: pd.Series) -> pd.DataFrame:
     prior_dates = date_et - pd.Timedelta(days=1)
 
     def prior_vxn(d: pd.Timestamp) -> float | None:
-        target = d.normalize().date()
+        target = pd.Timestamp(d.normalize().date())
         idx = vxn.index.searchsorted(target)
         if idx == 0:
             return None
