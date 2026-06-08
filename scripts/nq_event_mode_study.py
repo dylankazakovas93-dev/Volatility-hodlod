@@ -71,6 +71,31 @@ def previous_completed_range(ranges: pd.Series, ts: pd.Timestamp, range_minutes:
     return float(value)
 
 
+def session_cutoff(
+    touched_at: pd.Timestamp,
+    cutoff_time: str,
+    resume_time: str | None,
+) -> pd.Timestamp | None:
+    """Return the ET session cutoff for a touch, or None when entries are paused."""
+    touched_et = touched_at.tz_convert("America/New_York")
+    touch_date = touched_et.strftime("%Y-%m-%d")
+    same_day_cutoff = pd.Timestamp(f"{touch_date} {cutoff_time}", tz="America/New_York")
+
+    if resume_time is None:
+        if touched_et >= same_day_cutoff:
+            return None
+        return same_day_cutoff.tz_convert(touched_at.tz)
+
+    same_day_resume = pd.Timestamp(f"{touch_date} {resume_time}", tz="America/New_York")
+    if touched_et < same_day_cutoff:
+        return same_day_cutoff.tz_convert(touched_at.tz)
+    if touched_et >= same_day_resume:
+        next_day = touched_et.normalize() + pd.Timedelta(days=1)
+        next_cutoff = pd.Timestamp(f"{next_day.strftime('%Y-%m-%d')} {cutoff_time}", tz="America/New_York")
+        return next_cutoff.tz_convert(touched_at.tz)
+    return None
+
+
 def load_events(path: str) -> dict[str, set[str]]:
     df = pd.read_csv(path)
     out: dict[str, set[str]] = {}
@@ -101,6 +126,8 @@ def simulate(
     tp_mult: float,
     rr: float,
     max_bars: int,
+    exit_cutoff_time: str | None,
+    resume_time: str | None,
 ) -> Trade | None:
     future = bars.loc[touched_at:]
     if future.empty:
@@ -111,7 +138,13 @@ def simulate(
     stop_pts = target_pts / rr
     target = entry + sign * target_pts
     stop = entry - sign * stop_pts
-    path = future.iloc[1 : max_bars + 1]
+    if exit_cutoff_time:
+        cutoff = session_cutoff(touched_at, exit_cutoff_time, resume_time)
+        if cutoff is None:
+            return None
+        path = future.loc[:cutoff].iloc[1:]
+    else:
+        path = future.iloc[1 : max_bars + 1]
     if path.empty:
         return None
 
@@ -221,6 +254,8 @@ def main() -> None:
     parser.add_argument("--tp-mult", type=float, default=0.5)
     parser.add_argument("--rr", type=float, default=0.75)
     parser.add_argument("--max-bars", type=int, default=24)
+    parser.add_argument("--exit-cutoff-time", default=None, help="Optional ET clock-time timeout, e.g. 15:00. If set, ignores --max-bars and exits at this time on the touch date.")
+    parser.add_argument("--resume-time", default=None, help="Optional ET clock-time when entries resume after the cutoff, e.g. 19:00. Touches after resume exit at the next day's cutoff.")
     parser.add_argument("--search-window-days", type=int, default=5)
     parser.add_argument("--out-prefix", default="out/nq_2025_event_study")
     args = parser.parse_args()
@@ -262,7 +297,7 @@ def main() -> None:
                 trade_logic = logic_for_mode(mode, event_type_set)
                 if trade_logic is None:
                     continue
-                trade = simulate(bars, mode, session_date, event_types, side, trade_logic, touched_at, level, args.range_minutes, anchor_range, args.tp_mult, args.rr, args.max_bars)
+                trade = simulate(bars, mode, session_date, event_types, side, trade_logic, touched_at, level, args.range_minutes, anchor_range, args.tp_mult, args.rr, args.max_bars, args.exit_cutoff_time, args.resume_time)
                 if trade is not None:
                     records.append(trade.__dict__)
 
