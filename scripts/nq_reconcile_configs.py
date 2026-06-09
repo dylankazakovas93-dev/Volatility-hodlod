@@ -32,8 +32,9 @@ from volgen.levels import NQ_PARAMS, generate_levels, load_1m_ohlcv, load_gvz_da
 from volgen.reactions import _first_touch
 
 LINE_DAYS = 20
-IS_YEARS  = {2021, 2023, 2024, 2025, 2026}
-OOS_YEARS = {2022}
+IS_YEARS   = {2021, 2023, 2024, 2025, 2026}
+OOS_YEARS  = {2022}
+OOS2_YEARS = {2020}   # second OOS year (added later)
 
 
 # ── helpers ───────────────────────────────────────────────────────────────────
@@ -243,7 +244,7 @@ def print_year_table(df: pd.DataFrame, col: str, label: str, all_years: list[int
     print(f"{'─'*72}")
     print(f"  {'Year':6} {'Tag':4} {'n':>5} {'net':>10} {'PF':>7} {'WR':>6} {'maxDD':>10} {'streak':>7}")
     for yr in sorted(all_years):
-        tag = "OOS" if yr in OOS_YEARS else "IS"
+        tag = "OOS2" if yr in OOS2_YEARS else ("OOS" if yr in OOS_YEARS else "IS")
         recs = df[df["year"] == yr][["sess_date", "touched_at", col, "raw_sl"]].rename(columns={col: "pts"}).to_dict("records")
         kept = apply_sal(recs, "pts")
         if kept.empty:
@@ -267,14 +268,13 @@ def main():
     raw = build_ledger(bars, vxn)
     print(f"  Raw touches (before SAL): {len(raw)}")
 
-    all_years = sorted(IS_YEARS | OOS_YEARS)
+    all_years = sorted(IS_YEARS | OOS_YEARS | OOS2_YEARS)
 
     # ── Cross-validation summary table ──────────────────────────────────────
-    print(f"\n{'='*80}")
+    print(f"\n{'='*110}")
     print("CROSS-VALIDATION SUMMARY")
-    hdr = "cap\\RR"
-    print(f"  {'Config':<20} {'IS n':>6} {'IS net':>10} {'IS PF':>7} {'IS WR':>6} {'IS DD':>10} {'st':>3}  |  {'OOS n':>6} {'OOS net':>9} {'OOS PF':>7} {'OOS DD':>9}")
-    print("-" * 100)
+    print(f"  {'Config':<20} {'IS n':>6} {'IS net':>10} {'IS PF':>7} {'IS WR':>6} {'IS DD':>10} {'st':>3}  |  {'OOS22 n':>7} {'OOS22 net':>10} {'OOS22 PF':>8}  |  {'OOS20 n':>7} {'OOS20 net':>10} {'OOS20 PF':>8}")
+    print("-" * 110)
 
     codex_ref = {
         "sl_only_cap160": ("Codex", 11857.8, 1.674, 2847.8, 1.649),
@@ -286,33 +286,29 @@ def main():
 
     results = {}
     for name, mode, sl_cap, rr in CONFIGS:
-        df = run_config(raw, mode, sl_cap, rr, "pnl")
+        df    = run_config(raw, mode, sl_cap, rr, "pnl")
         is_s  = summarize(df, "pnl", IS_YEARS)
         oos_s = summarize(df, "pnl", OOS_YEARS)
-        results[name] = (df, is_s, oos_s)
+        oos2_s = summarize(df, "pnl", OOS2_YEARS)
+        results[name] = (df, is_s, oos_s, oos2_s)
 
-        is_n   = is_s.get("n", 0)
-        is_net = is_s.get("net", 0)
-        is_pf  = is_s.get("pf", 0)
-        is_wr  = is_s.get("wr", 0)
-        is_dd  = is_s.get("maxdd", 0)
-        is_st  = is_s.get("streak", 0)
-        o_n    = oos_s.get("n", 0)
-        o_net  = oos_s.get("net", 0)
-        o_pf   = oos_s.get("pf", 0)
-        o_dd   = oos_s.get("maxdd", 0)
+        is_n    = is_s.get("n", 0);   is_net  = is_s.get("net", 0)
+        is_pf   = is_s.get("pf", 0);  is_wr   = is_s.get("wr", 0)
+        is_dd   = is_s.get("maxdd", 0); is_st  = is_s.get("streak", 0)
+        o_n     = oos_s.get("n", 0);  o_net   = oos_s.get("net", 0);   o_pf  = oos_s.get("pf", 0)
+        o2_n    = oos2_s.get("n", 0); o2_net  = oos2_s.get("net", 0);  o2_pf = oos2_s.get("pf", 0)
 
-        print(f"  {name:<20} {is_n:>6} {is_net:>10.2f} {is_pf:>7.3f} {is_wr:>6.3f} {is_dd:>10.2f} {is_st:>3}  |  {o_n:>6} {o_net:>9.2f} {o_pf:>7.3f} {o_dd:>9.2f}")
+        print(f"  {name:<20} {is_n:>6} {is_net:>10.2f} {is_pf:>7.3f} {is_wr:>6.3f} {is_dd:>10.2f} {is_st:>3}  |  {o_n:>7} {o_net:>10.2f} {o_pf:>8.3f}  |  {o2_n:>7} {o2_net:>10.2f} {o2_pf:>8.3f}")
 
     # ── Codex reference ──────────────────────────────────────────────────────
-    print(f"\n{'─'*100}")
-    print("  Codex reference (for comparison):")
+    print(f"\n{'─'*110}")
+    print("  Codex reference (OOS=2022 only, no 2020):")
     for name, (src, is_net, is_pf, oos_net, oos_pf) in codex_ref.items():
-        print(f"  {name:<20} {'':>6} {is_net:>10.1f} {is_pf:>7.3f} {'':>6} {'':>10} {'':>3}  |  {'':>6} {oos_net:>9.1f} {oos_pf:>7.3f}")
+        print(f"  {name:<20} {'':>6} {is_net:>10.1f} {is_pf:>7.3f} {'':>34}  |  {'':>7} {oos_net:>10.1f} {oos_pf:>8.3f}")
 
     # ── Year-by-year for each config ─────────────────────────────────────────
     for name, mode, sl_cap, rr in CONFIGS:
-        df, _, _ = results[name]
+        df, _, _, _ = results[name]
         print_year_table(df, "pnl", f"{name}  (mode={mode}, sl_cap={sl_cap}, rr={rr})", all_years)
 
     print()
