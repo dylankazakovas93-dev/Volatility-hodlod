@@ -100,6 +100,14 @@ def session_cutoff(touched_at: pd.Timestamp, cutoff_time: str, resume_time: str)
     return None
 
 
+def session_date(ts: pd.Timestamp) -> str:
+    """Assign session date: touches at/after 19:00 ET belong to next calendar day's session."""
+    et = ts.tz_convert("America/New_York")
+    if et.hour >= 19:
+        return (et + pd.Timedelta(days=1)).strftime("%Y-%m-%d")
+    return et.strftime("%Y-%m-%d")
+
+
 def entry_allowed(touched_at: pd.Timestamp, entry_cutoff_time: str) -> bool:
     """Return False if touch falls in the skipped late-RTH window (entry_cutoff_time to 15:00 ET)."""
     et = touched_at.tz_convert("America/New_York")
@@ -241,7 +249,8 @@ def main():
             if not entry_allowed(touched_at, args.entry_cutoff_time):
                 continue
             date_key = touched_at.tz_convert("America/New_York").strftime("%Y-%m-%d")
-            year = touched_at.tz_convert("America/New_York").year
+            sess_date = session_date(touched_at)
+            year = pd.Timestamp(sess_date).year
             anchor = previous_completed_range(ranges, touched_at, args.range_minutes)
             if anchor is None:
                 continue
@@ -281,7 +290,7 @@ def main():
                 top_pts = rev_pts
 
             raw.append({
-                "date_et": date_key,
+                "date_et": sess_date,
                 "year": year,
                 "side": side,
                 "touched_at": touched_at,
