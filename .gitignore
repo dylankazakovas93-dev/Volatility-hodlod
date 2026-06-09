@@ -6,3 +6,5 @@ data/nq_5m/
 out/
 __pycache__/
 *.pyc
+data/es_1m/*
+!data/es_1m/.gitkeep
