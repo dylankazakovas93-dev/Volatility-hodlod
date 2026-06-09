@@ -1,0 +1,53 @@
+date,event_type,label
+2022-01-07,nfp,Employment Situation
+2022-02-04,nfp,Employment Situation
+2022-03-04,nfp,Employment Situation
+2022-04-01,nfp,Employment Situation
+2022-05-06,nfp,Employment Situation
+2022-06-03,nfp,Employment Situation
+2022-07-08,nfp,Employment Situation
+2022-08-05,nfp,Employment Situation
+2022-09-02,nfp,Employment Situation
+2022-10-07,nfp,Employment Situation
+2022-11-04,nfp,Employment Situation
+2022-12-02,nfp,Employment Situation
+2022-01-12,cpi,CPI
+2022-02-10,cpi,CPI
+2022-03-10,cpi,CPI
+2022-04-12,cpi,CPI
+2022-05-11,cpi,CPI
+2022-06-10,cpi,CPI
+2022-07-13,cpi,CPI
+2022-08-10,cpi,CPI
+2022-09-13,cpi,CPI
+2022-10-13,cpi,CPI
+2022-11-10,cpi,CPI
+2022-12-13,cpi,CPI
+2022-01-26,fomc,FOMC
+2022-03-16,fomc,FOMC
+2022-05-04,fomc,FOMC
+2022-06-15,fomc,FOMC
+2022-07-27,fomc,FOMC
+2022-09-21,fomc,FOMC
+2022-11-02,fomc,FOMC
+2022-12-14,fomc,FOMC
+2022-01-20,home_sales,Existing Home Sales
+2022-02-18,home_sales,Existing Home Sales
+2022-03-18,home_sales,Existing Home Sales
+2022-04-20,home_sales,Existing Home Sales
+2022-05-19,home_sales,Existing Home Sales
+2022-06-21,home_sales,Existing Home Sales
+2022-07-20,home_sales,Existing Home Sales
+2022-08-18,home_sales,Existing Home Sales
+2022-09-21,home_sales,Existing Home Sales
+2022-10-20,home_sales,Existing Home Sales
+2022-11-18,home_sales,Existing Home Sales
+2022-12-21,home_sales,Existing Home Sales
+2022-01-27,mag7_earnings,AAPL Q1
+2022-02-02,mag7_earnings,AMZN/GOOGL/META Q4
+2022-04-27,mag7_earnings,AAPL/MSFT Q2
+2022-04-28,mag7_earnings,AMZN/GOOGL/META Q1
+2022-07-27,mag7_earnings,AAPL Q3
+2022-07-28,mag7_earnings,AMZN/GOOGL/META Q2
+2022-10-26,mag7_earnings,AAPL/MSFT Q4
+2022-10-27,mag7_earnings,AMZN/GOOGL/META Q3
