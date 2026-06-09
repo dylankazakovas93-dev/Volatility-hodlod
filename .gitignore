@@ -8,3 +8,5 @@ __pycache__/
 *.pyc
 data/es_1m/*
 !data/es_1m/.gitkeep
+data/es_1m/
+data/nq_1m/
