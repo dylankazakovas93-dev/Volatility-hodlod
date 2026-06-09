@@ -34,8 +34,8 @@ SL_CAP = 200.0
 RR = 1.0
 BE_BARS = 60
 
-# 2019 is the new OOS year; 2022 & 2020 were the prior OOS years.
-OOS_YEARS = {2019, 2020, 2022}
+# OOS years never used to pick the config: 2018 & 2019 (newest), 2020, 2022.
+OOS_YEARS = {2018, 2019, 2020, 2022}
 
 
 # ── session / entry helpers (identical to nq_reconcile_configs.py) ──────────────
