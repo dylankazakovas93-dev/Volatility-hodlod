@@ -10,3 +10,7 @@ data/es_1m/*
 !data/es_1m/.gitkeep
 data/es_1m/
 data/nq_1m/
+
+# handoff bundles (large data, delivered out-of-band)
+nq_handoff/
+nq_handoff.tar.gz
