@@ -64,3 +64,34 @@ already folded into the table above.
 
 **Check:** (a) price touched the level that minute, (b) high/low path hits
 target/stop where stated, (c) MAE/MFE match. If all reconcile, engine is faithful.
+
+---
+
+## Conditional-BE test (does instant-fire hurt? No — it's the edge)
+
+Tested BE60-cond: arm breakeven at min 60 ONLY if the trade is not in drawdown
+at the checkpoint (green going into minute 60); if underwater, keep the full
+original stop. Intuition: "don't scratch a temporarily-underwater trade."
+
+**The intuition is backwards for this strategy.** Trade state at the min-60
+checkpoint is highly predictive of the eventual Standard outcome:
+
+| state at min-60 | n | eventual win rate |
+|---|---|---|
+| underwater (red) | 950 | 20.1% (191 TP / 571 SL) |
+| in profit (green) | 891 | 65.2% (581 TP / 163 SL) |
+
+Being underwater at minute 60 => only 1-in-5 recover. Scratching them flat
+(instant BE) avoids 571 full stops for the cost of 191 given-up wins.
+
+Ranking (2018-2026, SAL-A for BE variants):
+
+| variant | net | PF | maxDD | streak | 2019 OOS |
+|---|---|---|---|---|---|
+| Standard | 17,843 | 1.615 | -814.8 | 8 | +105.8 |
+| **BE60 instant** | **19,979** | **2.983** | **-516.5** | **4** | **+217.9** |
+| BE60-cond (arm-if-green) | 15,079 | 1.631 | -682.7 | 6 | **-47.3** |
+
+Conditional is the WORST — negative in 2019. It protects winners (which win
+anyway) and lets losers run. Instant BE60 wins *because* it fires when
+underwater. The "instant fire even if in DD" behaviour IS the edge, not a flaw.
