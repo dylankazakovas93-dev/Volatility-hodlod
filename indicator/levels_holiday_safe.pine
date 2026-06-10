@@ -81,32 +81,31 @@ if newRTH
     cashOpen := open
 
 // ═══════════════════════════════════════════════════════════════
-// VIX-IMPLIED DAILY SIGMA   (HOLIDAY-SAFE PRIOR-DAY VOL CLOSE)
+// VIX-IMPLIED DAILY SIGMA   (holiday-safe, non-repainting)
 // cashOpen × (VIX/100) / √252 = 1-day 1σ expected move
 //
-// FIX vs original `request.security(volSym, "D", close[1], …)`:
-//   On a US market holiday the futures chart prints bars but CBOE:VXN/VIX
-//   do NOT (the cash market is shut), so the index's daily series has a gap.
-//   The internal `close[1]` then offsets off the index's OWN bar index and
-//   lands one settled close too far back (it returned Thu instead of Fri on
-//   the Mon Memorial Day session — a ~1.7 VXN-pt / ~14 NQ-pt level shift).
-//
-//   Instead we read the *current* daily vol close (no internal offset, so it
-//   can't misalign across the index calendar) and lag it locally by one RTH
-//   session using the chart's own (24h futures) calendar. On a holiday the
-//   index simply hasn't printed, so the last real settled close is carried
-//   forward correctly.
+// Prior-SESSION settled vol close. Read the index daily close + that daily
+// bar's open time, and only ever accept a close whose day is strictly before
+// today (New York). Today's still-developing bar is ignored, so the level
+// never repaints / drifts on scroll. On a cash-market holiday the index never
+// prints, so the last real settled close (e.g. Friday on Memorial-Day Monday)
+// carries forward instead of `close[1]` skipping back an extra settled day.
 // ═══════════════════════════════════════════════════════════════
-vixDailyNow = request.security(
+volDayClose = request.security(
      resolvedVolSym, "D", close,
      lookahead=barmerge.lookahead_off)
+volDayTime  = request.security(
+     resolvedVolSym, "D", time,
+     lookahead=barmerge.lookahead_off)
 
-// Snapshot at each new RTH: the value on the bar BEFORE this session opened is
-// the prior session's last settled vol print (index isn't trading pre-open),
-// and it stays put through holidays.
+todayMidnightNY = timestamp("America/New_York",
+     year(time, "America/New_York"),
+     month(time, "America/New_York"),
+     dayofmonth(time, "America/New_York"), 0, 0)
+
 var float vixClose = na
-if newRTH
-    vixClose := vixDailyNow[1]
+if not na(volDayTime) and volDayTime < todayMidnightNY
+    vixClose := volDayClose
 
 sigmaDay =
      not na(vixClose) and not na(cashOpen) ?
