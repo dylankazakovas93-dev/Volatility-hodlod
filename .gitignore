@@ -14,3 +14,6 @@ data/nq_1m/
 # handoff bundles (large data, delivered out-of-band)
 nq_handoff/
 nq_handoff.tar.gz
+nq_handoff_lite.tar.gz
+nq_handoff_lite.zip
+nq_bars_2018_2026_1m.csv.gz
