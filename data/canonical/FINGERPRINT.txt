@@ -1,0 +1,17 @@
+NQ LOCKED BASELINE -- canonical fingerprint
+config: cond@45, lineDays=20, BE_bar=45, cap=min(1.5*prev_1h_range,200), TP=SL=cap, SAL on first real loss
+entry window: touches 19:00-11:00 ET count; 11:00-15:00 skipped
+
+trades = 1256
+net_pts = 15665
+PF = 1.678
+TP = 487
+SL = 342
+BE = 316
+cutoff = 111
+raw_pre_sal = 1841
+
+bars_file = nq_continuous_2018_2026_1m.csv
+bars_rows = 2964655
+bars_span = 2018-01-01 18:00:00-05:00 -> 2026-06-07 19:59:00-04:00
+vxn_file  = vxn_daily_2018_2026.csv
