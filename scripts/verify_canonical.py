@@ -25,7 +25,10 @@ FINGERPRINT = {
     "trades": 1256, "net_pts": 15665, "PF": 1.678,
     "TP": 487, "SL": 342, "BE": 316, "cutoff": 111,
     "raw_pre_sal": 1841,
-    "bars_rows": None,   # filled at first run below; printed for cross-check
+    "bars_rows": 2964655,
+    "bars_start": "2018-01-01 18:00:00-05:00",
+    "bars_end": "2026-06-07 19:59:00-04:00",
+    "vxn_file": "vxn_daily_2018_2026.csv",
 }
 LINE_DAYS, BE_BAR, SL_CAP = 20, 45, 200.0
 ENTRY_WINDOW = "touches 19:00-11:00 ET count; 11:00-15:00 skipped"
@@ -53,6 +56,10 @@ def main():
         "TP": int(ex.get("TP", 0)), "SL": int(ex.get("SL", 0)),
         "BE": int(ex.get("BE", 0)), "cutoff": int(ex.get("cutoff", 0)),
         "raw_pre_sal": len(raw),
+        "bars_rows": len(bars),
+        "bars_start": str(bars.index[0]),
+        "bars_end": str(bars.index[-1]),
+        "vxn_file": os.path.basename(args.vxn),
     }
 
     print("=== DATA PROVENANCE (the thing that drifted) ===")
