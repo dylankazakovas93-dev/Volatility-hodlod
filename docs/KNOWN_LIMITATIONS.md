@@ -3,11 +3,15 @@
 ## Data provenance
 
 See `docs/DATA_PIPELINE.md` in full. Summary: the canonical NQ file is
-hash-verified and every strategy result is reproducible from it, but the
-exact raw-Databento-to-canonical construction procedure (roll-selection
-algorithm, raw filenames, exact schema) is **not fully recoverable** from
-what is available in this handoff. Classification:
-`CANONICAL_FILE_VERIFIED_BUT_RAW_CONSTRUCTION_PARTIALLY_UNKNOWN`.
+hash-verified, and the raw-Databento-to-canonical construction procedure
+is now fully resolved and verified against the raw Databento archives
+(query: `GLBX.MDP3` / `ohlcv-1m` / `NQ.FUT` parent symbology; roll rule:
+highest-volume standard contract per UTC calendar day). Verified
+row-for-row across all 2,964,655 rows with zero mismatches. Classification:
+`FULLY_REPRODUCIBLE_FROM_RAW_DATABENTO`. The one caveat: the roll-selection
+rule uses each day's own full-day volume total (not strictly pre-day
+information) — see `docs/DATA_PIPELINE.md` §"What remains genuinely
+unresolved" for the precise causality caveat.
 
 ## VXN source
 

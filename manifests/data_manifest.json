@@ -10,7 +10,10 @@
     "roll_days_flagged": 33,
     "adjustment_method": "unadjusted -- verified real price jump at every roll boundary, not ratio- or difference-adjusted",
     "zero_volume_rows": 0,
-    "provenance_classification": "CANONICAL_FILE_VERIFIED_BUT_RAW_CONSTRUCTION_PARTIALLY_UNKNOWN",
+    "provenance_classification": "FULLY_REPRODUCIBLE_FROM_RAW_DATABENTO",
+    "raw_query": {"dataset": "GLBX.MDP3", "schema": "ohlcv-1m", "symbols": ["NQ.FUT"], "stype_in": "parent"},
+    "roll_rule": "highest-volume standard quarterly contract (NQ[HMUZ]\\d) per UTC calendar day",
+    "verified_against_raw": "all 2,964,655 rows matched exactly (contract, open, high, low, close, roll_day) rebuilding from 5 raw Databento archives via scripts/build_nq_continuous.py",
     "see": "docs/DATA_PIPELINE.md"
   },
   "vxn_daily": {

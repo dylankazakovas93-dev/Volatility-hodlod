@@ -28,12 +28,14 @@ about the source data. Short version: the canonical NQ bars file
 (`data/nq_1m/nq_continuous_2018_2026_1m.csv`, hash-verified, 2,964,655
 rows) is **not** committed in this repo (211 MB, gitignored — see
 `data/README.md` for how to obtain it). The VXN daily file **is**
-committed. The exact raw-Databento-to-canonical construction procedure is
-**partially unknown** — classification:
-`CANONICAL_FILE_VERIFIED_BUT_RAW_CONSTRUCTION_PARTIALLY_UNKNOWN`. Every
-result in this handoff is reproducible *from* the canonical file; the raw
-multi-contract source data used to *build* that file is not available to
-re-derive it from scratch.
+committed. The raw-Databento-to-canonical construction procedure is now
+**fully resolved and verified** — classification:
+`FULLY_REPRODUCIBLE_FROM_RAW_DATABENTO`. Raw query: `GLBX.MDP3` /
+`ohlcv-1m` / `NQ.FUT` (parent symbology). Roll rule: highest-volume standard
+contract per UTC calendar day (`scripts/build_nq_continuous.py`), verified
+to reproduce the canonical file exactly across all 2,964,655 rows with zero
+mismatches. The only remaining unresolved item is the VXN file's exact
+retrieval pipeline.
 
 ## What the frozen config is
 
