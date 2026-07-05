@@ -1,0 +1,969 @@
+{
+  "git_sha": "4781a9cfce9d9f4ac5ba48107035cc86482509dc",
+  "data_file_hashes": {
+    "bars": "3d0228fcc17a40933d4fdc3983a8153e5bb6445ed9e743919b3eb5c516e53880",
+    "vxn": "76cc072c941542183d8c82174fe4f552b0f140f9cb368c302ad51f651992dc4e"
+  },
+  "config_hash": "d0152525b5e183ba8952c7d0846d28fac8723d3a6a446c0beba867dcffa51829",
+  "output_hashes": {
+    "nq_physical_first_touches.csv": "5702e6facdaf1f20346f6847977c9e451c439850d97fd2cde955eb62ca3f93cd",
+    "nq_eligible_1841.csv": "610e3b60f3bcd86b8caa23f484f0dde1e4d576ef84bdd6f3ff0a2ce9e6e1d416",
+    "nq_strict_executed.csv": "b7f19e968cb829362a98fc21dd83538573431a23eab14be4aac0c50def125e48",
+    "nq_strict_skipped.csv": "e46edd10d1fd722e2d8affb68820d4a64d3368b9345bd149209407fd45ab47ea",
+    "nq_strict_yearly.csv": "adca71291b2df18c1389bbbcbe5b94bab5795ca40a5f770c2b274c035db56015",
+    "nq_edge_case_sensitivities.csv": "b7c03665ac40ec6eb143a3e992107b5d99b17ffbb1f2381c5d770ee8191ff920"
+  },
+  "gate_1841": {
+    "status": "PASS",
+    "count": 1841
+  },
+  "original_optimistic": {
+    "trades": 1256,
+    "net_pts": 15664.99,
+    "PF": 1.6779,
+    "TP": 487,
+    "SL": 342,
+    "BE": 316,
+    "cutoff": 111
+  },
+  "primary_conservative": {
+    "total_physical_touches": 3486,
+    "executed": 1107,
+    "skipped_no_anchor": 219,
+    "skipped_blocked_time": 968,
+    "skipped_no_cutoff": 458,
+    "skipped_SAL": 318,
+    "skipped_position_open": 315,
+    "skipped_same_bar_reentry": 7,
+    "skipped_simultaneous_collision": 94,
+    "simultaneous_groups": 77,
+    "gap_through_count": 8,
+    "gap_through_pnl_delta": 146.625,
+    "TP": 394,
+    "SL": 333,
+    "BE": 281,
+    "cutoff": 99,
+    "net_pts": 6648.17,
+    "PF": 1.2924,
+    "win_rate": 0.3803,
+    "twr": 0.542,
+    "avg_trade": 6.006,
+    "max_drawdown": -1290.29,
+    "max_loss_streak": 6,
+    "yearly": [
+      {
+        "year": 2018,
+        "n": 130,
+        "net_pts": 104.49,
+        "PF": 1.0771,
+        "max_drawdown": -369.11,
+        "avg_trade": 0.804
+      },
+      {
+        "year": 2019,
+        "n": 122,
+        "net_pts": -240.86,
+        "PF": 0.8044,
+        "max_drawdown": -468.93,
+        "avg_trade": -1.974
+      },
+      {
+        "year": 2020,
+        "n": 138,
+        "net_pts": 747.27,
+        "PF": 1.2645,
+        "max_drawdown": -632.62,
+        "avg_trade": 5.415
+      },
+      {
+        "year": 2021,
+        "n": 130,
+        "net_pts": 718.39,
+        "PF": 1.2797,
+        "max_drawdown": -466.11,
+        "avg_trade": 5.526
+      },
+      {
+        "year": 2022,
+        "n": 132,
+        "net_pts": 1792.16,
+        "PF": 1.5893,
+        "max_drawdown": -384.5,
+        "avg_trade": 13.577
+      },
+      {
+        "year": 2023,
+        "n": 125,
+        "net_pts": -96.16,
+        "PF": 0.9663,
+        "max_drawdown": -756.99,
+        "avg_trade": -0.769
+      },
+      {
+        "year": 2024,
+        "n": 121,
+        "net_pts": -176.62,
+        "PF": 0.9504,
+        "max_drawdown": -604.43,
+        "avg_trade": -1.46
+      },
+      {
+        "year": 2025,
+        "n": 142,
+        "net_pts": 1055.95,
+        "PF": 1.265,
+        "max_drawdown": -617.85,
+        "avg_trade": 7.436
+      },
+      {
+        "year": 2026,
+        "n": 67,
+        "net_pts": 2743.56,
+        "PF": 3.0945,
+        "max_drawdown": -312.38,
+        "avg_trade": 40.949
+      }
+    ],
+    "negative_years": [
+      2019,
+      2023,
+      2024
+    ],
+    "skipped_creation_bar": 0
+  },
+  "sensitivities": {
+    "B_skip_touch_bar_original": {
+      "total_physical_touches": 3486,
+      "executed": 1108,
+      "skipped_no_anchor": 219,
+      "skipped_blocked_time": 968,
+      "skipped_no_cutoff": 458,
+      "skipped_SAL": 317,
+      "skipped_position_open": 315,
+      "skipped_same_bar_reentry": 7,
+      "skipped_simultaneous_collision": 94,
+      "simultaneous_groups": 77,
+      "gap_through_count": 8,
+      "gap_through_pnl_delta": 146.625,
+      "TP": 396,
+      "SL": 332,
+      "BE": 281,
+      "cutoff": 99,
+      "net_pts": 6794.04,
+      "PF": 1.2995,
+      "win_rate": 0.3818,
+      "twr": 0.544,
+      "avg_trade": 6.132,
+      "max_drawdown": -1290.29,
+      "max_loss_streak": 6,
+      "yearly": [
+        {
+          "year": 2018,
+          "n": 130,
+          "net_pts": 104.49,
+          "PF": 1.0771,
+          "max_drawdown": -369.11,
+          "avg_trade": 0.804
+        },
+        {
+          "year": 2019,
+          "n": 122,
+          "net_pts": -240.86,
+          "PF": 0.8044,
+          "max_drawdown": -468.93,
+          "avg_trade": -1.974
+        },
+        {
+          "year": 2020,
+          "n": 138,
+          "net_pts": 747.27,
+          "PF": 1.2645,
+          "max_drawdown": -632.62,
+          "avg_trade": 5.415
+        },
+        {
+          "year": 2021,
+          "n": 130,
+          "net_pts": 718.39,
+          "PF": 1.2797,
+          "max_drawdown": -466.11,
+          "avg_trade": 5.526
+        },
+        {
+          "year": 2022,
+          "n": 133,
+          "net_pts": 1833.04,
+          "PF": 1.6028,
+          "max_drawdown": -384.5,
+          "avg_trade": 13.782
+        },
+        {
+          "year": 2023,
+          "n": 125,
+          "net_pts": -96.16,
+          "PF": 0.9663,
+          "max_drawdown": -756.99,
+          "avg_trade": -0.769
+        },
+        {
+          "year": 2024,
+          "n": 121,
+          "net_pts": -176.62,
+          "PF": 0.9504,
+          "max_drawdown": -604.43,
+          "avg_trade": -1.46
+        },
+        {
+          "year": 2025,
+          "n": 142,
+          "net_pts": 1160.95,
+          "PF": 1.2952,
+          "max_drawdown": -617.85,
+          "avg_trade": 8.176
+        },
+        {
+          "year": 2026,
+          "n": 67,
+          "net_pts": 2743.56,
+          "PF": 3.0945,
+          "max_drawdown": -312.38,
+          "avg_trade": 40.949
+        }
+      ],
+      "negative_years": [
+        2019,
+        2023,
+        2024
+      ]
+    },
+    "C_no_gap_adjustment": {
+      "total_physical_touches": 3486,
+      "executed": 1104,
+      "skipped_no_anchor": 219,
+      "skipped_blocked_time": 968,
+      "skipped_no_cutoff": 458,
+      "skipped_SAL": 323,
+      "skipped_position_open": 313,
+      "skipped_same_bar_reentry": 7,
+      "skipped_simultaneous_collision": 94,
+      "simultaneous_groups": 77,
+      "gap_through_count": 8,
+      "gap_through_pnl_delta": 0.0,
+      "TP": 389,
+      "SL": 337,
+      "BE": 279,
+      "cutoff": 99,
+      "net_pts": 6421.29,
+      "PF": 1.2809,
+      "win_rate": 0.3768,
+      "twr": 0.5358,
+      "avg_trade": 5.816,
+      "max_drawdown": -1468.28,
+      "max_loss_streak": 6,
+      "yearly": [
+        {
+          "year": 2018,
+          "n": 128,
+          "net_pts": 49.37,
+          "PF": 1.0358,
+          "max_drawdown": -369.11,
+          "avg_trade": 0.386
+        },
+        {
+          "year": 2019,
+          "n": 122,
+          "net_pts": -240.86,
+          "PF": 0.8044,
+          "max_drawdown": -468.93,
+          "avg_trade": -1.974
+        },
+        {
+          "year": 2020,
+          "n": 138,
+          "net_pts": 747.27,
+          "PF": 1.2645,
+          "max_drawdown": -632.62,
+          "avg_trade": 5.415
+        },
+        {
+          "year": 2021,
+          "n": 130,
+          "net_pts": 718.39,
+          "PF": 1.2797,
+          "max_drawdown": -466.11,
+          "avg_trade": 5.526
+        },
+        {
+          "year": 2022,
+          "n": 132,
+          "net_pts": 1792.16,
+          "PF": 1.5893,
+          "max_drawdown": -384.5,
+          "avg_trade": 13.577
+        },
+        {
+          "year": 2023,
+          "n": 124,
+          "net_pts": -239.41,
+          "PF": 0.9169,
+          "max_drawdown": -851.86,
+          "avg_trade": -1.931
+        },
+        {
+          "year": 2024,
+          "n": 121,
+          "net_pts": -162.37,
+          "PF": 0.9548,
+          "max_drawdown": -654.66,
+          "avg_trade": -1.342
+        },
+        {
+          "year": 2025,
+          "n": 142,
+          "net_pts": 1013.2,
+          "PF": 1.2515,
+          "max_drawdown": -617.85,
+          "avg_trade": 7.135
+        },
+        {
+          "year": 2026,
+          "n": 67,
+          "net_pts": 2743.56,
+          "PF": 3.0945,
+          "max_drawdown": -312.38,
+          "avg_trade": 40.949
+        }
+      ],
+      "negative_years": [
+        2019,
+        2023,
+        2024
+      ]
+    },
+    "D_allow_samebar_reentry": {
+      "total_physical_touches": 3486,
+      "executed": 1109,
+      "skipped_no_anchor": 219,
+      "skipped_blocked_time": 968,
+      "skipped_no_cutoff": 458,
+      "skipped_SAL": 318,
+      "skipped_position_open": 315,
+      "skipped_same_bar_reentry": 0,
+      "skipped_simultaneous_collision": 99,
+      "simultaneous_groups": 78,
+      "gap_through_count": 8,
+      "gap_through_pnl_delta": 146.625,
+      "TP": 395,
+      "SL": 334,
+      "BE": 281,
+      "cutoff": 99,
+      "net_pts": 6629.42,
+      "PF": 1.2911,
+      "win_rate": 0.3805,
+      "twr": 0.5418,
+      "avg_trade": 5.978,
+      "max_drawdown": -1290.29,
+      "max_loss_streak": 6,
+      "yearly": [
+        {
+          "year": 2018,
+          "n": 130,
+          "net_pts": 104.49,
+          "PF": 1.0771,
+          "max_drawdown": -369.11,
+          "avg_trade": 0.804
+        },
+        {
+          "year": 2019,
+          "n": 123,
+          "net_pts": -224.73,
+          "PF": 0.8175,
+          "max_drawdown": -468.93,
+          "avg_trade": -1.827
+        },
+        {
+          "year": 2020,
+          "n": 138,
+          "net_pts": 747.27,
+          "PF": 1.2645,
+          "max_drawdown": -632.62,
+          "avg_trade": 5.415
+        },
+        {
+          "year": 2021,
+          "n": 130,
+          "net_pts": 718.39,
+          "PF": 1.2797,
+          "max_drawdown": -466.11,
+          "avg_trade": 5.526
+        },
+        {
+          "year": 2022,
+          "n": 132,
+          "net_pts": 1792.16,
+          "PF": 1.5893,
+          "max_drawdown": -384.5,
+          "avg_trade": 13.577
+        },
+        {
+          "year": 2023,
+          "n": 125,
+          "net_pts": -96.16,
+          "PF": 0.9663,
+          "max_drawdown": -756.99,
+          "avg_trade": -0.769
+        },
+        {
+          "year": 2024,
+          "n": 121,
+          "net_pts": -176.62,
+          "PF": 0.9504,
+          "max_drawdown": -604.43,
+          "avg_trade": -1.46
+        },
+        {
+          "year": 2025,
+          "n": 143,
+          "net_pts": 1021.07,
+          "PF": 1.254,
+          "max_drawdown": -617.85,
+          "avg_trade": 7.14
+        },
+        {
+          "year": 2026,
+          "n": 67,
+          "net_pts": 2743.56,
+          "PF": 3.0945,
+          "max_drawdown": -312.38,
+          "avg_trade": 40.949
+        }
+      ],
+      "negative_years": [
+        2019,
+        2023,
+        2024
+      ]
+    },
+    "E_order_nearest": {
+      "total_physical_touches": 3486,
+      "executed": 1106,
+      "skipped_no_anchor": 219,
+      "skipped_blocked_time": 968,
+      "skipped_no_cutoff": 458,
+      "skipped_SAL": 322,
+      "skipped_position_open": 312,
+      "skipped_same_bar_reentry": 7,
+      "skipped_simultaneous_collision": 94,
+      "simultaneous_groups": 77,
+      "gap_through_count": 8,
+      "gap_through_pnl_delta": 339.0,
+      "TP": 393,
+      "SL": 334,
+      "BE": 280,
+      "cutoff": 99,
+      "net_pts": 6540.55,
+      "PF": 1.287,
+      "win_rate": 0.3797,
+      "twr": 0.5406,
+      "avg_trade": 5.914,
+      "max_drawdown": -1296.72,
+      "max_loss_streak": 6,
+      "yearly": [
+        {
+          "year": 2018,
+          "n": 130,
+          "net_pts": 100.06,
+          "PF": 1.0735,
+          "max_drawdown": -373.54,
+          "avg_trade": 0.77
+        },
+        {
+          "year": 2019,
+          "n": 122,
+          "net_pts": -240.86,
+          "PF": 0.8044,
+          "max_drawdown": -468.93,
+          "avg_trade": -1.974
+        },
+        {
+          "year": 2020,
+          "n": 138,
+          "net_pts": 747.27,
+          "PF": 1.2645,
+          "max_drawdown": -632.62,
+          "avg_trade": 5.415
+        },
+        {
+          "year": 2021,
+          "n": 130,
+          "net_pts": 718.39,
+          "PF": 1.2797,
+          "max_drawdown": -466.11,
+          "avg_trade": 5.526
+        },
+        {
+          "year": 2022,
+          "n": 131,
+          "net_pts": 1695.41,
+          "PF": 1.549,
+          "max_drawdown": -384.5,
+          "avg_trade": 12.942
+        },
+        {
+          "year": 2023,
+          "n": 125,
+          "net_pts": -96.16,
+          "PF": 0.9663,
+          "max_drawdown": -756.99,
+          "avg_trade": -0.769
+        },
+        {
+          "year": 2024,
+          "n": 121,
+          "net_pts": -183.05,
+          "PF": 0.9486,
+          "max_drawdown": -604.43,
+          "avg_trade": -1.513
+        },
+        {
+          "year": 2025,
+          "n": 142,
+          "net_pts": 1055.95,
+          "PF": 1.265,
+          "max_drawdown": -617.85,
+          "avg_trade": 7.436
+        },
+        {
+          "year": 2026,
+          "n": 67,
+          "net_pts": 2743.56,
+          "PF": 3.0945,
+          "max_drawdown": -312.38,
+          "avg_trade": 40.949
+        }
+      ],
+      "negative_years": [
+        2019,
+        2023,
+        2024
+      ]
+    },
+    "E_order_farthest": {
+      "total_physical_touches": 3486,
+      "executed": 1107,
+      "skipped_no_anchor": 219,
+      "skipped_blocked_time": 968,
+      "skipped_no_cutoff": 458,
+      "skipped_SAL": 315,
+      "skipped_position_open": 318,
+      "skipped_same_bar_reentry": 7,
+      "skipped_simultaneous_collision": 94,
+      "simultaneous_groups": 77,
+      "gap_through_count": 7,
+      "gap_through_pnl_delta": 146.625,
+      "TP": 398,
+      "SL": 330,
+      "BE": 280,
+      "cutoff": 99,
+      "net_pts": 7290.65,
+      "PF": 1.3251,
+      "win_rate": 0.3839,
+      "twr": 0.5467,
+      "avg_trade": 6.586,
+      "max_drawdown": -1289.15,
+      "max_loss_streak": 6,
+      "yearly": [
+        {
+          "year": 2018,
+          "n": 130,
+          "net_pts": 141.78,
+          "PF": 1.1055,
+          "max_drawdown": -331.82,
+          "avg_trade": 1.091
+        },
+        {
+          "year": 2019,
+          "n": 122,
+          "net_pts": -235.3,
+          "PF": 0.8089,
+          "max_drawdown": -468.93,
+          "avg_trade": -1.929
+        },
+        {
+          "year": 2020,
+          "n": 138,
+          "net_pts": 747.27,
+          "PF": 1.2645,
+          "max_drawdown": -632.62,
+          "avg_trade": 5.415
+        },
+        {
+          "year": 2021,
+          "n": 130,
+          "net_pts": 718.39,
+          "PF": 1.2797,
+          "max_drawdown": -466.11,
+          "avg_trade": 5.526
+        },
+        {
+          "year": 2022,
+          "n": 132,
+          "net_pts": 1792.16,
+          "PF": 1.5893,
+          "max_drawdown": -384.5,
+          "avg_trade": 13.577
+        },
+        {
+          "year": 2023,
+          "n": 125,
+          "net_pts": -95.03,
+          "PF": 0.9667,
+          "max_drawdown": -755.85,
+          "avg_trade": -0.76
+        },
+        {
+          "year": 2024,
+          "n": 121,
+          "net_pts": -176.62,
+          "PF": 0.9504,
+          "max_drawdown": -604.43,
+          "avg_trade": -1.46
+        },
+        {
+          "year": 2025,
+          "n": 142,
+          "net_pts": 1654.45,
+          "PF": 1.4489,
+          "max_drawdown": -484.93,
+          "avg_trade": 11.651
+        },
+        {
+          "year": 2026,
+          "n": 67,
+          "net_pts": 2743.56,
+          "PF": 3.0945,
+          "max_drawdown": -312.38,
+          "avg_trade": 40.949
+        }
+      ],
+      "negative_years": [
+        2019,
+        2023,
+        2024
+      ]
+    },
+    "E_order_worst": {
+      "total_physical_touches": 3486,
+      "executed": 1106,
+      "skipped_no_anchor": 219,
+      "skipped_blocked_time": 968,
+      "skipped_no_cutoff": 458,
+      "skipped_SAL": 319,
+      "skipped_position_open": 315,
+      "skipped_same_bar_reentry": 7,
+      "skipped_simultaneous_collision": 94,
+      "simultaneous_groups": 77,
+      "gap_through_count": 8,
+      "gap_through_pnl_delta": 146.625,
+      "TP": 393,
+      "SL": 334,
+      "BE": 280,
+      "cutoff": 99,
+      "net_pts": 6540.55,
+      "PF": 1.287,
+      "win_rate": 0.3797,
+      "twr": 0.5406,
+      "avg_trade": 5.914,
+      "max_drawdown": -1296.72,
+      "max_loss_streak": 6,
+      "yearly": [
+        {
+          "year": 2018,
+          "n": 130,
+          "net_pts": 100.06,
+          "PF": 1.0735,
+          "max_drawdown": -373.54,
+          "avg_trade": 0.77
+        },
+        {
+          "year": 2019,
+          "n": 122,
+          "net_pts": -240.86,
+          "PF": 0.8044,
+          "max_drawdown": -468.93,
+          "avg_trade": -1.974
+        },
+        {
+          "year": 2020,
+          "n": 138,
+          "net_pts": 747.27,
+          "PF": 1.2645,
+          "max_drawdown": -632.62,
+          "avg_trade": 5.415
+        },
+        {
+          "year": 2021,
+          "n": 130,
+          "net_pts": 718.39,
+          "PF": 1.2797,
+          "max_drawdown": -466.11,
+          "avg_trade": 5.526
+        },
+        {
+          "year": 2022,
+          "n": 131,
+          "net_pts": 1695.41,
+          "PF": 1.549,
+          "max_drawdown": -384.5,
+          "avg_trade": 12.942
+        },
+        {
+          "year": 2023,
+          "n": 125,
+          "net_pts": -96.16,
+          "PF": 0.9663,
+          "max_drawdown": -756.99,
+          "avg_trade": -0.769
+        },
+        {
+          "year": 2024,
+          "n": 121,
+          "net_pts": -183.05,
+          "PF": 0.9486,
+          "max_drawdown": -604.43,
+          "avg_trade": -1.513
+        },
+        {
+          "year": 2025,
+          "n": 142,
+          "net_pts": 1055.95,
+          "PF": 1.265,
+          "max_drawdown": -617.85,
+          "avg_trade": 7.436
+        },
+        {
+          "year": 2026,
+          "n": 67,
+          "net_pts": 2743.56,
+          "PF": 3.0945,
+          "max_drawdown": -312.38,
+          "avg_trade": 40.949
+        }
+      ],
+      "negative_years": [
+        2019,
+        2023,
+        2024
+      ]
+    },
+    "A_include_creation_bar": {
+      "total_physical_touches": 3486,
+      "executed": 1107,
+      "skipped_no_anchor": 219,
+      "skipped_blocked_time": 968,
+      "skipped_no_cutoff": 458,
+      "skipped_SAL": 318,
+      "skipped_position_open": 315,
+      "skipped_same_bar_reentry": 7,
+      "skipped_simultaneous_collision": 94,
+      "simultaneous_groups": 77,
+      "gap_through_count": 8,
+      "gap_through_pnl_delta": 146.625,
+      "TP": 394,
+      "SL": 333,
+      "BE": 281,
+      "cutoff": 99,
+      "net_pts": 6648.17,
+      "PF": 1.2924,
+      "win_rate": 0.3803,
+      "twr": 0.542,
+      "avg_trade": 6.006,
+      "max_drawdown": -1290.29,
+      "max_loss_streak": 6,
+      "yearly": [
+        {
+          "year": 2018,
+          "n": 130,
+          "net_pts": 104.49,
+          "PF": 1.0771,
+          "max_drawdown": -369.11,
+          "avg_trade": 0.804
+        },
+        {
+          "year": 2019,
+          "n": 122,
+          "net_pts": -240.86,
+          "PF": 0.8044,
+          "max_drawdown": -468.93,
+          "avg_trade": -1.974
+        },
+        {
+          "year": 2020,
+          "n": 138,
+          "net_pts": 747.27,
+          "PF": 1.2645,
+          "max_drawdown": -632.62,
+          "avg_trade": 5.415
+        },
+        {
+          "year": 2021,
+          "n": 130,
+          "net_pts": 718.39,
+          "PF": 1.2797,
+          "max_drawdown": -466.11,
+          "avg_trade": 5.526
+        },
+        {
+          "year": 2022,
+          "n": 132,
+          "net_pts": 1792.16,
+          "PF": 1.5893,
+          "max_drawdown": -384.5,
+          "avg_trade": 13.577
+        },
+        {
+          "year": 2023,
+          "n": 125,
+          "net_pts": -96.16,
+          "PF": 0.9663,
+          "max_drawdown": -756.99,
+          "avg_trade": -0.769
+        },
+        {
+          "year": 2024,
+          "n": 121,
+          "net_pts": -176.62,
+          "PF": 0.9504,
+          "max_drawdown": -604.43,
+          "avg_trade": -1.46
+        },
+        {
+          "year": 2025,
+          "n": 142,
+          "net_pts": 1055.95,
+          "PF": 1.265,
+          "max_drawdown": -617.85,
+          "avg_trade": 7.436
+        },
+        {
+          "year": 2026,
+          "n": 67,
+          "net_pts": 2743.56,
+          "PF": 3.0945,
+          "max_drawdown": -312.38,
+          "avg_trade": 40.949
+        }
+      ],
+      "negative_years": [
+        2019,
+        2023,
+        2024
+      ]
+    },
+    "F_include_expiry_timestamp": {
+      "total_physical_touches": 3487,
+      "executed": 1107,
+      "skipped_no_anchor": 219,
+      "skipped_blocked_time": 968,
+      "skipped_no_cutoff": 458,
+      "skipped_SAL": 319,
+      "skipped_position_open": 315,
+      "skipped_same_bar_reentry": 7,
+      "skipped_simultaneous_collision": 94,
+      "simultaneous_groups": 77,
+      "gap_through_count": 8,
+      "gap_through_pnl_delta": 146.625,
+      "TP": 394,
+      "SL": 333,
+      "BE": 281,
+      "cutoff": 99,
+      "net_pts": 6648.17,
+      "PF": 1.2924,
+      "win_rate": 0.3803,
+      "twr": 0.542,
+      "avg_trade": 6.006,
+      "max_drawdown": -1290.29,
+      "max_loss_streak": 6,
+      "yearly": [
+        {
+          "year": 2018,
+          "n": 130,
+          "net_pts": 104.49,
+          "PF": 1.0771,
+          "max_drawdown": -369.11,
+          "avg_trade": 0.804
+        },
+        {
+          "year": 2019,
+          "n": 122,
+          "net_pts": -240.86,
+          "PF": 0.8044,
+          "max_drawdown": -468.93,
+          "avg_trade": -1.974
+        },
+        {
+          "year": 2020,
+          "n": 138,
+          "net_pts": 747.27,
+          "PF": 1.2645,
+          "max_drawdown": -632.62,
+          "avg_trade": 5.415
+        },
+        {
+          "year": 2021,
+          "n": 130,
+          "net_pts": 718.39,
+          "PF": 1.2797,
+          "max_drawdown": -466.11,
+          "avg_trade": 5.526
+        },
+        {
+          "year": 2022,
+          "n": 132,
+          "net_pts": 1792.16,
+          "PF": 1.5893,
+          "max_drawdown": -384.5,
+          "avg_trade": 13.577
+        },
+        {
+          "year": 2023,
+          "n": 125,
+          "net_pts": -96.16,
+          "PF": 0.9663,
+          "max_drawdown": -756.99,
+          "avg_trade": -0.769
+        },
+        {
+          "year": 2024,
+          "n": 121,
+          "net_pts": -176.62,
+          "PF": 0.9504,
+          "max_drawdown": -604.43,
+          "avg_trade": -1.46
+        },
+        {
+          "year": 2025,
+          "n": 142,
+          "net_pts": 1055.95,
+          "PF": 1.265,
+          "max_drawdown": -617.85,
+          "avg_trade": 7.436
+        },
+        {
+          "year": 2026,
+          "n": 67,
+          "net_pts": 2743.56,
+          "PF": 3.0945,
+          "max_drawdown": -312.38,
+          "avg_trade": 40.949
+        }
+      ],
+      "negative_years": [
+        2019,
+        2023,
+        2024
+      ]
+    }
+  },
+  "reproduction_command": "python3 scripts/reconcile_strict_one_position.py --bars data/nq_1m/nq_continuous_2018_2026_1m.csv --vxn data/vxn_daily_2018_2026.csv --out-dir outputs"
+}
