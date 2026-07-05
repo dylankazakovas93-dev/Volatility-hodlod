@@ -1,0 +1,5 @@
+held_out_year,selected_rule,train_pf,held_out_net,held_out_PF,held_out_n
+2018,garch_HIGH_only_3367,inf,29.13,1.1318,13
+2020,garch_exclude_LOW_3367,inf,342.84,1.326,42
+2023,garch_exclude_LOW_3367,inf,641.73,1.6244,54
+2026,garch_exclude_LOW_3367,inf,547.99,2.1439,27

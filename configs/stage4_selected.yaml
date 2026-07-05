@@ -1,0 +1,40 @@
+# Stage 4 result: REGIME_FILTER_FOUND
+status: REGIME_FILTER_FOUND
+
+control:
+  description: "profit_lock_0.75R, E-F window, no regime filter"
+  trades: 249
+  net_pts: 1968.98
+  PF: 1.4192
+
+garch:
+  independently_passes: false
+  reason: "Passes Part C gate only at the 33/67 threshold (150 trades, PF 1.5157); fails at 25/75 (PF delta and drawdown both below threshold) and at 40/60 (only 137 pooled trades, below the 150 floor). Fails the 'neighboring settings do not collapse' robustness requirement."
+  best_candidate: garch_exclude_LOW_3367
+
+hmm:
+  independently_passes: true
+  passing_candidates:
+    - hmm2_HIGH_only
+    - hmm3_exclude_MID_VOL
+    - hmm3_HIGH_VOL_only
+
+selected_rule:
+  name: hmm3_HIGH_VOL_only
+  model: "3-state Gaussian HMM, diagonal covariance"
+  features: ["5min_log_return", "trailing_30min_realized_vol", "trailing_30min_trend"]
+  standardization: "causal, trailing-session mean/std (up to 120, min 20 sessions before current session)"
+  state_probabilities: "filtered (forward algorithm), never smoothed/Viterbi"
+  state_ordering: "ascending by fitted average realized-vol feature, never by P&L"
+  entry_rule: "permit entry only when the current filtered most-likely state is HIGH_VOL"
+  trades: 173
+  net_pts: 2118.51
+  PF: 1.6723
+  avg_R: 0.1693
+  max_dd_pts: -303.02
+  ex_2026_net_pts: 1226.57
+  ex_2026_PF: 1.4433
+
+combination_testing: "not applicable -- GARCH did not pass independently; per spec, only the passing single model (HMM) is retained"
+
+selection_rationale: "hmm3_HIGH_VOL_only wins on PF, avg_R, and max drawdown (the top 3 stated selection priorities) among the three Part-C-passing HMM candidates; hmm3_exclude_MID_VOL has higher trade count and ex-2026 net, hmm2_HIGH_only is simpler (2-state) -- both reported as close alternatives."

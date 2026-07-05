@@ -35,6 +35,9 @@ def main():
     control = cand_df[cand_df["candidate"] == "no_filter"].iloc[0]
     control_yearly = json.loads(control["yearly_json"])
 
+    MIN_TRAIN_TRADES_PER_YEAR = 15  # relaxed vs. the full-population 20, since
+    # this is a 3-of-4-year training subset, not the full development population
+
     rows = []
     for held_out in DEV_YEARS:
         train_years = [y for y in DEV_YEARS if y != held_out]
@@ -45,6 +48,10 @@ def main():
             yearly = json.loads(r["yearly_json"])
             train_rows = [yearly[str(y)] for y in train_years if str(y) in yearly]
             if len(train_rows) < len(train_years):
+                continue
+            # avoid tiny-sample flukes: require a minimum trade count in
+            # every training year, not just "highest training PF"
+            if any(x.get("n", 0) < MIN_TRAIN_TRADES_PER_YEAR for x in train_rows):
                 continue
             gains = sum(x["net_pts"] for x in train_rows if x["net_pts"] > 0)
             losses = sum(-x["net_pts"] for x in train_rows if x["net_pts"] < 0)
