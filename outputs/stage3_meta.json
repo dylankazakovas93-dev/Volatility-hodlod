@@ -1,0 +1,6 @@
+{
+  "research_commit": "061d557e03e9712743685c96dafbc8bdd54d7944",
+  "n_candidates": 23,
+  "output_sha256": "bbee962f2933e44a200079c64471f90f3e0f541a97f1c28c118e6cd72f6c25cb",
+  "reproduction_command": "python3 scripts/run_stage3_be_scratch.py --bars data/nq_1m/nq_continuous_2018_2026_1m.csv --out-dir outputs"
+}

@@ -1,0 +1,37 @@
+# Stage 3 result: three candidates pass the selection gate; no single
+# winner is forced -- see docs/STAGE3_BE_SCRATCH_REPORT.md section 5.
+status: MULTIPLE_QUALIFYING_CANDIDATES
+
+control:
+  trades: 247
+  net_pts: 2132.91
+  PF: 1.3836
+  max_dd_pts: -494.12
+
+qualifying_candidates:
+  - name: historical_BE45
+    description: "Exact historical BE45 semantics (bar-45-open check, same-bar activation)"
+    trades: 251
+    net_pts: 2041.29
+    PF: 1.4262
+    max_dd_pts: -408.87
+    dd_improvement_pct: 17.3
+  - name: exact_r_be_0.75R
+    description: "Move stop to entry when favourable move first reaches +0.75R (next-bar activation)"
+    trades: 249
+    net_pts: 1982.18
+    PF: 1.4220
+    max_dd_pts: -408.50
+    dd_improvement_pct: 17.3
+  - name: profit_lock_0.75R
+    description: "Move stop to entry+0.10R when favourable move first reaches +0.75R (next-bar activation)"
+    trades: 249
+    net_pts: 1968.98
+    PF: 1.4192
+    max_dd_pts: -380.27
+    dd_improvement_pct: 23.0
+    recommended: true
+    rationale: "Best drawdown improvement of the three at comparable net/PF cost; corroborated by exact_r_be_0.75R converging on the same 0.75R trigger under a different action rule."
+
+all_four_dev_years_profitable_for_all_three: true
+ex_2026_profitable_for_all_three: true
