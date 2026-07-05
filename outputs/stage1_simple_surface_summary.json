@@ -1,0 +1,8 @@
+{
+  "research_commit": "d112cdef2c43caef22aa544516a1c62fa0a2b2e5",
+  "n_candidates": 980,
+  "expected_n_candidates": 980,
+  "cost_pts": 1.0,
+  "output_sha256": "2e20911e6ad7fe5943d99be5bb4db6c4b3b8206c282c15965371de39bc9df793",
+  "reproduction_command": "python3 scripts/run_stage1_simple_surface.py --bars data/nq_1m/nq_continuous_2018_2026_1m.csv --out-dir outputs --cost 1.0"
+}
