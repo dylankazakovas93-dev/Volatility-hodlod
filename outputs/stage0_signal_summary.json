@@ -1,0 +1,16 @@
+{
+  "research_commit": "a375818056ca435df021d60b111f5f58b1f3551f",
+  "data_hashes": {
+    "bars": "9f427eb053b6c63e50f79baf666f239f851558d1558e706fc126cbe69f3a5af4",
+    "vxn": "76cc072c941542183d8c82174fe4f552b0f140f9cb368c302ad51f651992dc4e"
+  },
+  "total_level_sides": 4338,
+  "physical_touches": 3486,
+  "verified_baseline_physical_touches": 3486,
+  "reconciled": true,
+  "qualifying_signal_paths": 3331,
+  "excluded_gap": 137,
+  "excluded_liquidation_bar": 17,
+  "excluded_no_valid_path": 1,
+  "reproduction_command": "python3 scripts/build_signal_paths.py --bars data/nq_1m/nq_continuous_2018_2026_1m.csv --vxn data/vxn_daily_2018_2026.csv --out-dir outputs_stage0"
+}

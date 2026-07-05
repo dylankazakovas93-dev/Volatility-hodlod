@@ -1,0 +1,11 @@
+{
+  "research_commit": "a375818056ca435df021d60b111f5f58b1f3551f",
+  "n_signals": 3331,
+  "n_features": 23,
+  "feature_table_sha256": "7723ec126130bb7cbbe7d11d9aaca9a3c391c86191d7c956b10dad62c64508bd",
+  "rvol_clip_bounds_a_priori": [
+    0.1,
+    10.0
+  ],
+  "reproduction_command": "python3 scripts/build_preentry_features.py --bars data/nq_1m/nq_continuous_2018_2026_1m.csv --vxn data/vxn_daily_2018_2026.csv --signals outputs_stage0/stage0_signal_paths.csv --out-dir outputs_stage0"
+}

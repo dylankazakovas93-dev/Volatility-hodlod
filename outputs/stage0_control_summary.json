@@ -1,0 +1,75 @@
+{
+  "physical_touches": 3486,
+  "executed": 1393,
+  "skip_counts": {
+    "gap": 137,
+    "liquidation_bar": 17,
+    "no_valid_path": 1,
+    "position_open": 1938,
+    "same_bar_reentry": 0
+  },
+  "net_pts": 3334.9,
+  "PF": 1.0448,
+  "win_rate": 0.4853,
+  "max_drawdown": -4567.93,
+  "avg_trade": 2.394,
+  "yearly": [
+    {
+      "year": 2018,
+      "n": 168,
+      "net_pts": -387.47
+    },
+    {
+      "year": 2019,
+      "n": 156,
+      "net_pts": -33.74
+    },
+    {
+      "year": 2020,
+      "n": 172,
+      "net_pts": 1027.41
+    },
+    {
+      "year": 2021,
+      "n": 158,
+      "net_pts": 846.48
+    },
+    {
+      "year": 2022,
+      "n": 182,
+      "net_pts": -909.57
+    },
+    {
+      "year": 2023,
+      "n": 168,
+      "net_pts": 215.32
+    },
+    {
+      "year": 2024,
+      "n": 154,
+      "net_pts": -2360.61
+    },
+    {
+      "year": 2025,
+      "n": 166,
+      "net_pts": 2935.58
+    },
+    {
+      "year": 2026,
+      "n": 69,
+      "net_pts": 2001.5
+    }
+  ],
+  "negative_years": [
+    2018,
+    2019,
+    2022,
+    2024
+  ],
+  "research_commit": "a375818056ca435df021d60b111f5f58b1f3551f",
+  "data_hashes": {
+    "bars": "9f427eb053b6c63e50f79baf666f239f851558d1558e706fc126cbe69f3a5af4",
+    "vxn": "76cc072c941542183d8c82174fe4f552b0f140f9cb368c302ad51f651992dc4e"
+  },
+  "reproduction_command": "python3 scripts/run_stage0_control_replay.py --bars data/nq_1m/nq_continuous_2018_2026_1m.csv --vxn data/vxn_daily_2018_2026.csv --out-dir outputs_stage0"
+}
