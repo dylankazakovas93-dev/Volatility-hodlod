@@ -1,0 +1,11 @@
+{
+  "status": "STAGE1_FAIL",
+  "selected_formula": null,
+  "reason": "No preregistered simple or learned candidate achieved aggregate outer walk-forward PF > 1.05 at true trade-level accounting under the primary 1.0-point round-trip cost assumption.",
+  "best_candidate_examined": {
+    "candidate_id": "learned|fs=F2|mfeq=0.50|maeq=0.50",
+    "aggregate_PF": 1.0481,
+    "required_PF": 1.05,
+    "additional_disqualifier": "RVOL coefficient in TP (MFE) equation saturated at its +0.30 bound in all 5 outer folds"
+  }
+}

@@ -1,5 +1,14 @@
-# Placeholder -- populated only after outer walk-forward selection,
-# perturbations, causal-roll sensitivity, and bootstrap have all run.
-# See docs/STAGE1_TPSL_REPORT.md and outputs/stage1_selected_formula.json
-# for the frozen result once selection completes.
-status: PENDING_SELECTION
+# Stage 1 result: NO formula selected. STAGE1_FAIL.
+#
+# Best candidate examined (did not clear the gate):
+#   learned|fs=F2|mfeq=0.50|maeq=0.50
+#   features: range_30m, prev_session_range, RVOL_60 (session-anchored)
+#   aggregate walk-forward PF (true trade-level, 1.0-pt cost): 1.0481
+#   required: > 1.05
+#   additional disqualifier: RVOL coefficient in the TP equation hit its
+#     imposed +0.30 bound in every one of the 5 outer folds.
+#
+# See outputs/stage1_summary.json and docs/STAGE1_TPSL_REPORT.md for the
+# full gate evaluation and every candidate considered.
+status: STAGE1_FAIL
+selected_formula: null

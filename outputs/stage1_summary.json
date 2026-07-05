@@ -1,0 +1,42 @@
+{
+  "status": "STAGE1_FAIL",
+  "source_handoff_commit": "a375818056ca435df021d60b111f5f58b1f3551f",
+  "starting_commit_note": "Requested verification/codex-stage0-v1 @ 9408dae181fcd619068b417eb5c30c0dbb662537 does not exist in this repository; branched from research/claude-stage0-excursions @ 05fd1c83825943b960043c29c15f28adc0c4ed1a per explicit user direction.",
+  "data_hashes": {
+    "bars_sha256": "9f427eb053b6c63e50f79baf666f239f851558d1558e706fc126cbe69f3a5af4",
+    "vxn_sha256": "76cc072c941542183d8c82174fe4f552b0f140f9cb368c302ad51f651992dc4e",
+    "note": "bars hash differs from frozen 3d0228fc...; content-equivalence established in verification/claude-baseline-v1"
+  },
+  "cost_pts_primary": 1.0,
+  "seed": 42,
+  "simple_family": {
+    "n_candidates": 980,
+    "n_profitable_candidates_2018_2025": null,
+    "walkforward_outcome": "Neighborhood-medoid selection is unstable across outer folds: several scales lack a profitable training-period neighborhood in some folds (no candidate selected that fold), and selected medoids alternate between near-total win years (PF=inf, single-year samples) and near-total loss years (PF=0.0). No scale achieves a positive, consistently-profitable aggregate across all 5 outer folds.",
+    "volume_increment": "RVOL-adjusted (nonzero gamma) variants beat their gamma=0 control in only 51.0% of 784 paired comparisons, with a near-zero median improvement (avg_R +0.0001, PF +0.00045) -- no repeatable value from RVOL in the simple family."
+  },
+  "learned_family": {
+    "n_candidates": 36,
+    "best_candidate_id": "learned|fs=F2|mfeq=0.50|maeq=0.50",
+    "best_candidate_features": ["range_30m", "prev_session_range", "RVOL_60_session_anchored"],
+    "aggregate_walkforward_PF_pts_true_trade_level": 1.0481,
+    "aggregate_walkforward_net_pts": 1706.53,
+    "n_profitable_outer_folds": "4 of 5 (2021, 2022, 2023, 2025 profitable; 2024 net -1203.08)",
+    "note_on_metric_correction": "An earlier aggregate_PF computed via profit_factor() over the 5 per-fold NET POINT TOTALS wrongly treated each year as a single trade and overstated PF at 2.4185; corrected to pool true trade-level gains/losses across all 1,253 out-of-sample trades -> 1.0481.",
+    "single_full_period_fit_2018_2025_PF": 1.0027,
+    "single_full_period_fit_cost_sensitivity": {"cost_0.0": 1.0407, "cost_0.5": 1.0215, "cost_1.0": 1.0027, "cost_2.0": 0.9660},
+    "coefficient_bound_issue": "The RVOL coefficient in the TP (MFE) equation hit its imposed +0.30 bound in every one of the 5 outer folds -- fails the learned-family additional gate 'no coefficient repeatedly hits an imposed bound'.",
+    "diagnostic_2026_partial_year": {"n": 98, "net_pts": 2093.32, "PF": 1.6191, "note": "diagnostic only, not used for selection, small partial-year sample"}
+  },
+  "gate_evaluation": {
+    "aggregate_outer_test_PF_exceeds_1_05": false,
+    "reason": "Best candidate (learned F2 mfeq=0.50/maeq=0.50) achieves 1.0481 true trade-level PF at 1-point cost, and only 1.0027-1.0407 across the 0-2 point cost range on a single full-period fit -- below the 1.05 threshold in every case examined.",
+    "learned_additional_gate_no_coefficient_bound_saturation": false,
+    "overall": "FAIL -- gate not met by any preregistered candidate"
+  },
+  "scope_not_completed_given_failing_core_gate": [
+    "Full perturbation battery (neighboring TP/SL/gamma sweep, RVOL history/clip sweep, leave-one-year-out, adverse-fill-shift, 15:44 stress cutoff) for the best learned candidate -- only a lighter cost-sensitivity check was run, since the core PF>1.05 gate already fails and the full battery would not change the STAGE1_FAIL conclusion.",
+    "Causal-roll sensitivity replay of the surviving formula (the causal-roll bars file was built and is available at outputs/nq_causal_roll_2018_2026_1m.csv, but re-running level generation/touch detection/feature construction on it for a candidate that already fails the primary gate was not performed).",
+    "5,000-simulation month-block bootstrap for the best candidate -- not run for the same reason."
+  ]
+}

@@ -158,6 +158,11 @@ def main():
                 pnl = test_exec["pnl_after_cost"]
                 r = test_exec["r_multiple"]
 
+                gains_pts = float(pnl[pnl > 0].sum()) if len(pnl) else 0.0
+                losses_pts = float(-pnl[pnl < 0].sum()) if len(pnl) else 0.0
+                gains_r = float(r[r > 0].sum()) if len(r) else 0.0
+                losses_r = float(-r[r < 0].sum()) if len(r) else 0.0
+
                 fold_result_rows.append({
                     "candidate_id": cid, "feature_set": fs_name,
                     "mfe_quantile": mfe_q, "mae_quantile": mae_q,
@@ -170,6 +175,8 @@ def main():
                     "PF": round(profit_factor(pnl), 4) if len(pnl) else None,
                     "avg_R": round(float(r.mean()), 4) if len(r) else None,
                     "max_dd_R": round(max_drawdown(r), 4) if len(r) else None,
+                    "gains_pts": gains_pts, "losses_pts": losses_pts,
+                    "gains_r": gains_r, "losses_r": losses_r,
                 })
             print(f"done {fs_name} mfeq={mfe_q} maeq={mae_q}", file=sys.stderr)
 
@@ -178,6 +185,10 @@ def main():
 
     agg_rows = []
     for cid, grp in fold_df.groupby("candidate_id"):
+        total_gains_pts = grp["gains_pts"].sum()
+        total_losses_pts = grp["losses_pts"].sum()
+        total_gains_r = grp["gains_r"].sum()
+        total_losses_r = grp["losses_r"].sum()
         agg_rows.append({
             "candidate_id": cid,
             "feature_set": grp["feature_set"].iloc[0],
@@ -185,7 +196,13 @@ def main():
             "mae_quantile": grp["mae_quantile"].iloc[0],
             "n_folds": len(grp),
             "aggregate_net_pts": round(float(grp["net_pts"].sum()), 2),
-            "aggregate_PF": round(profit_factor(grp["net_pts"]), 4),
+            # TRUE trade-level PF: pool gains/losses across all pooled trades
+            # in every fold's test year, not a mistaken profit_factor() over
+            # the 5 per-fold net-point totals (which wrongly treats each
+            # year as a single "trade" and badly overstates PF whenever
+            # wins/losses cluster by year).
+            "aggregate_PF": round(total_gains_pts / total_losses_pts, 4) if total_losses_pts > 0 else None,
+            "aggregate_PF_R": round(total_gains_r / total_losses_r, 4) if total_losses_r > 0 else None,
             "median_avg_R": round(float(grp["avg_R"].median()), 4),
             "n_profitable_folds": int((grp["net_pts"] > 0).sum()),
             "mean_clip_fraction": round(float(grp["clip_fraction_test"].mean()), 4),
