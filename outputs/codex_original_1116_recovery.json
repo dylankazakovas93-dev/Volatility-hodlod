@@ -1,0 +1,11 @@
+{
+  "status": "RECOVERED_OUTPUT_ONLY_FAILED_ENGINE_RECOVERY",
+  "reason": "The original 1,116-row engine was run as inline Python and was not committed before this reconciliation.",
+  "source": "/Users/mariusvidziunas/Documents/Codex/2026-06-19/nq-level-fade-conditional-be-45-2/work/Volatility-hodlod/outputs/nq_both_cap200_be45_onepos_local_2018_2026.csv",
+  "destination": "/Users/mariusvidziunas/Documents/Codex/2026-06-19/nq-level-fade-conditional-be-45-2/work/Volatility-hodlod/outputs/codex_original_1116.csv",
+  "rows": 1116,
+  "net": 8757.719577841755,
+  "pf": 1.3804960864657114,
+  "maxdd": -870.2408024054566,
+  "sha256": "26372a6c28475dfb36c1de6d8dc42adfcb11f95326c0a2b87e2072d452ecc5f2"
+}
