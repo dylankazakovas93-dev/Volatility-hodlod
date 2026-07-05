@@ -1,0 +1,19 @@
+{
+  "research_commit": "630d8166f5fed952e7d701db09c719e13df8d38f",
+  "dev_years": [
+    2018,
+    2020,
+    2023,
+    2026
+  ],
+  "reserved_years": [
+    2019,
+    2021,
+    2022,
+    2024,
+    2025
+  ],
+  "n_windows_tested": 51,
+  "windows_sal_off_sha256": "c7f42484e392109e8c41d2c59146e5ba344be3d6f92e29da1ecb6483e8027927",
+  "reproduction_command": "python3 scripts/run_stage2_timewindow_sal.py --bars data/nq_1m/nq_continuous_2018_2026_1m.csv --out-dir outputs"
+}

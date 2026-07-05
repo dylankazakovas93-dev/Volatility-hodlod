@@ -1,0 +1,42 @@
+# Stage 2 result: DEVELOPMENT_CONFIG_FOUND
+status: DEVELOPMENT_CONFIG_FOUND
+
+development_years: [2018, 2020, 2023, 2026]
+reserved_years_never_entered: [2019, 2021, 2022, 2024, 2025]
+
+tpsl_formula:
+  family: "learned|fs=F2|mfeq=0.50|maeq=0.50"
+  features: [range_30m, prev_session_range, rvol_60m_session_anchored]
+  fit_on: [2018, 2020, 2023, 2026]
+  cost_assumption: gross (0.0 pts)
+  tp_coefs: {log1p_range_30m: 0.0, log1p_prev_session_range: 0.8249843794646855, log_rvol60: 0.3}
+  tp_intercept: -0.37151005234144463
+  sl_coefs: {log1p_range_30m: 0.05719603918800303, log1p_prev_session_range: 0.5492064968066043, log_rvol60: 0.2386829192671978}
+  sl_intercept: 0.8475584239361021
+  mfe_clip_bounds: [3.1980410891678277, 283.25152849260303]
+  mae_clip_bounds: [2.8999193667803413, 225.96963360998103]
+
+time_window:
+  selected: "E-F"
+  blocks: ["E", "F"]
+  et_range: "08:00-11:00"
+  rationale: "Broad robust region (D/E/F blocks all PF>1.1); E-F clears every selection criterion; narrower single-block E is a higher-PF but too-small-sample spike, correctly excluded."
+
+sal:
+  selected: false
+  rationale: "SAL reduces PF/net in every window tested (including all-hours); contributes no positive marginal value; dropped."
+
+pooled_result_dev_years:
+  n_trades: 247
+  net_pts: 2132.91
+  PF: 1.3836
+  yearly_PF: {2018: 1.1629, 2020: 1.1696, 2023: 1.4747, 2026: 1.7753}
+
+selection_criteria_met:
+  all_four_years_profitable: true
+  at_least_3_years_PF_above_1.05: true
+  pooled_PF_at_least_1.15: true
+  neighboring_windows_generally_profitable: true
+  min_25_trades_per_dev_year: true
+  ex_2026_profitable: true
+  no_overlap_or_sal_causality_violation: true

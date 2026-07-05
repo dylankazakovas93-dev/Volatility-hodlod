@@ -1,0 +1,23 @@
+{
+  "n_train_signals": 1274,
+  "tp_intercept": -0.37151005234144463,
+  "tp_coefs": {
+    "log1p_range_30m": 0.0,
+    "log1p_prev_session_range": 0.8249843794646855,
+    "log_rvol60": 0.3
+  },
+  "sl_intercept": 0.8475584239361021,
+  "sl_coefs": {
+    "log1p_range_30m": 0.05719603918800303,
+    "log1p_prev_session_range": 0.5492064968066043,
+    "log_rvol60": 0.2386829192671978
+  },
+  "mfe_clip_bounds": [
+    3.1980410891678277,
+    283.25152849260303
+  ],
+  "mae_clip_bounds": [
+    2.8999193667803413,
+    225.96963360998103
+  ]
+}
