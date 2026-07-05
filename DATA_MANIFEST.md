@@ -36,9 +36,8 @@ distinct commits to track:
   above): `8943c9cd18e586c1e185778d60809e4c5b12289e`. This is recorded as
   `source_code_commit` inside `outputs/nq_strict_summary.json`.
 - **Output commit** (the commit that adds the regenerated CSVs/JSON above
-  to the repository): see the commit immediately following the source-code
-  commit on branch `strict-one-position-reconciliation` — its SHA is stated
-  explicitly in the session's final response and in `CHANGELOG_RESEARCH.md`.
+  to the repository): `1dd090df20e26c0c03fb117bc99f7803dd8d015f`, on branch
+  `strict-one-position-reconciliation`.
 
 The nq_physical_first_touches.csv, nq_strict_yearly.csv, and
 nq_edge_case_sensitivities.csv hashes are unchanged from the prior run — only
