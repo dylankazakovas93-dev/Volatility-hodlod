@@ -1,0 +1,46 @@
+{
+  "0.0": {
+    "v_score_threshold": 0.0,
+    "v_score_rejected": 0,
+    "executed": 1107,
+    "net_pts": 6648.17,
+    "PF": 1.2924,
+    "TP": 394,
+    "SL": 333,
+    "BE": 281,
+    "cutoff": 99,
+    "max_drawdown": -1290.29,
+    "negative_years": [
+      2019,
+      2023,
+      2024
+    ]
+  },
+  "0.01": {
+    "v_score_threshold": 0.01,
+    "v_score_rejected": 1372,
+    "executed": 194,
+    "net_pts": 2262.77,
+    "PF": 1.5877,
+    "TP": 81,
+    "SL": 59,
+    "BE": 52,
+    "cutoff": 2,
+    "max_drawdown": -697.5,
+    "negative_years": [
+      2018,
+      2021,
+      2025
+    ]
+  },
+  "0.05": {
+    "v_score_threshold": 0.05,
+    "v_score_rejected": 1691,
+    "executed": 0
+  },
+  "0.1": {
+    "v_score_threshold": 0.1,
+    "v_score_rejected": 1691,
+    "executed": 0
+  }
+}
