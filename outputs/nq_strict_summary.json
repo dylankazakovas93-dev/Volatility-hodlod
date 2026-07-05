@@ -1,5 +1,5 @@
 {
-  "source_code_commit": "8943c9cd18e586c1e185778d60809e4c5b12289e",
+  "source_code_commit": "306aa310e63814e5a55f40ced7d47532d3147bc7",
   "source_code_commit_note": "HEAD at the time this script ran -- the commit whose tree contains the exact version of scripts/reconcile_strict_one_position.py that produced these numbers. The commit that adds these generated output files themselves is necessarily a later, separate commit -- see DATA_MANIFEST.md / REPRODUCIBILITY.md for that output commit's SHA.",
   "data_file_hashes": {
     "bars": "3d0228fcc17a40933d4fdc3983a8153e5bb6445ed9e743919b3eb5c516e53880",
