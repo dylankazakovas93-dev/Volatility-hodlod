@@ -1,0 +1,71 @@
+# Stage 1 preregistered search space. Fixed before any candidate was run;
+# nothing here may be changed after seeing results (see docs/STAGE1_TPSL_METHOD.md).
+
+frozen_foundation:
+  data_pipeline: unchanged from handoff a375818056ca435df021d60b111f5f58b1f3551f
+  level_generation: unchanged (sigma_mult=1.25, fixed_offset=15.75, ib_minutes=60, line_days=20)
+  touch_semantics: unchanged (one physical first touch, oldest-level-first, creation/expiry excluded)
+  research_session: "18:00 ET -> 15:59 ET next day (Stage 0 definition, unchanged)"
+  removed_from_old_config: [BE45, SAL, 1.5x-60min-range-stop, 200pt-cap, 1:1-RR, 19:00-11:00-entry-window]
+
+simple_family:
+  base_scales:
+    S1_range30m: "previous completed 30-minute range"
+    S2_atr60m: "ATR(14) on completed 60-minute bars"
+    S3_prevsessrange: "previous completed research-session range"
+    S4_geomean: "sqrt(S1 * S2)"
+  gamma: [-0.30, -0.15, 0.00, 0.15, 0.30]
+  rvol_feature: rvol_60m_hist20_session_anchored
+  clip_bounds_primary: [0.80, 1.25]
+  clip_bounds_perturbation: [[0.75, 1.33], [0.85, 1.18]]
+  tp_multiplier_a: [0.50, 0.75, 1.00, 1.25, 1.50, 1.75, 2.00]
+  sl_multiplier_b: [0.50, 0.75, 1.00, 1.25, 1.50, 1.75, 2.00]
+  n_candidates: 980  # 4 scales x 5 gammas x 7 a x 7 b
+  tick_rounding: {tp: round_up, sl: round_down, tick: 0.25, min_distance: 0.25}
+
+learned_family:
+  feature_sets:
+    F1: [range_30m, atr14_60m, rvol60_primary]
+    F2: [range_30m, prev_session_range, rvol60_primary]
+    F3: [atr14_60m, prev_session_range, rvol60_primary]
+    F4_control: [range_30m, atr14_60m, prev_session_range]
+  mfe_quantiles: [0.50, 0.65, 0.80]
+  mae_quantiles: [0.50, 0.65, 0.80]
+  n_candidates: 36  # 4 feature sets x 3 mfe quantiles x 3 mae quantiles
+  coefficient_restrictions:
+    volatility_range_coefficients: ">= 0"
+    rvol_coefficient_bound: [-0.30, 0.30]
+    prediction_clip: "training-fold 5th/95th percentile of the relevant conventional excursion"
+  seed: 42
+
+costs:
+  primary_selection_cost_pts: 1.0
+  also_reported: [0.0, 0.5, 2.0]
+
+walkforward_folds:
+  - {train: [2018, 2019, 2020], test: 2021}
+  - {train: [2018, 2019, 2020, 2021], test: 2022}
+  - {train: [2018, 2019, 2020, 2021, 2022], test: 2023}
+  - {train: [2018, 2019, 2020, 2021, 2022, 2023], test: 2024}
+  - {train: [2018, 2019, 2020, 2021, 2022, 2023, 2024], test: 2025}
+  excluded_from_all_fitting_and_selection: [2026]
+
+perturbations:
+  neighboring_tp_multiplier: "+/- 1 preregistered step"
+  neighboring_sl_multiplier: "+/- 1 preregistered step"
+  neighboring_gamma: "+/- 1 preregistered step"
+  rvol_history_sessions: [15, 20, 30]
+  rvol_clip_bounds: [[0.75, 1.33], [0.80, 1.25], [0.85, 1.18]]
+  cost_pts: [0.5, 1.0, 2.0]
+  adverse_entry_fill_shift_pts: [0.25, 0.50]
+  stress_cutoff_et: "15:44"
+  leave_one_year_out: [2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025]
+  exclude_2026: true
+  causal_roll_sensitivity: true
+  month_block_bootstrap: {n_sims: 5000, seed: 42}
+
+controls:
+  cutoff_only: "no TP, no SL, exit at 15:59"
+  simple_1x_scale: [S1_range30m, S2_atr60m, S3_prevsessrange, S4_geomean]
+  no_volume_gamma0: "gamma=0 rows of the simple grid"
+  learned_no_rvol: F4_control

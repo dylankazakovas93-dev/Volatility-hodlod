@@ -1,0 +1,12 @@
+{
+  "research_commit": "05fd1c83825943b960043c29c15f28adc0c4ed1a",
+  "n_signals": 3331,
+  "n_negative_signed_mfe": 72,
+  "n_positive_signed_mae": 76,
+  "expected_n_negative_signed_mfe": 72,
+  "expected_n_positive_signed_mae": 76,
+  "reconciled": true,
+  "output_parquet": "/home/user/Volatility-hodlod/outputs/stage1_corrected_excursions.parquet",
+  "output_parquet_sha256": "a92cfebe1bd2e059619cf2a61073cfed49c3f31dbd650109b158130a5f5ae192",
+  "reproduction_command": "python3 scripts/fix_stage0_definitions.py --out-dir outputs"
+}

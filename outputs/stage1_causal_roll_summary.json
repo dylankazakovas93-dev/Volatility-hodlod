@@ -1,0 +1,8 @@
+{
+  "rows": 2964661,
+  "days": 2624,
+  "changed_selected_contract_days": 33,
+  "n_fallbacks": 1,
+  "fallback_log_path": "stage1_causal_roll_fallbacks.json",
+  "output_path": "/home/user/Volatility-hodlod/outputs/nq_causal_roll_2018_2026_1m.csv"
+}

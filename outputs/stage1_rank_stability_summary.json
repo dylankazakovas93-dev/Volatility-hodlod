@@ -1,0 +1,15 @@
+{
+  "spearman_rho_between_rankings": 0.8251748251748254,
+  "spearman_pvalue": 0.0009513628555555001,
+  "top3_with_2026": [
+    "atr14_60m",
+    "prev_session_range",
+    "range_30m"
+  ],
+  "top3_ex_2026": [
+    "range_15m",
+    "range_30m",
+    "range_60m"
+  ],
+  "top3_membership_identical": false
+}

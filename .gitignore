@@ -1,4 +1,5 @@
 data/nq_1m/
+outputs/nq_causal_roll_2018_2026_1m.csv
 __pycache__/
 *.pyc
 .pytest_cache/

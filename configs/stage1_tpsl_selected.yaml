@@ -1,0 +1,5 @@
+# Placeholder -- populated only after outer walk-forward selection,
+# perturbations, causal-roll sensitivity, and bootstrap have all run.
+# See docs/STAGE1_TPSL_REPORT.md and outputs/stage1_selected_formula.json
+# for the frozen result once selection completes.
+status: PENDING_SELECTION

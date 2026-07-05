@@ -1,0 +1,17 @@
+{
+  "research_commit": "05fd1c83825943b960043c29c15f28adc0c4ed1a",
+  "n_signals": 3331,
+  "missing_rates": {
+    "rvol_30m_hist15_session_anchored": 0.05613929750825578,
+    "rvol_30m_hist20_session_anchored": 0.05613929750825578,
+    "rvol_30m_hist30_session_anchored": 0.05613929750825578,
+    "rvol_60m_hist15_session_anchored": 0.06514560192134494,
+    "rvol_60m_hist20_session_anchored": 0.06514560192134494,
+    "rvol_60m_hist30_session_anchored": 0.06514560192134494,
+    "rvol_120m_hist15_session_anchored": 0.0924647253077154,
+    "rvol_120m_hist20_session_anchored": 0.0924647253077154,
+    "rvol_120m_hist30_session_anchored": 0.0924647253077154
+  },
+  "output_parquet_sha256": "409a6096d28bb4ccf195492b739e7c1c552556b850aeb54b631a7d3abb052d9f",
+  "reproduction_command": "python3 scripts/build_session_anchored_rvol.py --bars data/nq_1m/nq_continuous_2018_2026_1m.csv --signals outputs/stage1_corrected_excursions.parquet --out-dir outputs"
+}
