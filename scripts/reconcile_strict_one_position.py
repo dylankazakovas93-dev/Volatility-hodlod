@@ -287,10 +287,12 @@ def run_strict(bars, ranges, events, opts):
             pnl, ex, exit_ts = simulate_from_touch(bars, ts, cutoff, fill, sign, cap, touchbar_stop_only)
 
         year = pd.Timestamp(sess).year
+        exit_price = fill + sign * pnl
         executed.append({
             "level_id": chosen["level_id"], "session_date": sess, "year": year,
             "side": chosen["side"], "entry_time": ts, "exit_time": exit_ts,
-            "entry_price": fill, "level": chosen["level"], "anchor": anchor, "cap": cap,
+            "entry_price": fill, "exit_price": exit_price, "level": chosen["level"],
+            "anchor": anchor, "cap": cap,
             "exit_reason": ex, "pnl": pnl, "gap_through": not clean,
         })
         rows.append({
@@ -300,7 +302,7 @@ def run_strict(bars, ranges, events, opts):
             "eligibility": "executed", "skip_reason": None,
             "position_state": pos_state, "sal_state": sal_state_before,
             "entry_time": ts, "exit_time": exit_ts, "entry_price": fill,
-            "exit_price": fill + sign * pnl if False else None,
+            "exit_price": exit_price,
             "anchor": anchor, "cap": cap, "exit_reason": ex, "pnl": pnl,
         })
 
@@ -322,6 +324,10 @@ def run_strict(bars, ranges, events, opts):
         "simultaneous_groups": simultaneous_groups,
         "gap_through_count": gap_count,
         "gap_through_pnl_delta": round(gap_pnl_delta, 3),
+        "fill_policy": ("deterministic realistic-fill (touch-bar close on gap-through touches); "
+                        "not a worst-case assumption -- it can help or hurt pnl depending on trade "
+                        "direction and gap sign" if gap_fill_adjust else
+                        "level-fill assumed for all touches, including gap-throughs"),
     }
     if len(ex_df):
         exs = ex_df["exit_reason"].value_counts()
@@ -337,6 +343,16 @@ def run_strict(bars, ranges, events, opts):
             "max_drawdown": round(max_drawdown(pnl), 2),
             "max_loss_streak": max_loss_streak(ex_df["exit_reason"].tolist(), pnl.tolist()),
         })
+        cost_adjusted = {}
+        for cost in (0.0, 0.5, 1.0, 2.0):
+            pnl_c = pnl - cost
+            cost_adjusted[f"cost_{cost}"] = {
+                "net_pts": round(float(pnl_c.sum()), 2),
+                "PF": round(profit_factor(pnl_c), 4),
+                "max_drawdown": round(max_drawdown(pnl_c), 2),
+                "avg_trade": round(float(pnl_c.mean()), 3),
+            }
+        summary["cost_adjusted"] = cost_adjusted
         yearly = []
         for yr, s in ex_df.groupby("year"):
             yearly.append({
@@ -396,7 +412,7 @@ def main():
         if a["touched_at"] is not None and a["touched_at"] == a["created_at"] and b["touched_at"] != a["touched_at"]
     )
 
-    print("\n=== PRIMARY: fully conservative strict engine ===")
+    print("\n=== PRIMARY: strict engine, stop-priority + deterministic realistic-fill ===")
     primary_opts = dict(touchbar_stop_only=True, gap_fill_adjust=True,
                         samebar_reentry_block=True, tie_order="age")
     primary_summary, primary_ex, primary_rows = run_strict(bars, ranges, events_primary, primary_opts)
@@ -478,7 +494,14 @@ def main():
             output_hashes[fn] = sha256_file(p)
 
     full_summary = {
-        "git_sha": sha,
+        "source_code_commit": sha,
+        "source_code_commit_note": (
+            "HEAD at the time this script ran -- the commit whose tree contains "
+            "the exact version of scripts/reconcile_strict_one_position.py that "
+            "produced these numbers. The commit that adds these generated output "
+            "files themselves is necessarily a later, separate commit -- see "
+            "DATA_MANIFEST.md / REPRODUCIBILITY.md for that output commit's SHA."
+        ),
         "data_file_hashes": {"bars": bars_hash, "vxn": vxn_hash},
         "config_hash": config_hash,
         "output_hashes": output_hashes,
@@ -495,7 +518,7 @@ def main():
         json.dump(full_summary, f, indent=2, default=str)
 
     print("\n=== MANIFEST ===")
-    print(f"  git SHA        : {sha}")
+    print(f"  source-code git SHA (HEAD at run time): {sha}")
     print(f"  bars sha256    : {bars_hash}")
     print(f"  vxn  sha256    : {vxn_hash}")
     print(f"  config sha256  : {config_hash}")
