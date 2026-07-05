@@ -1,0 +1,13 @@
+{
+  "reference_file": "outputs/baseline_executed.csv",
+  "comparison_file": "outputs/independent_executed.csv",
+  "reference_rows": 1107,
+  "comparison_rows": 1107,
+  "matched": 1107,
+  "only_in_reference": 0,
+  "only_in_comparison": 0,
+  "same_entry_diff_exit": 0,
+  "same_entry_exit_diff_pnl": 0,
+  "fully_reproduced": true,
+  "reproduction_command": "python3 scripts/compare_engines.py --reference outputs/baseline_executed.csv --comparison outputs/independent_executed.csv"
+}

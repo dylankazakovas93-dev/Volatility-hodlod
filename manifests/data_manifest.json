@@ -1,0 +1,24 @@
+{
+  "nq_bars": {
+    "relative_path": "data/nq_1m/nq_continuous_2018_2026_1m.csv",
+    "sha256": "3d0228fcc17a40933d4fdc3983a8153e5bb6445ed9e743919b3eb5c516e53880",
+    "rows": 2964655,
+    "first_timestamp_utc": "2018-01-01T23:00:00Z",
+    "last_timestamp_utc": "2026-06-07T23:59:00Z",
+    "columns": ["timestamp", "open", "high", "low", "close", "volume", "contract", "roll_day"],
+    "contracts_used": 34,
+    "roll_days_flagged": 33,
+    "adjustment_method": "unadjusted -- verified real price jump at every roll boundary, not ratio- or difference-adjusted",
+    "zero_volume_rows": 0,
+    "provenance_classification": "CANONICAL_FILE_VERIFIED_BUT_RAW_CONSTRUCTION_PARTIALLY_UNKNOWN",
+    "see": "docs/DATA_PIPELINE.md"
+  },
+  "vxn_daily": {
+    "relative_path": "data/vxn_daily_2018_2026.csv",
+    "sha256": "76cc072c941542183d8c82174fe4f552b0f140f9cb368c302ad51f651992dc4e",
+    "rows": 2139,
+    "columns": ["date", "open", "high", "low", "close"],
+    "source": "CBOE Nasdaq-100 Volatility Index (VXN) daily OHLC -- exact retrieval method not documented in this handoff",
+    "see": "docs/DATA_PIPELINE.md"
+  }
+}
