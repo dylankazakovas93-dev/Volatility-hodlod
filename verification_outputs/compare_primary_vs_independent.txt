@@ -1,0 +1,14 @@
+=== ROW-BY-ROW LEDGER COMPARISON ===
+  reference rows       : 1107
+  comparison rows      : 1107
+  matched               : 1107
+  only in reference     : 0
+  only in comparison    : 0
+  same entry, diff exit : 0
+  same entry/exit, diff pnl : 0
+
+=== AGGREGATE P&L EFFECT BY CATEGORY (comparison - reference) ===
+
+=== FIRST 0 DETAILED DIFFERENCES ===
+
+FULLY REPRODUCED: True

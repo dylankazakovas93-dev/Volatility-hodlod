@@ -1,0 +1,60 @@
+============================= test session starts ==============================
+platform linux -- Python 3.11.15, pytest-9.1.1, pluggy-1.6.0 -- /usr/local/bin/python3
+cachedir: .pytest_cache
+rootdir: /home/user/Volatility-hodlod
+collecting ... collected 36 items
+
+tests/test_data.py::test_canonical_row_count PASSED                      [  2%]
+tests/test_data.py::test_canonical_bars_hash FAILED                      [  5%]
+tests/test_data.py::test_canonical_vxn_hash PASSED                       [  8%]
+tests/test_data.py::test_bars_have_required_ohlc_fields PASSED           [ 11%]
+tests/test_data.py::test_bars_chronological_order PASSED                 [ 13%]
+tests/test_data.py::test_bars_no_duplicate_timestamps PASSED             [ 16%]
+tests/test_data.py::test_bars_valid_ohlc_relationships PASSED            [ 19%]
+tests/test_data.py::test_bars_timezone_is_america_new_york PASSED        [ 22%]
+tests/test_independent_engine_match.py::test_same_row_count PASSED       [ 25%]
+tests/test_independent_engine_match.py::test_same_headline_numbers PASSED [ 27%]
+tests/test_independent_engine_match.py::test_every_row_matches_by_identity_key PASSED [ 30%]
+tests/test_independent_engine_match.py::test_no_pnl_or_exit_reason_divergence PASSED [ 33%]
+tests/test_strategy_invariants.py::test_nq_constants_match_frozen_config PASSED [ 36%]
+tests/test_strategy_invariants.py::test_vxn_input_uses_only_prior_data PASSED [ 38%]
+tests/test_strategy_invariants.py::test_ib_cutoff_bar_is_included PASSED [ 41%]
+tests/test_strategy_invariants.py::test_upper_lower_level_formula PASSED [ 44%]
+tests/test_strategy_invariants.py::test_annualization_divisor_is_sqrt_252 PASSED [ 47%]
+tests/test_strategy_invariants.py::test_level_lifetime_is_line_days PASSED [ 50%]
+tests/test_strategy_invariants.py::test_eligible_candidate_gate PASSED   [ 52%]
+tests/test_strategy_invariants.py::test_executed_count PASSED            [ 55%]
+tests/test_strategy_invariants.py::test_net_points_within_tolerance PASSED [ 58%]
+tests/test_strategy_invariants.py::test_profit_factor_within_tolerance PASSED [ 61%]
+tests/test_strategy_invariants.py::test_exit_reason_counts PASSED        [ 63%]
+tests/test_strategy_invariants.py::test_negative_years_exact PASSED      [ 66%]
+tests/test_strategy_invariants.py::test_annual_pnl_sums_to_total PASSED  [ 69%]
+tests/test_strategy_invariants.py::test_pf_includes_cutoff_outcomes PASSED [ 72%]
+tests/test_strategy_invariants.py::test_no_level_id_executes_twice PASSED [ 75%]
+tests/test_strategy_invariants.py::test_no_skipped_touch_becomes_later_entry PASSED [ 77%]
+tests/test_strategy_invariants.py::test_no_overlapping_positions PASSED  [ 80%]
+tests/test_strategy_invariants.py::test_no_same_bar_exit_reentry PASSED  [ 83%]
+tests/test_strategy_invariants.py::test_no_blocked_time_entries PASSED   [ 86%]
+tests/test_strategy_invariants.py::test_negative_cutoff_activates_sal PASSED [ 88%]
+tests/test_strategy_invariants.py::test_be_does_not_activate_sal PASSED  [ 91%]
+tests/test_strategy_invariants.py::test_sal_never_activates_before_a_losing_exit PASSED [ 94%]
+tests/test_strategy_invariants.py::test_skip_categories_reconcile_to_physical_touch_population PASSED [ 97%]
+tests/test_strategy_invariants.py::test_exit_price_is_populated PASSED   [100%]
+
+=================================== FAILURES ===================================
+___________________________ test_canonical_bars_hash ___________________________
+
+bars_path = '/home/user/Volatility-hodlod/data/nq_1m/nq_continuous_2018_2026_1m.csv'
+config = {'data': {'bars_file': 'data/nq_1m/nq_continuous_2018_2026_1m.csv', 'bars_sha256': '3d0228fcc17a40933d4fdc3983a8153e5b...or, SAL active, position open, and simultaneous-touch collisions all consume the side without a later retry).\n'}, ...}
+
+    def test_canonical_bars_hash(bars_path, config):
+>       assert sha256_file(bars_path) == config["data"]["bars_sha256"]
+E       AssertionError: assert '9f427eb053b6...6cbe69f3a5af4' == '3d0228fcc17a...eb5c516e53880'
+E         
+E         - 3d0228fcc17a40933d4fdc3983a8153e5bb6445ed9e743919b3eb5c516e53880
+E         + 9f427eb053b6c63e50f79baf666f239f851558d1558e706fc126cbe69f3a5af4
+
+tests/test_data.py:62: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_data.py::test_canonical_bars_hash - AssertionError: assert ...
+======================== 1 failed, 35 passed in 36.61s =========================

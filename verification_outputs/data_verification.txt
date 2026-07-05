@@ -1,0 +1,10 @@
+=== NQ bars ===
+  rows   : 2964655   (expected 2964655)   OK
+  sha256 : 9f427eb053b6c63e50f79baf666f239f851558d1558e706fc126cbe69f3a5af4
+           (expected 3d0228fcc17a40933d4fdc3983a8153e5bb6445ed9e743919b3eb5c516e53880)   MISMATCH
+
+=== VXN daily ===
+  sha256 : 76cc072c941542183d8c82174fe4f552b0f140f9cb368c302ad51f651992dc4e
+           (expected 76cc072c941542183d8c82174fe4f552b0f140f9cb368c302ad51f651992dc4e)   OK
+
+DATA VERIFICATION: FAIL
