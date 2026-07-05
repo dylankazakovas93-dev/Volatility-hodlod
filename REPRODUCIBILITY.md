@@ -11,8 +11,16 @@ python3 scripts/reconcile_strict_one_position.py \
 
 ## Environment
 
-- Git SHA at time of run: see `outputs/nq_strict_summary.json` -> `git_sha`
+- Source-code commit used to generate the current `outputs/*`:
+  `8943c9cd18e586c1e185778d60809e4c5b12289e` — see
+  `outputs/nq_strict_summary.json` -> `source_code_commit`.
+- Output commit (adds the regenerated CSVs/JSON to the repo): stated in
+  `DATA_MANIFEST.md` -> Commit provenance, and in the session's final
+  response / `CHANGELOG_RESEARCH.md`.
 - Data file hashes: `DATA_MANIFEST.md`
+- Canonical semantics are frozen in `configs/nq_canonical_strict.yaml`.
+- Machine-checkable invariants: `python3 -m pytest tests/test_nq_strict_invariants.py -v`
+  (18 tests; all must pass).
 - No random seeds are used anywhere in this pipeline — it is a deterministic
   rebuild from source bars + a fixed rule set. Re-running against the same
   data files and the same commit must reproduce every number in

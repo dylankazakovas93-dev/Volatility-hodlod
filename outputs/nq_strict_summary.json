@@ -1,5 +1,6 @@
 {
-  "git_sha": "4781a9cfce9d9f4ac5ba48107035cc86482509dc",
+  "source_code_commit": "8943c9cd18e586c1e185778d60809e4c5b12289e",
+  "source_code_commit_note": "HEAD at the time this script ran -- the commit whose tree contains the exact version of scripts/reconcile_strict_one_position.py that produced these numbers. The commit that adds these generated output files themselves is necessarily a later, separate commit -- see DATA_MANIFEST.md / REPRODUCIBILITY.md for that output commit's SHA.",
   "data_file_hashes": {
     "bars": "3d0228fcc17a40933d4fdc3983a8153e5bb6445ed9e743919b3eb5c516e53880",
     "vxn": "76cc072c941542183d8c82174fe4f552b0f140f9cb368c302ad51f651992dc4e"
@@ -8,8 +9,8 @@
   "output_hashes": {
     "nq_physical_first_touches.csv": "5702e6facdaf1f20346f6847977c9e451c439850d97fd2cde955eb62ca3f93cd",
     "nq_eligible_1841.csv": "610e3b60f3bcd86b8caa23f484f0dde1e4d576ef84bdd6f3ff0a2ce9e6e1d416",
-    "nq_strict_executed.csv": "b7f19e968cb829362a98fc21dd83538573431a23eab14be4aac0c50def125e48",
-    "nq_strict_skipped.csv": "e46edd10d1fd722e2d8affb68820d4a64d3368b9345bd149209407fd45ab47ea",
+    "nq_strict_executed.csv": "b9419b1be06310a179ec7c7fb05f6c4a4189ab9951ebfe3f5e42be19f4a0e56a",
+    "nq_strict_skipped.csv": "3032b995eedf0cb66660c531379f1db7bc200a5881e47933d27e549fe8b63789",
     "nq_strict_yearly.csv": "adca71291b2df18c1389bbbcbe5b94bab5795ca40a5f770c2b274c035db56015",
     "nq_edge_case_sensitivities.csv": "b7c03665ac40ec6eb143a3e992107b5d99b17ffbb1f2381c5d770ee8191ff920"
   },
@@ -39,6 +40,7 @@
     "simultaneous_groups": 77,
     "gap_through_count": 8,
     "gap_through_pnl_delta": 146.625,
+    "fill_policy": "deterministic realistic-fill (touch-bar close on gap-through touches); not a worst-case assumption -- it can help or hurt pnl depending on trade direction and gap sign",
     "TP": 394,
     "SL": 333,
     "BE": 281,
@@ -50,6 +52,32 @@
     "avg_trade": 6.006,
     "max_drawdown": -1290.29,
     "max_loss_streak": 6,
+    "cost_adjusted": {
+      "cost_0.0": {
+        "net_pts": 6648.17,
+        "PF": 1.2924,
+        "max_drawdown": -1290.29,
+        "avg_trade": 6.006
+      },
+      "cost_0.5": {
+        "net_pts": 6094.67,
+        "PF": 1.2641,
+        "max_drawdown": -1405.29,
+        "avg_trade": 5.506
+      },
+      "cost_1.0": {
+        "net_pts": 5541.17,
+        "PF": 1.2366,
+        "max_drawdown": -1520.29,
+        "avg_trade": 5.006
+      },
+      "cost_2.0": {
+        "net_pts": 4434.17,
+        "PF": 1.1839,
+        "max_drawdown": -1750.29,
+        "avg_trade": 4.006
+      }
+    },
     "yearly": [
       {
         "year": 2018,
@@ -145,6 +173,7 @@
       "simultaneous_groups": 77,
       "gap_through_count": 8,
       "gap_through_pnl_delta": 146.625,
+      "fill_policy": "deterministic realistic-fill (touch-bar close on gap-through touches); not a worst-case assumption -- it can help or hurt pnl depending on trade direction and gap sign",
       "TP": 396,
       "SL": 332,
       "BE": 281,
@@ -156,6 +185,32 @@
       "avg_trade": 6.132,
       "max_drawdown": -1290.29,
       "max_loss_streak": 6,
+      "cost_adjusted": {
+        "cost_0.0": {
+          "net_pts": 6794.04,
+          "PF": 1.2995,
+          "max_drawdown": -1290.29,
+          "avg_trade": 6.132
+        },
+        "cost_0.5": {
+          "net_pts": 6240.04,
+          "PF": 1.271,
+          "max_drawdown": -1405.29,
+          "avg_trade": 5.632
+        },
+        "cost_1.0": {
+          "net_pts": 5686.04,
+          "PF": 1.2433,
+          "max_drawdown": -1520.29,
+          "avg_trade": 5.132
+        },
+        "cost_2.0": {
+          "net_pts": 4578.04,
+          "PF": 1.1903,
+          "max_drawdown": -1750.29,
+          "avg_trade": 4.132
+        }
+      },
       "yearly": [
         {
           "year": 2018,
@@ -249,6 +304,7 @@
       "simultaneous_groups": 77,
       "gap_through_count": 8,
       "gap_through_pnl_delta": 0.0,
+      "fill_policy": "level-fill assumed for all touches, including gap-throughs",
       "TP": 389,
       "SL": 337,
       "BE": 279,
@@ -260,6 +316,32 @@
       "avg_trade": 5.816,
       "max_drawdown": -1468.28,
       "max_loss_streak": 6,
+      "cost_adjusted": {
+        "cost_0.0": {
+          "net_pts": 6421.29,
+          "PF": 1.2809,
+          "max_drawdown": -1468.28,
+          "avg_trade": 5.816
+        },
+        "cost_0.5": {
+          "net_pts": 5869.29,
+          "PF": 1.253,
+          "max_drawdown": -1550.78,
+          "avg_trade": 5.316
+        },
+        "cost_1.0": {
+          "net_pts": 5317.29,
+          "PF": 1.2258,
+          "max_drawdown": -1648.29,
+          "avg_trade": 4.816
+        },
+        "cost_2.0": {
+          "net_pts": 4213.29,
+          "PF": 1.1739,
+          "max_drawdown": -1877.29,
+          "avg_trade": 3.816
+        }
+      },
       "yearly": [
         {
           "year": 2018,
@@ -353,6 +435,7 @@
       "simultaneous_groups": 78,
       "gap_through_count": 8,
       "gap_through_pnl_delta": 146.625,
+      "fill_policy": "deterministic realistic-fill (touch-bar close on gap-through touches); not a worst-case assumption -- it can help or hurt pnl depending on trade direction and gap sign",
       "TP": 395,
       "SL": 334,
       "BE": 281,
@@ -364,6 +447,32 @@
       "avg_trade": 5.978,
       "max_drawdown": -1290.29,
       "max_loss_streak": 6,
+      "cost_adjusted": {
+        "cost_0.0": {
+          "net_pts": 6629.42,
+          "PF": 1.2911,
+          "max_drawdown": -1290.29,
+          "avg_trade": 5.978
+        },
+        "cost_0.5": {
+          "net_pts": 6074.92,
+          "PF": 1.2628,
+          "max_drawdown": -1405.29,
+          "avg_trade": 5.478
+        },
+        "cost_1.0": {
+          "net_pts": 5520.42,
+          "PF": 1.2353,
+          "max_drawdown": -1520.29,
+          "avg_trade": 4.978
+        },
+        "cost_2.0": {
+          "net_pts": 4411.42,
+          "PF": 1.1827,
+          "max_drawdown": -1750.29,
+          "avg_trade": 3.978
+        }
+      },
       "yearly": [
         {
           "year": 2018,
@@ -457,6 +566,7 @@
       "simultaneous_groups": 77,
       "gap_through_count": 8,
       "gap_through_pnl_delta": 339.0,
+      "fill_policy": "deterministic realistic-fill (touch-bar close on gap-through touches); not a worst-case assumption -- it can help or hurt pnl depending on trade direction and gap sign",
       "TP": 393,
       "SL": 334,
       "BE": 280,
@@ -468,6 +578,32 @@
       "avg_trade": 5.914,
       "max_drawdown": -1296.72,
       "max_loss_streak": 6,
+      "cost_adjusted": {
+        "cost_0.0": {
+          "net_pts": 6540.55,
+          "PF": 1.287,
+          "max_drawdown": -1296.72,
+          "avg_trade": 5.914
+        },
+        "cost_0.5": {
+          "net_pts": 5987.55,
+          "PF": 1.2588,
+          "max_drawdown": -1411.72,
+          "avg_trade": 5.414
+        },
+        "cost_1.0": {
+          "net_pts": 5434.55,
+          "PF": 1.2315,
+          "max_drawdown": -1526.72,
+          "avg_trade": 4.914
+        },
+        "cost_2.0": {
+          "net_pts": 4328.55,
+          "PF": 1.1791,
+          "max_drawdown": -1756.72,
+          "avg_trade": 3.914
+        }
+      },
       "yearly": [
         {
           "year": 2018,
@@ -561,6 +697,7 @@
       "simultaneous_groups": 77,
       "gap_through_count": 7,
       "gap_through_pnl_delta": 146.625,
+      "fill_policy": "deterministic realistic-fill (touch-bar close on gap-through touches); not a worst-case assumption -- it can help or hurt pnl depending on trade direction and gap sign",
       "TP": 398,
       "SL": 330,
       "BE": 280,
@@ -572,6 +709,32 @@
       "avg_trade": 6.586,
       "max_drawdown": -1289.15,
       "max_loss_streak": 6,
+      "cost_adjusted": {
+        "cost_0.0": {
+          "net_pts": 7290.65,
+          "PF": 1.3251,
+          "max_drawdown": -1289.15,
+          "avg_trade": 6.586
+        },
+        "cost_0.5": {
+          "net_pts": 6737.15,
+          "PF": 1.2959,
+          "max_drawdown": -1404.15,
+          "avg_trade": 6.086
+        },
+        "cost_1.0": {
+          "net_pts": 6183.65,
+          "PF": 1.2676,
+          "max_drawdown": -1519.15,
+          "avg_trade": 5.586
+        },
+        "cost_2.0": {
+          "net_pts": 5076.65,
+          "PF": 1.2134,
+          "max_drawdown": -1749.15,
+          "avg_trade": 4.586
+        }
+      },
       "yearly": [
         {
           "year": 2018,
@@ -665,6 +828,7 @@
       "simultaneous_groups": 77,
       "gap_through_count": 8,
       "gap_through_pnl_delta": 146.625,
+      "fill_policy": "deterministic realistic-fill (touch-bar close on gap-through touches); not a worst-case assumption -- it can help or hurt pnl depending on trade direction and gap sign",
       "TP": 393,
       "SL": 334,
       "BE": 280,
@@ -676,6 +840,32 @@
       "avg_trade": 5.914,
       "max_drawdown": -1296.72,
       "max_loss_streak": 6,
+      "cost_adjusted": {
+        "cost_0.0": {
+          "net_pts": 6540.55,
+          "PF": 1.287,
+          "max_drawdown": -1296.72,
+          "avg_trade": 5.914
+        },
+        "cost_0.5": {
+          "net_pts": 5987.55,
+          "PF": 1.2588,
+          "max_drawdown": -1411.72,
+          "avg_trade": 5.414
+        },
+        "cost_1.0": {
+          "net_pts": 5434.55,
+          "PF": 1.2315,
+          "max_drawdown": -1526.72,
+          "avg_trade": 4.914
+        },
+        "cost_2.0": {
+          "net_pts": 4328.55,
+          "PF": 1.1791,
+          "max_drawdown": -1756.72,
+          "avg_trade": 3.914
+        }
+      },
       "yearly": [
         {
           "year": 2018,
@@ -769,6 +959,7 @@
       "simultaneous_groups": 77,
       "gap_through_count": 8,
       "gap_through_pnl_delta": 146.625,
+      "fill_policy": "deterministic realistic-fill (touch-bar close on gap-through touches); not a worst-case assumption -- it can help or hurt pnl depending on trade direction and gap sign",
       "TP": 394,
       "SL": 333,
       "BE": 281,
@@ -780,6 +971,32 @@
       "avg_trade": 6.006,
       "max_drawdown": -1290.29,
       "max_loss_streak": 6,
+      "cost_adjusted": {
+        "cost_0.0": {
+          "net_pts": 6648.17,
+          "PF": 1.2924,
+          "max_drawdown": -1290.29,
+          "avg_trade": 6.006
+        },
+        "cost_0.5": {
+          "net_pts": 6094.67,
+          "PF": 1.2641,
+          "max_drawdown": -1405.29,
+          "avg_trade": 5.506
+        },
+        "cost_1.0": {
+          "net_pts": 5541.17,
+          "PF": 1.2366,
+          "max_drawdown": -1520.29,
+          "avg_trade": 5.006
+        },
+        "cost_2.0": {
+          "net_pts": 4434.17,
+          "PF": 1.1839,
+          "max_drawdown": -1750.29,
+          "avg_trade": 4.006
+        }
+      },
       "yearly": [
         {
           "year": 2018,
@@ -873,6 +1090,7 @@
       "simultaneous_groups": 77,
       "gap_through_count": 8,
       "gap_through_pnl_delta": 146.625,
+      "fill_policy": "deterministic realistic-fill (touch-bar close on gap-through touches); not a worst-case assumption -- it can help or hurt pnl depending on trade direction and gap sign",
       "TP": 394,
       "SL": 333,
       "BE": 281,
@@ -884,6 +1102,32 @@
       "avg_trade": 6.006,
       "max_drawdown": -1290.29,
       "max_loss_streak": 6,
+      "cost_adjusted": {
+        "cost_0.0": {
+          "net_pts": 6648.17,
+          "PF": 1.2924,
+          "max_drawdown": -1290.29,
+          "avg_trade": 6.006
+        },
+        "cost_0.5": {
+          "net_pts": 6094.67,
+          "PF": 1.2641,
+          "max_drawdown": -1405.29,
+          "avg_trade": 5.506
+        },
+        "cost_1.0": {
+          "net_pts": 5541.17,
+          "PF": 1.2366,
+          "max_drawdown": -1520.29,
+          "avg_trade": 5.006
+        },
+        "cost_2.0": {
+          "net_pts": 4434.17,
+          "PF": 1.1839,
+          "max_drawdown": -1750.29,
+          "avg_trade": 4.006
+        }
+      },
       "yearly": [
         {
           "year": 2018,

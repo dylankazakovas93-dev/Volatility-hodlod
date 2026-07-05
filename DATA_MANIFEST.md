@@ -19,9 +19,28 @@ also embedded in `outputs/nq_strict_summary.json`):
 |---|---|
 | `outputs/nq_physical_first_touches.csv` | `5702e6facdaf1f20346f6847977c9e451c439850d97fd2cde955eb62ca3f93cd` |
 | `outputs/nq_eligible_1841.csv` | `610e3b60f3bcd86b8caa23f484f0dde1e4d576ef84bdd6f3ff0a2ce9e6e1d416` |
-| `outputs/nq_strict_executed.csv` | `b7f19e968cb829362a98fc21dd83538573431a23eab14be4aac0c50def125e48` |
-| `outputs/nq_strict_skipped.csv` | `e46edd10d1fd722e2d8affb68820d4a64d3368b9345bd149209407fd45ab47ea` |
+| `outputs/nq_strict_executed.csv` | `b9419b1be06310a179ec7c7fb05f6c4a4189ab9951ebfe3f5e42be19f4a0e56a` |
+| `outputs/nq_strict_skipped.csv` | `3032b995eedf0cb66660c531379f1db7bc200a5881e47933d27e549fe8b63789` |
 | `outputs/nq_strict_yearly.csv` | `adca71291b2df18c1389bbbcbe5b94bab5795ca40a5f770c2b274c035db56015` |
 | `outputs/nq_edge_case_sensitivities.csv` | `b7c03665ac40ec6eb143a3e992107b5d99b17ffbb1f2381c5d770ee8191ff920` |
 
 Verify any of these locally with `sha256sum <file>`.
+
+## Commit provenance
+
+Because the output files are themselves committed artifacts, there are two
+distinct commits to track:
+
+- **Source-code commit** (the commit whose tree contains the exact version
+  of `scripts/reconcile_strict_one_position.py` that generated the CSVs
+  above): `8943c9cd18e586c1e185778d60809e4c5b12289e`. This is recorded as
+  `source_code_commit` inside `outputs/nq_strict_summary.json`.
+- **Output commit** (the commit that adds the regenerated CSVs/JSON above
+  to the repository): see the commit immediately following the source-code
+  commit on branch `strict-one-position-reconciliation` — its SHA is stated
+  explicitly in the session's final response and in `CHANGELOG_RESEARCH.md`.
+
+The nq_physical_first_touches.csv, nq_strict_yearly.csv, and
+nq_edge_case_sensitivities.csv hashes are unchanged from the prior run — only
+`nq_strict_executed.csv` and `nq_strict_skipped.csv` changed, because the fix
+added the previously-blank `exit_price` column.

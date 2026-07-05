@@ -1,0 +1,102 @@
+# Canonical semantics for the NQ strict one-position, time-aware-SAL engine.
+# This file is the frozen definition of "the canonical config" referenced by
+# docs/NQ_STRICT_RECONCILIATION.md, CHANGELOG_RESEARCH.md, and
+# tests/test_nq_strict_invariants.py. Any change to a value here invalidates
+# the frozen result numbers and requires a new reconciliation run.
+
+data:
+  bars_file: data/nq_1m/nq_continuous_2018_2026_1m.csv
+  bars_sha256: 3d0228fcc17a40933d4fdc3983a8153e5bb6445ed9e743919b3eb5c516e53880
+  bars_rows: 2964655
+  vxn_file: data/vxn_daily_2018_2026.csv
+  vxn_sha256: 76cc072c941542183d8c82174fe4f552b0f140f9cb368c302ad51f651992dc4e
+
+instrument:
+  sigma_mult: 1.25
+  offset_pct: 0.07
+  ib_minutes: 60
+  fixed_offset: 15.75
+
+candidate_gate:
+  # nq_cond_be45.build_ledger()'s own static gates: first touch exists,
+  # valid entry time, prior completed 1h range exists, valid session
+  # cutoff, nonempty post-entry path.
+  eligible_count: 1841
+
+level_rule:
+  line_days: 20
+  description: >
+    Each level side (upper/lower) lives from its created_at bar until the
+    twentieth newer level is created. It has at most one physical first
+    touch, ever. A touch permanently consumes the side, whether or not a
+    trade is actually entered on it (blocked time, no anchor, SAL active,
+    position open, and simultaneous-touch collisions all consume the side
+    without a later retry).
+
+position:
+  mode: single_global
+  description: exactly one active NQ position at a time, across the whole book.
+
+entry_window:
+  valid: "19:00 ET through 11:00 ET"
+  blocked: "11:00 ET through 19:00 ET"
+
+session_cutoff: "15:00 ET"
+
+sal:
+  activation: >
+    Arms only at the actual exit timestamp of a realized negative trade
+    (pnl < 0 and exit_reason != BE). Never arms retroactively from entry
+    time, and never arms on a 0pt BE scratch.
+  reset: "next 19:00 ET -> 15:00 ET session"
+
+risk:
+  anchor: "previous completed 60-minute high-low range at physical-touch time"
+  cap: "min(1.5 * anchor, 200)"
+  tp_distance: cap
+  original_sl_distance: cap
+  conditional_be:
+    bar: 45
+    rule: >
+      At bar 45 (0-indexed bars after the touch bar), check the open of
+      that bar against entry. If on the profit side, arm BE (stop moves
+      to entry). If not, the original stop remains for the rest of the
+      trade. Implemented exactly as nq_cond_be45.simulate_cond_be.
+
+edge_cases:
+  creation_bar_entry: excluded   # A: no entry on the level's own creation bar
+  expiry_timestamp: excluded     # F: expiry bar itself excluded from touch search
+  touch_bar_resolution: stop_first  # B: touch bar only checked for stop; a
+                                      # target hit on the touch bar is never
+                                      # assumed a win without causal ordering
+  gap_through_fill: deterministic_realistic_fill  # C: touch-bar close used
+                                                    # when the level itself
+                                                    # isn't inside the bar's
+                                                    # high-low range. This is
+                                                    # NOT a worst-case
+                                                    # assumption -- it can
+                                                    # help or hurt PnL
+                                                    # depending on direction.
+  same_bar_reentry: blocked      # D: no new entry on the bar the active
+                                  #    trade exits
+  simultaneous_touch_ordering:
+    primary: oldest_level_first  # E: deterministic level-age ordering
+    sensitivities_reported_separately:
+      - nearest_to_prior_close_first
+      - farthest_from_prior_close_first
+      - conservative_worst_result_first
+
+frozen_primary_result:
+  eligible_candidates: 1841
+  executed_trades: 1107
+  net_pts: 6648.17
+  PF: 1.2924
+  TP: 394
+  SL: 333
+  BE: 281
+  cutoff: 99
+  max_drawdown: -1290.29
+  negative_years: [2019, 2023, 2024]
+  numerical_tolerance:
+    net_pts: 0.05
+    PF: 0.0005

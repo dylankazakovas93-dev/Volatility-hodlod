@@ -32,3 +32,34 @@ from source in this repo), **VALIDATION PENDING** (not yet checked here).
   negative and 2018 is marginal.
 - ES companion research remains blocked pending this commit, per the task
   instructions.
+
+## Entry: cleanup pass — exit_price fix, cost-adjusted table, canonical config, invariant tests, cross-model protocol
+
+- Fixed a hardcoded `if False` that left `exit_price` blank on every executed
+  row. Now populated (`entry_price + sign*pnl`) for TP/SL/BE/cutoff alike.
+  This changed `outputs/nq_strict_executed.csv` and `outputs/nq_strict_skipped.csv`
+  hashes; PnL/net/PF numbers are unchanged (bookkeeping-only fix).
+- Added round-trip cost-adjusted net/PF/maxDD at 0.0/0.5/1.0/2.0 pts, applied
+  to every executed trade including BE and cutoff. Strategy stays net
+  profitable through 2.0 pts round-trip; PF compresses from 1.2924 to 1.1839.
+- Relabeled the gap-through fill policy as a deterministic realistic-fill
+  assumption, not a worst-case one (it improves PnL by +146.6 pts vs
+  assuming level-fill on the 8 gap-through trades in the dataset).
+- Fixed the source-code-commit / output-commit conflation: the summary JSON
+  now records `source_code_commit` (the commit containing the exact script
+  version that ran) separately from the later commit that adds the
+  generated output files.
+- Froze canonical semantics in `configs/nq_canonical_strict.yaml`.
+- Added `tests/test_nq_strict_invariants.py` — 18 machine-verifiable
+  invariants (data hashes, eligible-candidate gate, headline numbers within
+  tolerance, no-overlap, no-same-bar-reentry, no-blocked-time-entry, SAL
+  causality, skip-category reconciliation, annual-sum reconciliation, PF
+  includes cutoff). All 18 currently pass.
+- Added `docs/CROSS_MODEL_RECONCILIATION_PROTOCOL.md` and
+  `scripts/compare_strict_ledgers.py` so Claude 2 and Codex can verify this
+  package by hash and by row-level ledger diff rather than by trusting a
+  summary number.
+- Regenerated result, confirmed unchanged from the prior commit:
+  **executed=1107, net=+6648.17, PF=1.2924**, negative years
+  [2019, 2023, 2024] — unaffected by the cleanup, as expected since no
+  simulation logic changed.

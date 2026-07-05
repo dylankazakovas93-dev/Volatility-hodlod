@@ -79,7 +79,16 @@ trades = 1256   net = +15,664.99 pts   PF = 1.6779
 TP=487  SL=342  BE=316  cutoff=111
 ```
 
-### Strict one-position / time-aware-SAL, PRIMARY fully conservative (CURRENT)
+### Strict one-position / time-aware-SAL, PRIMARY (CURRENT)
+
+Note on labeling: the gap-through fill policy (edge case C) uses the
+touch-bar close as a **deterministic realistic-fill** assumption, not a
+worst-case one — it can help or hurt PnL depending on trade direction and
+gap sign (see the +146.6 pt delta below, which is a net *improvement* over
+assuming level-fill). "Conservative" below refers specifically to the
+stop-priority handling of edge case B (a touch-bar target is never assumed
+a win) and to using the tighter, permanently-consuming touch/expiry rules —
+not to every parameter being pessimistic.
 
 ```
 executed          = 1107
@@ -118,6 +127,19 @@ gap_through_count                = 8   (pnl delta vs level-fill: +146.6 pts)
 | 2026\* | 67 | +2,743.56 | 3.0945 | -312.38 | +40.949 |
 
 \*2026 partial year (data ends June).
+
+### Round-trip cost sensitivity (applied to every executed trade, including BE and cutoff)
+
+| Round-trip cost | Net pts | PF | Max DD | Avg trade |
+|---|---|---|---|---|
+| 0.0 pts | +6,648.17 | 1.2924 | -1,290.29 | +6.006 |
+| 0.5 pts | +6,094.67 | 1.2641 | -1,405.29 | +5.506 |
+| 1.0 pts | +5,541.17 | 1.2366 | -1,520.29 | +5.006 |
+| 2.0 pts | +4,434.17 | 1.1839 | -1,750.29 | +4.006 |
+
+The strategy stays net profitable at every tested cost level up to 2.0 pts
+round-trip, though PF compresses meaningfully (1.29 -> 1.18) and max DD
+worsens by ~460 pts at the 2.0 pt level.
 
 ## 6. Answers to the required final-response questions
 
