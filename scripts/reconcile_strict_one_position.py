@@ -129,6 +129,7 @@ def build_physical_touches(bars: pd.DataFrame, vxn: pd.Series, variant: Variant)
             anchor = B.prev_completed_range(ranges, touched_at)
             cutoff = B.session_cutoff(touched_at)
             sess = B.session_date(touched_at)
+            valid_cutoff = cutoff is not None and cutoff > touched_at
             rows.append({
                 "level_id": f"{i}:{side}",
                 "level_index": i,
@@ -145,7 +146,7 @@ def build_physical_touches(bars: pd.DataFrame, vxn: pd.Series, variant: Variant)
                 "cutoff": cutoff,
                 "entry_allowed": session_allowed(touched_at),
                 "has_anchor": anchor is not None,
-                "has_cutoff": cutoff is not None,
+                "has_cutoff": valid_cutoff,
             })
     return pd.DataFrame(rows).sort_values(["touched_at", "level_index", "side"], kind="stable").reset_index(drop=True)
 
@@ -329,7 +330,13 @@ def gap_report(touches: pd.DataFrame, bars: pd.DataFrame) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
-def write_manifest(args: argparse.Namespace, bars: pd.DataFrame, touches: pd.DataFrame, status: str) -> None:
+def write_manifest(
+    args: argparse.Namespace,
+    bars: pd.DataFrame,
+    physical_touches: pd.DataFrame,
+    eligible: pd.DataFrame,
+    status: str,
+) -> None:
     paths = [Path(args.bars), Path(args.vxn), ROOT / "volgen/levels.py", ROOT / "volgen/reactions.py", ROOT / "scripts/nq_cond_be45.py"]
     manifest = {
         "status": status,
@@ -339,7 +346,8 @@ def write_manifest(args: argparse.Namespace, bars: pd.DataFrame, touches: pd.Dat
         "bars_rows": len(bars),
         "bars_start": str(bars.index[0]),
         "bars_end": str(bars.index[-1]),
-        "physical_touches_base": len(touches),
+        "physical_touches_base": len(physical_touches),
+        "eligible_candidates": len(eligible),
         "eligible_candidate_target": CANONICAL_RAW_PRE_SAL,
         "sha256": {str(p): sha256(p) for p in paths if p.exists()},
         "config": {
@@ -374,7 +382,7 @@ def main() -> None:
     touches.to_csv(outdir / "local_physical_touches.csv", index=False)
     eligible.to_csv(outdir / "canonical_eligible_1841.csv", index=False)
     eligible.to_csv(outdir / "local_eligible_candidates.csv", index=False)
-    write_manifest(args, bars, eligible, status)
+    write_manifest(args, bars, touches, eligible, status)
 
     summaries = []
     yearly_rows = []

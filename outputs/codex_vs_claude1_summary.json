@@ -1,0 +1,62 @@
+{
+  "repository_url": "https://github.com/dylankazakovas93-dev/Volatility-hodlod",
+  "codex_branch": "codex/nq-strict-reconciliation",
+  "codex_commit": "49f1b3c468f02556e02e467dfec6e1d19318b52e",
+  "claude1_branch": "strict-one-position-reconciliation",
+  "claude1_commit": "c8c4337e2f88e8fc17a14bee88a5ed676e856f10",
+  "claude1_hashes_verified_from_outputs": {
+    "nq_strict_executed.csv": "b7f19e968cb829362a98fc21dd83538573431a23eab14be4aac0c50def125e48",
+    "nq_eligible_1841.csv": "610e3b60f3bcd86b8caa23f484f0dde1e4d576ef84bdd6f3ff0a2ce9e6e1d416",
+    "nq_strict_yearly.csv": "adca71291b2df18c1389bbbcbe5b94bab5795ca40a5f770c2b274c035db56015"
+  },
+  "claude1_reference": {
+    "n": 1107,
+    "net": 6648.166494480312,
+    "pf": 1.2923883743671922,
+    "maxdd": -1290.2870477442339,
+    "avg": 6.0055704557184395,
+    "wr": 38.030713640469735,
+    "twr": 54.19532324621733,
+    "TP": 394,
+    "SL": 333,
+    "BE": 281,
+    "cutoff": 99
+  },
+  "codex_noncanonical_local": {
+    "n": 1116,
+    "net": 8757.719577841755,
+    "pf": 1.3804960864657114,
+    "maxdd": -870.2408024054566,
+    "avg": 7.8474189765607125,
+    "wr": 39.33691756272402,
+    "twr": 55.57065217391305,
+    "TP": 409,
+    "SL": 327,
+    "BE": 278,
+    "cutoff": 102
+  },
+  "matched_rows": 1032,
+  "reference_only_rows": 62,
+  "codex_only_rows": 71,
+  "same_entry_different_exit": 7,
+  "same_exit_different_pnl": 6,
+  "total_net_impact_ref_minus_codex": -2109.553083361444,
+  "first_chronological_divergence": {
+    "mismatch_class": "codex_only",
+    "identity": "4_upper|upper|2018-01-09 12:29:00+00:00",
+    "level_id_ref": null,
+    "level_id_codex": "4:upper",
+    "side_ref": null,
+    "side_codex": "upper",
+    "touch_ref": null,
+    "touch_codex": "2018-01-09 12:29:00+00:00",
+    "exit_ref": null,
+    "exit_codex": "BE",
+    "pnl_ref": null,
+    "pnl_codex": -0.0,
+    "net_impact_ref_minus_codex": 0.0
+  },
+  "physical_touch_diff_rows": 988,
+  "canonical_bars_available_locally": false,
+  "canonical_command_status": "BLOCKED_MISSING_CANONICAL_BARS_FILE"
+}

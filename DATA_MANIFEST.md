@@ -9,7 +9,8 @@
   "bars_rows": 2965023,
   "bars_start": "2018-01-01 18:00:00-05:00",
   "bars_end": "2026-06-07 19:59:00-04:00",
-  "physical_touches_base": 1835,
+  "physical_touches_base": 3492,
+  "eligible_candidates": 1834,
   "eligible_candidate_target": 1841,
   "sha256": {
     "/Users/mariusvidziunas/Documents/Codex/2026-06-19/nq-level-fade-conditional-be-45-2/work/Volatility-hodlod/data/nq_1m/nq_continuous_downloads_2018_2026_1m.csv": "018e84c9edeabed942dce7bb0904943e36b9fd68c6cc4fc5dda1f40b733251ba",
