@@ -1,0 +1,55 @@
+# Canonical pointer, not a duplicate configuration.
+#
+# Label:  OG_CONFIG_CLEAN_BASELINE
+# Status: OG_CONFIG_CLEAN_BASELINE__VALID_RESEARCH_STARTING_POINT
+#
+# This file intentionally does NOT restate the strategy's parameters. The
+# single source of truth for every rule and number is the file referenced
+# below, which is byte-identical across every commit from the original
+# handoff through the present HEAD (verified with `git diff <old>:<path>
+# <new>:<path>` -- zero output at every stage boundary; see
+# docs/OG_CONFIG_HISTORY.md for the exact commands run and their output).
+#
+# Do not hand-copy values out of this pointer into a new file. If a future
+# experiment needs to change a value, branch a new config file from the one
+# below and give it its own name -- never edit
+# configs/nq_current_config.yaml itself, and never treat a copy as if it
+# were still OG_CONFIG_CLEAN_BASELINE.
+
+canonical_config_path: configs/nq_current_config.yaml
+canonical_engine_path: src/strict_engine.py
+canonical_independent_engine_path: src/independent_strict_engine.py
+canonical_entrypoint: scripts/run_current_config.py
+canonical_rules_doc: docs/STRATEGY_RULES.md
+canonical_config_index_doc: docs/CURRENT_CONFIG.md
+
+canonical_branch: handoff/nq-strict-engine-v1
+canonical_commit: a375818056ca435df021d60b111f5f58b1f3551f
+canonical_commit_parent: d5d6e48e6785de6cfe330455d62796250f0f7ce6  # root/orphan commit ("Clean handoff")
+
+# f99c8fd (verification/claude-baseline-v1) is a sibling commit on top of
+# a375818 that performs an even deeper independent verification pass. It is
+# NOT in the direct lineage that Stage 0-5 research forked from (Stage 0
+# forked from a375818 directly) but reproduces every headline number
+# byte-for-byte and is documented as corroborating evidence.
+independent_verification_branch: verification/claude-baseline-v1
+independent_verification_commit: f99c8fd
+
+full_details: docs/OG_CONFIG_HISTORY.md
+live_rules: docs/OG_CONFIG_LIVE_RULES.md
+next_research_plan: docs/OG_CONFIG_NEXT_RESEARCH.md
+
+# The unrelated, later ground-up Stage 0-5 + locked-OOS research line
+# (research/claude-stage0-excursions ... research/claude-final-oos) is a
+# SEPARATE strategy configuration, not a modification of this one. See its
+# own label below -- never conflate the two when asked to "audit the OG
+# config" or "test X on the OG config".
+unrelated_separate_strategy:
+  label: GROUND_UP_F2_HMM_CONFIG__OOS_WEAK__REJECTED_FOR_DEPLOYMENT
+  branch: research/claude-final-oos
+  config_paths:
+    - configs/stage1_tpsl_selected.yaml
+    - configs/stage2_selected.yaml
+    - configs/stage3_selected.yaml
+    - configs/stage4_selected.yaml
+    - configs/stage5_selected.yaml
