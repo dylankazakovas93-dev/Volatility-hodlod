@@ -1,0 +1,498 @@
+[
+  {
+    "candidate": "hmm3_exclude_MID_p55",
+    "perturbation": "window",
+    "window": 80,
+    "seed": 42,
+    "n": 391,
+    "net_pts": 3888.48,
+    "PF": 1.4822,
+    "win_rate": 0.4169,
+    "avg_trade": 9.945,
+    "max_drawdown": -513.25,
+    "per_year": {
+      "2018": {
+        "n": 109,
+        "net_pts": 253.61,
+        "PF": 1.2239,
+        "win_rate": 0.4037,
+        "avg_trade": 2.327,
+        "max_drawdown": -256.99,
+        "TP": 42,
+        "SL": 27,
+        "BE": 30,
+        "cutoff": 10
+      },
+      "2020": {
+        "n": 113,
+        "net_pts": 1063.49,
+        "PF": 1.3576,
+        "win_rate": 0.3628,
+        "avg_trade": 9.411,
+        "max_drawdown": -513.25,
+        "TP": 38,
+        "SL": 41,
+        "BE": 23,
+        "cutoff": 11
+      },
+      "2023": {
+        "n": 113,
+        "net_pts": 458.03,
+        "PF": 1.1923,
+        "win_rate": 0.4336,
+        "avg_trade": 4.053,
+        "max_drawdown": -455.67,
+        "TP": 41,
+        "SL": 29,
+        "BE": 24,
+        "cutoff": 19
+      },
+      "2026": {
+        "n": 56,
+        "net_pts": 2113.36,
+        "PF": 2.3417,
+        "win_rate": 0.5179,
+        "avg_trade": 37.738,
+        "max_drawdown": -480.44,
+        "TP": 25,
+        "SL": 12,
+        "BE": 9,
+        "cutoff": 10
+      }
+    }
+  },
+  {
+    "candidate": "hmm3_exclude_MID_p55",
+    "perturbation": "window",
+    "window": 100,
+    "seed": 42,
+    "n": 384,
+    "net_pts": 3430.38,
+    "PF": 1.4348,
+    "win_rate": 0.4167,
+    "avg_trade": 8.933,
+    "max_drawdown": -601.11,
+    "per_year": {
+      "2018": {
+        "n": 107,
+        "net_pts": 275.16,
+        "PF": 1.2518,
+        "win_rate": 0.4206,
+        "avg_trade": 2.572,
+        "max_drawdown": -224.25,
+        "TP": 43,
+        "SL": 26,
+        "BE": 29,
+        "cutoff": 9
+      },
+      "2020": {
+        "n": 116,
+        "net_pts": 1070.24,
+        "PF": 1.362,
+        "win_rate": 0.3448,
+        "avg_trade": 9.226,
+        "max_drawdown": -513.25,
+        "TP": 37,
+        "SL": 42,
+        "BE": 26,
+        "cutoff": 11
+      },
+      "2023": {
+        "n": 109,
+        "net_pts": 240.0,
+        "PF": 1.0939,
+        "win_rate": 0.4495,
+        "avg_trade": 2.202,
+        "max_drawdown": -601.11,
+        "TP": 40,
+        "SL": 27,
+        "BE": 21,
+        "cutoff": 21
+      },
+      "2026": {
+        "n": 52,
+        "net_pts": 1844.98,
+        "PF": 2.4364,
+        "win_rate": 0.5,
+        "avg_trade": 35.48,
+        "max_drawdown": -480.44,
+        "TP": 22,
+        "SL": 10,
+        "BE": 10,
+        "cutoff": 10
+      }
+    }
+  },
+  {
+    "candidate": "hmm3_exclude_MID_p55",
+    "perturbation": "window",
+    "window": 120,
+    "seed": 42,
+    "n": 386,
+    "net_pts": 4430.61,
+    "PF": 1.5806,
+    "win_rate": 0.443,
+    "avg_trade": 11.478,
+    "max_drawdown": -593.29,
+    "per_year": {
+      "2018": {
+        "n": 114,
+        "net_pts": 315.48,
+        "PF": 1.2702,
+        "win_rate": 0.4298,
+        "avg_trade": 2.767,
+        "max_drawdown": -208.18,
+        "TP": 47,
+        "SL": 27,
+        "BE": 30,
+        "cutoff": 10
+      },
+      "2020": {
+        "n": 113,
+        "net_pts": 1436.02,
+        "PF": 1.5275,
+        "win_rate": 0.3982,
+        "avg_trade": 12.708,
+        "max_drawdown": -513.25,
+        "TP": 41,
+        "SL": 38,
+        "BE": 24,
+        "cutoff": 10
+      },
+      "2023": {
+        "n": 107,
+        "net_pts": 199.5,
+        "PF": 1.0782,
+        "win_rate": 0.4393,
+        "avg_trade": 1.864,
+        "max_drawdown": -593.29,
+        "TP": 39,
+        "SL": 26,
+        "BE": 22,
+        "cutoff": 20
+      },
+      "2026": {
+        "n": 52,
+        "net_pts": 2479.61,
+        "PF": 3.0857,
+        "win_rate": 0.5769,
+        "avg_trade": 47.685,
+        "max_drawdown": -384.81,
+        "TP": 26,
+        "SL": 9,
+        "BE": 7,
+        "cutoff": 10
+      }
+    }
+  },
+  {
+    "candidate": "hmm3_exclude_MID_p55",
+    "perturbation": "seed",
+    "window": 120,
+    "seed": 0,
+    "n": 350,
+    "net_pts": 3022.54,
+    "PF": 1.4152,
+    "win_rate": 0.4057,
+    "avg_trade": 8.636,
+    "max_drawdown": -877.64,
+    "per_year": {
+      "2018": {
+        "n": 101,
+        "net_pts": 100.61,
+        "PF": 1.093,
+        "win_rate": 0.4059,
+        "avg_trade": 0.996,
+        "max_drawdown": -261.62,
+        "TP": 39,
+        "SL": 26,
+        "BE": 26,
+        "cutoff": 10
+      },
+      "2020": {
+        "n": 101,
+        "net_pts": 1283.67,
+        "PF": 1.5397,
+        "win_rate": 0.3663,
+        "avg_trade": 12.71,
+        "max_drawdown": -523.0,
+        "TP": 33,
+        "SL": 34,
+        "BE": 24,
+        "cutoff": 10
+      },
+      "2023": {
+        "n": 96,
+        "net_pts": -574.81,
+        "PF": 0.7831,
+        "win_rate": 0.3854,
+        "avg_trade": -5.988,
+        "max_drawdown": -877.64,
+        "TP": 31,
+        "SL": 29,
+        "BE": 19,
+        "cutoff": 17
+      },
+      "2026": {
+        "n": 52,
+        "net_pts": 2213.07,
+        "PF": 2.8935,
+        "win_rate": 0.5192,
+        "avg_trade": 42.559,
+        "max_drawdown": -235.14,
+        "TP": 23,
+        "SL": 10,
+        "BE": 10,
+        "cutoff": 9
+      }
+    }
+  },
+  {
+    "candidate": "hmm3_exclude_MID_p55",
+    "perturbation": "seed",
+    "window": 120,
+    "seed": 1,
+    "n": 352,
+    "net_pts": 3850.72,
+    "PF": 1.5535,
+    "win_rate": 0.4205,
+    "avg_trade": 10.94,
+    "max_drawdown": -529.75,
+    "per_year": {
+      "2018": {
+        "n": 100,
+        "net_pts": -28.02,
+        "PF": 0.9752,
+        "win_rate": 0.37,
+        "avg_trade": -0.28,
+        "max_drawdown": -386.87,
+        "TP": 35,
+        "SL": 26,
+        "BE": 29,
+        "cutoff": 10
+      },
+      "2020": {
+        "n": 96,
+        "net_pts": 1204.39,
+        "PF": 1.5313,
+        "win_rate": 0.375,
+        "avg_trade": 12.546,
+        "max_drawdown": -529.75,
+        "TP": 32,
+        "SL": 33,
+        "BE": 22,
+        "cutoff": 9
+      },
+      "2023": {
+        "n": 100,
+        "net_pts": 379.36,
+        "PF": 1.1694,
+        "win_rate": 0.44,
+        "avg_trade": 3.794,
+        "max_drawdown": -376.21,
+        "TP": 37,
+        "SL": 28,
+        "BE": 18,
+        "cutoff": 17
+      },
+      "2026": {
+        "n": 56,
+        "net_pts": 2294.98,
+        "PF": 2.741,
+        "win_rate": 0.5536,
+        "avg_trade": 40.982,
+        "max_drawdown": -285.06,
+        "TP": 27,
+        "SL": 10,
+        "BE": 9,
+        "cutoff": 10
+      }
+    }
+  },
+  {
+    "candidate": "hmm3_exclude_MID_p55",
+    "perturbation": "seed",
+    "window": 120,
+    "seed": 42,
+    "n": 386,
+    "net_pts": 4430.61,
+    "PF": 1.5806,
+    "win_rate": 0.443,
+    "avg_trade": 11.478,
+    "max_drawdown": -593.29,
+    "per_year": {
+      "2018": {
+        "n": 114,
+        "net_pts": 315.48,
+        "PF": 1.2702,
+        "win_rate": 0.4298,
+        "avg_trade": 2.767,
+        "max_drawdown": -208.18,
+        "TP": 47,
+        "SL": 27,
+        "BE": 30,
+        "cutoff": 10
+      },
+      "2020": {
+        "n": 113,
+        "net_pts": 1436.02,
+        "PF": 1.5275,
+        "win_rate": 0.3982,
+        "avg_trade": 12.708,
+        "max_drawdown": -513.25,
+        "TP": 41,
+        "SL": 38,
+        "BE": 24,
+        "cutoff": 10
+      },
+      "2023": {
+        "n": 107,
+        "net_pts": 199.5,
+        "PF": 1.0782,
+        "win_rate": 0.4393,
+        "avg_trade": 1.864,
+        "max_drawdown": -593.29,
+        "TP": 39,
+        "SL": 26,
+        "BE": 22,
+        "cutoff": 20
+      },
+      "2026": {
+        "n": 52,
+        "net_pts": 2479.61,
+        "PF": 3.0857,
+        "win_rate": 0.5769,
+        "avg_trade": 47.685,
+        "max_drawdown": -384.81,
+        "TP": 26,
+        "SL": 9,
+        "BE": 7,
+        "cutoff": 10
+      }
+    }
+  },
+  {
+    "candidate": "hmm3_exclude_MID_p55",
+    "perturbation": "seed",
+    "window": 120,
+    "seed": 123,
+    "n": 328,
+    "net_pts": 2897.01,
+    "PF": 1.4504,
+    "win_rate": 0.4299,
+    "avg_trade": 8.832,
+    "max_drawdown": -534.75,
+    "per_year": {
+      "2018": {
+        "n": 100,
+        "net_pts": 237.56,
+        "PF": 1.2492,
+        "win_rate": 0.42,
+        "avg_trade": 2.376,
+        "max_drawdown": -248.25,
+        "TP": 40,
+        "SL": 26,
+        "BE": 26,
+        "cutoff": 8
+      },
+      "2020": {
+        "n": 102,
+        "net_pts": 1335.34,
+        "PF": 1.5806,
+        "win_rate": 0.402,
+        "avg_trade": 13.092,
+        "max_drawdown": -534.75,
+        "TP": 37,
+        "SL": 34,
+        "BE": 22,
+        "cutoff": 9
+      },
+      "2023": {
+        "n": 79,
+        "net_pts": 116.04,
+        "PF": 1.0593,
+        "win_rate": 0.4557,
+        "avg_trade": 1.469,
+        "max_drawdown": -432.8,
+        "TP": 29,
+        "SL": 24,
+        "BE": 11,
+        "cutoff": 15
+      },
+      "2026": {
+        "n": 47,
+        "net_pts": 1208.07,
+        "PF": 1.9877,
+        "win_rate": 0.4681,
+        "avg_trade": 25.704,
+        "max_drawdown": -241.55,
+        "TP": 18,
+        "SL": 11,
+        "BE": 9,
+        "cutoff": 9
+      }
+    }
+  },
+  {
+    "candidate": "hmm3_exclude_MID_p55",
+    "perturbation": "seed",
+    "window": 120,
+    "seed": 2024,
+    "n": 329,
+    "net_pts": 3156.26,
+    "PF": 1.4985,
+    "win_rate": 0.4286,
+    "avg_trade": 9.593,
+    "max_drawdown": -534.75,
+    "per_year": {
+      "2018": {
+        "n": 99,
+        "net_pts": 246.18,
+        "PF": 1.266,
+        "win_rate": 0.4141,
+        "avg_trade": 2.487,
+        "max_drawdown": -248.25,
+        "TP": 39,
+        "SL": 25,
+        "BE": 27,
+        "cutoff": 8
+      },
+      "2020": {
+        "n": 103,
+        "net_pts": 1445.59,
+        "PF": 1.6448,
+        "win_rate": 0.4078,
+        "avg_trade": 14.035,
+        "max_drawdown": -534.75,
+        "TP": 38,
+        "SL": 33,
+        "BE": 23,
+        "cutoff": 9
+      },
+      "2023": {
+        "n": 80,
+        "net_pts": 137.42,
+        "PF": 1.0708,
+        "win_rate": 0.45,
+        "avg_trade": 1.718,
+        "max_drawdown": -460.55,
+        "TP": 29,
+        "SL": 24,
+        "BE": 12,
+        "cutoff": 15
+      },
+      "2026": {
+        "n": 47,
+        "net_pts": 1327.07,
+        "PF": 2.085,
+        "win_rate": 0.4681,
+        "avg_trade": 28.236,
+        "max_drawdown": -227.17,
+        "TP": 18,
+        "SL": 11,
+        "BE": 9,
+        "cutoff": 9
+      }
+    }
+  }
+]
