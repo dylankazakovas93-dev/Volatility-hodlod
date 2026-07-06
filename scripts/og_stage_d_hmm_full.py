@@ -51,7 +51,7 @@ def candidates_for(n_states, regime_df):
 
 def state_occupancy_by_year(regime_df, n_states):
     df = regime_df.copy()
-    df["year"] = [s.year for s in df["session"]]
+    df["year"] = [int(s[:4]) for s in df["session"]]
     argmax_col = df[[f"state_prob_{j}" for j in range(n_states)]].values.argmax(axis=1)
     df["argmax"] = argmax_col
     labels = STATE_LABELS[n_states]
@@ -84,7 +84,7 @@ def main(n_states_list=(2, 3), window=120, seed=42, min_sessions=20, tag="primar
     bars, ranges, events = c["bars"], c["ranges"], c["events"]
 
     touched = [e for e in events if e["touched_at"] is not None]
-    target_sessions = sorted({e["session_date"] for e in touched
+    target_sessions = sorted({e["session_date"].strftime("%Y-%m-%d") for e in touched
                                if e["session_date"].year in OG_BUILD_YEARS})
     print(f"[{tag}] target sessions (build years, touch-bearing): {len(target_sessions)}")
 
