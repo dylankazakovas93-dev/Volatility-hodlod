@@ -147,3 +147,35 @@ def test_no_executed_trade_ever_has_entry_or_exit_in_blackout():
     if len(ex_df):
         assert not ex_df["entry_time"].apply(in_prop_hard_blackout).any()
         assert not ex_df["exit_time"].apply(in_prop_hard_blackout).any()
+
+
+def test_stage_e_candidate_trade_outputs_never_enter_hard_blackout():
+    """Stage E re-verification (docs/OG_STAGE_E_WINDOWS_COMPLETE.md): every
+    Stage-E-complete candidate's actual executed-trade CSV (blocked-interval
+    candidates, their redundant until-16:00 pairs, session-entry candidates,
+    and the window-perturbation candidates) must contain no entry timestamp
+    in [16:00, 19:00) ET. This checks the real outputs on disk from
+    scripts/og_stage_e_windows_complete.py, not a synthetic scenario."""
+    import glob
+    import os
+
+    out_dir = os.path.join(
+        os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+        "outputs", "og_build_years")
+    paths = sorted(glob.glob(os.path.join(out_dir, "stage_e_complete_*_build_years_trades.csv")))
+    if not paths:
+        pytest.skip("Stage E complete outputs not generated in this environment")
+
+    checked = 0
+    for p in paths:
+        df = pd.read_csv(p, parse_dates=["entry_time", "exit_time"])
+        if len(df) == 0:
+            continue
+        entries = pd.to_datetime(df["entry_time"], utc=True)
+        exits = pd.to_datetime(df["exit_time"], utc=True)
+        assert not entries.apply(in_prop_hard_blackout).any(), (
+            f"PROP_HARD_BLACKOUT violated (entry) in {p}")
+        assert not exits.apply(in_prop_hard_blackout).any(), (
+            f"PROP_HARD_BLACKOUT violated (exit) in {p}")
+        checked += 1
+    assert checked > 0
