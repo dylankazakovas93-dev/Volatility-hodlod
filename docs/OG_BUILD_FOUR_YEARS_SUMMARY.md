@@ -10,7 +10,10 @@
 > `tests/test_prop_hard_blackout.py`; (2) renaming the Stage E
 > "10:00-16:00" selection to `RESEARCH_ENTRY_BLACKOUT_10_16` -- **done**,
 > see `docs/OG_STAGE_E_WINDOWS.md`; (3) a full preregistered Stage C management
-> family sweep -- **not done**; (4) a full Stage D HMM matrix (3-feature,
+> family sweep -- **done**, see `docs/OG_STAGE_C_MANAGEMENT.md` (20
+> candidates + mandatory perturbation; the perturbation did NOT pass
+> cleanly, honest caveats documented, provisional `be_bars=60` retained
+> pending future fold-based LOBYO); (4) a full Stage D HMM matrix (3-feature,
 > 2/3-state, confidence-gated, perturbation-validated) -- **not done**; (5) a
 > full Stage E blackout-window matrix -- **not done**; (6) genuine
 > fold-based LOBYO for Stages B/C/D/E -- **not done**. The content below this
