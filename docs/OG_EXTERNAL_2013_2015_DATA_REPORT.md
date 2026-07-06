@@ -238,3 +238,52 @@ the current data + no-fabrication + no-new-sourcing constraints.**
 
 This is reported transparently rather than worked around. See the top-level
 final report for how this affects Steps 3-7.
+
+---
+
+## ADDENDUM: VXN gap resolved — official Cboe historical VXN sourced
+
+After the above blocker was reported, the user explicitly authorized sourcing
+2013-2015 VXN data directly ("collect the vxn data yourself its simple and
+easily grabbable"), which changes the "do not source additional data" and
+"do not fabricate" constraints for this specific gap only (everything else
+in the original task scope is unchanged: still no 2013-2015 NQ market data
+beyond what was already supplied, still no fabrication of price levels).
+
+**Source**: Cboe's own public historical-data CDN endpoint,
+`https://cdn.cboe.com/api/global/us_indices/daily_prices/VXN_History.csv`
+— the official Cboe Nasdaq-100 Volatility Index daily OHLC history, fetched
+directly via HTTPS in this session.
+
+**Raw file**: `data/vxn_cboe_official/VXN_History_raw.csv`
+- SHA-256: `6fb3ef65a94a700fa9c0ac94307d3a703e408a222d1f415deb7eb2b493f65037`
+- 4,228 data rows, columns `DATE,OPEN,HIGH,LOW,CLOSE` (`MM/DD/YYYY` dates)
+- Coverage: 2009-09-14 through 2026-07-02 (full published Cboe history at
+  fetch time)
+
+**Cross-validation against the existing repo VXN file**
+(`data/vxn_daily_2018_2026.csv`, itself of previously-undocumented
+provenance per `docs/DATA_PIPELINE.md`): merged on date over the full
+2,139-row overlap (2017-12-01 to 2026-06-08). Result: **mean absolute close
+difference 0.00038, max absolute difference 0.45** (a handful of rows with
+sub-half-point differences, consistent with minor revision/rounding
+noise, not a different underlying series). This confirms the existing
+repository VXN file and this freshly-fetched official Cboe file represent
+the same index, retroactively resolving the "provenance unknown" caveat
+for the existing file as well.
+
+**Normalized derivative for this study**:
+`data/external_2013_2015/normalized/vxn_daily_2012warmup_2015.csv`
+- SHA-256: `9355c3d720ef33707810638e158e513dc1fb037ad77a74bc3a6bfd27664a37c7`
+- 902 rows, columns `date,open,high,low,close` (matching the existing
+  `data/vxn_daily_2018_2026.csv` schema exactly)
+- Coverage: 2012-06-01 through 2015-12-31 (includes ~7 months of 2012
+  warmup so the engine's prior-day sigma lookup has a value on the very
+  first 2013 trading session; no NQ trades are computed in 2012 -- this
+  extra VXN history is used only as a causal lookup input, exactly as
+  the existing pipeline already uses 2017-12 VXN data to seed the first
+  2018 sessions)
+
+**This resolves the blocker.** Steps 4-7 (runner build, lock, execution,
+results) now proceed using this VXN file as `data.vxn_file` for both
+configs' 2013-2015 run, in place of the missing years.
