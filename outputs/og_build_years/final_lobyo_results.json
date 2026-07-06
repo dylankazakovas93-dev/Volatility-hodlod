@@ -1,0 +1,112 @@
+{
+  "full_year_folds": {
+    "2018": {
+      "held_out_year_metrics": {
+        "n": 112,
+        "net_pts": 285.8,
+        "PF": 1.3439,
+        "win_rate": 0.3929,
+        "avg_trade": 2.552,
+        "max_drawdown": -139.08,
+        "TP": 44,
+        "SL": 33,
+        "BE": 34,
+        "cutoff": 1
+      },
+      "other_full_years_metrics": {
+        "n": 231,
+        "net_pts": 2021.99,
+        "PF": 1.4578,
+        "win_rate": 0.4199,
+        "avg_trade": 8.753,
+        "max_drawdown": -563.16,
+        "TP": 92,
+        "SL": 77,
+        "BE": 49,
+        "cutoff": 13
+      },
+      "selection_confirmation": "Frozen config (SAL off / BE-60 / no-HMM / 10:00-16:00 block) remains net-positive on the other full years [2020, 2023] when this year is excluded -- consistent with the Stage B-E selection rationale, which did not hinge on any single year."
+    },
+    "2020": {
+      "held_out_year_metrics": {
+        "n": 131,
+        "net_pts": 1478.9,
+        "PF": 1.5635,
+        "win_rate": 0.4046,
+        "avg_trade": 11.289,
+        "max_drawdown": -563.16,
+        "TP": 49,
+        "SL": 47,
+        "BE": 27,
+        "cutoff": 8
+      },
+      "other_full_years_metrics": {
+        "n": 212,
+        "net_pts": 828.89,
+        "PF": 1.316,
+        "win_rate": 0.4151,
+        "avg_trade": 3.91,
+        "max_drawdown": -378.11,
+        "TP": 87,
+        "SL": 63,
+        "BE": 56,
+        "cutoff": 6
+      },
+      "selection_confirmation": "Frozen config (SAL off / BE-60 / no-HMM / 10:00-16:00 block) remains net-positive on the other full years [2018, 2023] when this year is excluded -- consistent with the Stage B-E selection rationale, which did not hinge on any single year."
+    },
+    "2023": {
+      "held_out_year_metrics": {
+        "n": 100,
+        "net_pts": 543.09,
+        "PF": 1.303,
+        "win_rate": 0.44,
+        "avg_trade": 5.431,
+        "max_drawdown": -378.11,
+        "TP": 43,
+        "SL": 30,
+        "BE": 22,
+        "cutoff": 5
+      },
+      "other_full_years_metrics": {
+        "n": 243,
+        "net_pts": 1764.69,
+        "PF": 1.5107,
+        "win_rate": 0.3992,
+        "avg_trade": 7.262,
+        "max_drawdown": -563.16,
+        "TP": 93,
+        "SL": 80,
+        "BE": 61,
+        "cutoff": 9
+      },
+      "selection_confirmation": "Frozen config (SAL off / BE-60 / no-HMM / 10:00-16:00 block) remains net-positive on the other full years [2018, 2020] when this year is excluded -- consistent with the Stage B-E selection rationale, which did not hinge on any single year."
+    }
+  },
+  "partial_2026_fold": {
+    "held_out_year_metrics": {
+      "n": 57,
+      "net_pts": 2703.3,
+      "PF": 3.3838,
+      "win_rate": 0.5965,
+      "avg_trade": 47.426,
+      "max_drawdown": -402.75,
+      "TP": 32,
+      "SL": 12,
+      "BE": 10,
+      "cutoff": 3
+    },
+    "other_full_years_metrics": {
+      "n": 343,
+      "net_pts": 2307.78,
+      "PF": 1.4397,
+      "win_rate": 0.4111,
+      "avg_trade": 6.728,
+      "max_drawdown": -563.16,
+      "TP": 136,
+      "SL": 110,
+      "BE": 83,
+      "cutoff": 14
+    },
+    "note": "2026 is partial (through 2026-06-07); this fold is not directly comparable to the 3 full-year folds above."
+  }
+}

@@ -1,0 +1,195 @@
+{
+  "frozen_params": {
+    "sal_enabled": false,
+    "be_bars": 60,
+    "be_extra_lock": 0.0,
+    "blocked_window": [
+      600,
+      960
+    ],
+    "hmm_gate": null,
+    "blocked_window_et": "10:00-16:00"
+  },
+  "per_year": {
+    "2018": {
+      "n": 112,
+      "net_pts": 285.8,
+      "PF": 1.3439,
+      "win_rate": 0.3929,
+      "avg_trade": 2.552,
+      "max_drawdown": -139.08,
+      "TP": 44,
+      "SL": 33,
+      "BE": 34,
+      "cutoff": 1
+    },
+    "2020": {
+      "n": 131,
+      "net_pts": 1478.9,
+      "PF": 1.5635,
+      "win_rate": 0.4046,
+      "avg_trade": 11.289,
+      "max_drawdown": -563.16,
+      "TP": 49,
+      "SL": 47,
+      "BE": 27,
+      "cutoff": 8
+    },
+    "2023": {
+      "n": 100,
+      "net_pts": 543.09,
+      "PF": 1.303,
+      "win_rate": 0.44,
+      "avg_trade": 5.431,
+      "max_drawdown": -378.11,
+      "TP": 43,
+      "SL": 30,
+      "BE": 22,
+      "cutoff": 5
+    },
+    "2026": {
+      "n": 57,
+      "net_pts": 2703.3,
+      "PF": 3.3838,
+      "win_rate": 0.5965,
+      "avg_trade": 47.426,
+      "max_drawdown": -402.75,
+      "TP": 32,
+      "SL": 12,
+      "BE": 10,
+      "cutoff": 3
+    }
+  },
+  "excl_2026_partial": {
+    "n": 343,
+    "net_pts": 2307.78,
+    "PF": 1.4397,
+    "win_rate": 0.4111,
+    "avg_trade": 6.728,
+    "max_drawdown": -563.16,
+    "TP": 136,
+    "SL": 110,
+    "BE": 83,
+    "cutoff": 14
+  },
+  "excl_best_year": {
+    "excluded_year": 2026,
+    "metrics": {
+      "n": 343,
+      "net_pts": 2307.78,
+      "PF": 1.4397,
+      "win_rate": 0.4111,
+      "avg_trade": 6.728,
+      "max_drawdown": -563.16,
+      "TP": 136,
+      "SL": 110,
+      "BE": 83,
+      "cutoff": 14
+    }
+  },
+  "full_years_2018_2020_2023": {
+    "n": 343,
+    "net_pts": 2307.78,
+    "PF": 1.4397,
+    "win_rate": 0.4111,
+    "avg_trade": 6.728,
+    "max_drawdown": -563.16,
+    "TP": 136,
+    "SL": 110,
+    "BE": 83,
+    "cutoff": 14
+  },
+  "partial_2026": {
+    "is_partial": true,
+    "through": "2026-06-07",
+    "metrics": {
+      "n": 57,
+      "net_pts": 2703.3,
+      "PF": 3.3838,
+      "win_rate": 0.5965,
+      "avg_trade": 47.426,
+      "max_drawdown": -402.75,
+      "TP": 32,
+      "SL": 12,
+      "BE": 10,
+      "cutoff": 3
+    }
+  },
+  "n_positive_build_years": 4,
+  "n_build_years": 4,
+  "r_multiple_note": "Engine has no R-multiple concept (no stop-risk-normalized field in the ledger); R sub-metrics are skipped per instructions.",
+  "aggregate_all_build_years": {
+    "n": 400,
+    "net_pts": 5011.09,
+    "PF": 1.7852,
+    "win_rate": 0.4375,
+    "avg_trade": 12.528,
+    "max_drawdown": -563.16,
+    "TP": 168,
+    "SL": 122,
+    "BE": 93,
+    "cutoff": 17
+  },
+  "parameter_neighborhood": {
+    "be_bars_45": {
+      "n": 407,
+      "net_pts": 4692.76,
+      "PF": 1.7737,
+      "win_rate": 0.4152,
+      "avg_trade": 11.53,
+      "max_drawdown": -721.54,
+      "TP": 163,
+      "SL": 116,
+      "BE": 112,
+      "cutoff": 16
+    },
+    "be_bars_75": {
+      "n": 394,
+      "net_pts": 3728.61,
+      "PF": 1.5299,
+      "win_rate": 0.4518,
+      "avg_trade": 9.463,
+      "max_drawdown": -546.66,
+      "TP": 170,
+      "SL": 129,
+      "BE": 77,
+      "cutoff": 18
+    },
+    "window_9_17": {
+      "n": 308,
+      "net_pts": 3728.16,
+      "PF": 1.8334,
+      "win_rate": 0.4156,
+      "avg_trade": 12.104,
+      "max_drawdown": -460.79,
+      "TP": 125,
+      "SL": 91,
+      "BE": 87,
+      "cutoff": 5
+    },
+    "window_10.5_15.5": {
+      "n": 460,
+      "net_pts": 3866.08,
+      "PF": 1.4362,
+      "win_rate": 0.4152,
+      "avg_trade": 8.405,
+      "max_drawdown": -1038.69,
+      "TP": 180,
+      "SL": 139,
+      "BE": 106,
+      "cutoff": 35
+    },
+    "sal_on": {
+      "n": 366,
+      "net_pts": 4208.83,
+      "PF": 1.7073,
+      "win_rate": 0.429,
+      "avg_trade": 11.5,
+      "max_drawdown": -657.04,
+      "TP": 151,
+      "SL": 114,
+      "BE": 86,
+      "cutoff": 15
+    }
+  }
+}
