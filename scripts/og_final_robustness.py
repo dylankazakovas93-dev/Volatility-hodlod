@@ -1,6 +1,6 @@
 """Final combined frozen configuration: robustness reporting + LOBYO,
 build years only. Frozen params: sal_enabled=False, be_bars=60,
-be_extra_lock=0.0, blocked_window=(10:00,16:00) ET, hmm_gate=None.
+be_extra_lock=0.0, blocked_window=RESEARCH_ENTRY_BLACKOUT_10_16 (entries blocked from 10:00 ET, ET), hmm_gate=None.
 """
 import json
 import os
@@ -34,7 +34,7 @@ def main():
     build = filter_build_years(ex_full)
     build.to_csv(os.path.join(OUT, "final_frozen_build_years_trades.csv"), index=False)
 
-    report = {"frozen_params": {**FINAL, "blocked_window_et": "10:00-16:00"}}
+    report = {"frozen_params": {**FINAL, "blocked_window_et": "RESEARCH_ENTRY_BLACKOUT_10_16 (entries blocked from 10:00 ET)"}}
 
     # each build year separately
     report["per_year"] = {int(y): summarize(g) for y, g in build.groupby("year")}

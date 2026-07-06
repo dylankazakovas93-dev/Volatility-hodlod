@@ -42,7 +42,7 @@ def main():
             "held_out_year_metrics": summarize(build[build["year"] == held_out]),
             "other_full_years_metrics": summarize(build[build["year"].isin(others)]),
             "selection_confirmation": (
-                "Frozen config (SAL off / BE-60 / no-HMM / 10:00-16:00 block) "
+                "Frozen config (SAL off / BE-60 / no-HMM / RESEARCH_ENTRY_BLACKOUT_10_16, entries blocked from 10:00 ET) "
                 f"remains net-positive on the other full years {sorted(others)} "
                 "when this year is excluded -- consistent with the Stage B-E "
                 "selection rationale, which did not hinge on any single year."

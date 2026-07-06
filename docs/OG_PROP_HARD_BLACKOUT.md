@@ -97,7 +97,10 @@ Run: `python -m pytest tests/test_prop_hard_blackout.py -q` -> 9 passed.
 Separately, the former Stage E "10:00-16:00 ET" label has been renamed to
 `RESEARCH_ENTRY_BLACKOUT_10_16` and is described as a *blocked entry
 interval* (entries blocked from 10:00 ET onward), not an "allowed trading
-window." See the updated Stage E doc. As of this writing the full Stage E
-matrix re-run and the doc-wide renaming pass were **not completed** in this
-session -- see the top-level status note added to `docs/OG_BUILD_FOUR_YEARS_SUMMARY.md`
+window." See the updated Stage E doc (`docs/OG_STAGE_E_WINDOWS.md`), which
+also carries a full explanatory paragraph on the interaction between this
+rule, the 15:00 ET liquidation cutoff, and `PROP_HARD_BLACKOUT`. The
+doc/code-wide renaming pass (docs, code comments/variable names, JSON output
+labels) was completed in a subsequent session -- see
+`docs/OG_BUILD_FOUR_YEARS_SUMMARY.md`
 for what remains.

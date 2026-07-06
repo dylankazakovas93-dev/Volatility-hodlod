@@ -19,7 +19,7 @@ FROZEN = dict(sal_enabled=False, be_bars=60, be_extra_lock=0.0, hmm_gate=None)
 
 CANDIDATES = {
     "canonical_11_15":  (11 * 60, 15 * 60),   # canonical: blocked 11:00-15:00 ET
-    "wider_10_16":      (10 * 60, 16 * 60),   # wider blocked window (more restrictive entry)
+    "RESEARCH_ENTRY_BLACKOUT_10_16": (10 * 60, 16 * 60),  # research-selected blocked ENTRY interval: entries blocked from 10:00 ET (not a "10:00-16:00 trading window")
     "narrower_12_14":   (12 * 60, 14 * 60),   # narrower blocked window (more permissive entry)
     "shifted_11_16":    (11 * 60, 16 * 60),   # shifted/extended block into the close
 }
