@@ -1,124 +1,206 @@
-"""Stage D: causal 2-state Gaussian HMM regime gate for the OG build-years
-pipeline.
+"""Stage D (full rebuild): causal, session-refit Gaussian HMM regime-gate
+infrastructure for the OG build-four-years research pipeline.
 
-Design (kept deliberately simple/causal, per the Stage D spec):
+This SUPERSEDES the prior session's diagnostic-only 2-state/60-min-return
+walk-forward-ANNUAL version (see docs/OG_STAGE_D_HMM.md, SUPERSEDED section).
+That version refit once per calendar year on 60-min returns. This version:
 
-  1. Feature: 60-minute-bar log returns computed from the full chronological
-     bar stream (this is an *input feature*, not an outcome metric -- using
-     the full stream for feature construction is explicitly allowed by the
-     task's data firewall, since it is rolling/causal and lagged).
-  2. Walk-forward annual refit: at the start of each calendar year Y, a
-     2-state Gaussian HMM is fit ONLY on 60-min returns from all years
-     strictly before Y (hmmlearn's EM fit, which is fine to run on a static
-     historical window because by construction that window is entirely in
-     the past relative to every bar it will be used to classify). The first
-     two years (2018 has no prior data) fall back to "no gate" (regime
-     gate not active) since there is no prior-year data to fit from -- this
-     itself is a causal, not-cheating choice, not a leak.
-  3. Causal per-bar state filtering: for bars inside year Y, the regime state
-     is estimated with a manual forward-algorithm filter (alpha recursion)
-     using the year-Y model's fixed transition/emission parameters and only
-     observations up to and including the current bar -- NOT hmmlearn's
-     default Viterbi/posterior decode, which would smooth using future
-     observations within the sequence. This guarantees no lookahead within a
-     trading day or across days.
-  4. Gate: a touch at timestamp ts is allowed only if the causally filtered
-     regime state of the most recently completed 60-minute bar strictly
-     before ts equals the candidate's target state (0 or 1).
+  - Uses three features per 5-minute bar, all causal/rolling, no lookahead:
+      1. 5-minute log return
+      2. trailing 30-minute realized volatility (rolling std of the 5-min
+         log return over the trailing 6 bars = 30 minutes)
+      3. trailing 30-minute cumulative return/trend (rolling sum of the
+         5-min log return over the same trailing 6-bar window)
+  - Refits ONCE PER SESSION (not once per year, not continuously intra-day):
+    at the start of each session, on the trailing window of the previous
+    20-120 *completed* sessions (max 120, min 20 -- sessions with fewer than
+    20 prior completed sessions get no gate at all, fail-open).
+  - The session being classified is NEVER in its own training window.
+  - Standardizes features using ONLY the training window's mean/std.
+  - Forward-filters (alpha-recursion) causally, bar by bar, WITHIN the
+    session, using the fixed model fit at session start. No smoothing
+    (forward-backward) and no Viterbi full-path decoding are used anywhere,
+    since both would leak future-within-session information.
+  - Orders states by fitted volatility (ascending) at every single refit, so
+    "state 0" always means the lowest fitted-vol regime, regardless of
+    hmmlearn's arbitrary internal component ordering -- this makes labels
+    ("LOW"/"MID"/"HIGH") comparable across sessions/refits.
 
-This module only builds the gate function; it computes no strategy outcome
-metrics itself.
+Per the data firewall: fitting/feature construction may use the full
+historical bar stream (rolling, causal, lagged) -- this module only computes
+regime PROBABILITIES (an input feature), never a strategy outcome. To keep
+compute tractable, callers pass `target_sessions` (the only sessions whose
+regime classification is actually needed) -- for this pipeline that is
+exactly the sessions containing a build-year touch. Fitting on the causal
+trailing window naturally pulls in some non-build-year bars as training
+DATA for the price-return HMM, which is explicitly permitted (feature
+construction only, never an outcome).
 """
 from __future__ import annotations
 
 import numpy as np
 import pandas as pd
 
+from src.strict_engine import session_date
+
 try:
     from hmmlearn.hmm import GaussianHMM
 except Exception:  # pragma: no cover
     GaussianHMM = None
 
-
-def _resample_60m_logret(bars: pd.DataFrame) -> pd.Series:
-    close_60m = bars["close"].resample("60min", label="right", closed="left").last().dropna()
-    logret = np.log(close_60m).diff().dropna()
-    return logret
+FEATURE_COLS = ["logret5m", "vol30m", "trend30m"]
+VOL_COL_IDX = FEATURE_COLS.index("vol30m")
 
 
-def _forward_filter(obs, startprob, transmat, means, covars):
-    """Manual causal forward-algorithm filter for a 2-state Gaussian HMM.
-    Returns an array of filtered state probabilities, shape (n, 2), where
-    row i uses only obs[0..i] (no future data)."""
-    n = len(obs)
-    n_states = len(startprob)
-    stds = np.sqrt(np.array(covars).reshape(n_states))
-    means = np.array(means).reshape(n_states)
+def build_5m_features(bars: pd.DataFrame) -> pd.DataFrame:
+    """Causal 5-minute feature frame. Row at time t uses only bars <= t."""
+    c5 = bars["close"].resample("5min", label="right", closed="left").last().dropna()
+    logret = np.log(c5).diff()
+    vol30 = logret.rolling(6).std()
+    trend30 = logret.rolling(6).sum()
+    df = pd.DataFrame({"logret5m": logret, "vol30m": vol30, "trend30m": trend30}).dropna()
+    df["session"] = [session_date(ts) for ts in df.index]
+    return df
 
-    def emis(x):
-        return (1.0 / (stds * np.sqrt(2 * np.pi))) * np.exp(-0.5 * ((x - means) / stds) ** 2)
 
-    alpha = np.zeros((n, n_states))
-    e0 = emis(obs[0])
+def _diag_gaussian_emis(x, means, stds):
+    """x: (d,), means/stds: (k,d) -> emission likelihood per state, (k,)."""
+    z = (x[None, :] - means) / stds
+    exponent = -0.5 * np.sum(z * z, axis=1)
+    norm = np.prod(1.0 / (stds * np.sqrt(2 * np.pi)), axis=1)
+    return norm * np.exp(exponent)
+
+
+def forward_filter(X, startprob, transmat, means, covars):
+    """Causal forward-algorithm (alpha-recursion) filter for a diagonal-
+    covariance Gaussian HMM. Row t of the returned (n,k) array depends only
+    on X[0..t] -- this is the causality property under test in
+    tests/test_og_hmm_causality.py / the runner's self-check."""
+    n = X.shape[0]
+    k = len(startprob)
+    stds = np.sqrt(np.maximum(covars, 1e-12))
+    alpha = np.zeros((n, k))
+    e0 = _diag_gaussian_emis(X[0], means, stds)
     a0 = startprob * e0
-    a0 = a0 / a0.sum() if a0.sum() > 0 else startprob
-    alpha[0] = a0
+    s0 = a0.sum()
+    alpha[0] = a0 / s0 if s0 > 0 else startprob
     for t in range(1, n):
         pred = alpha[t - 1] @ transmat
-        e = emis(obs[t])
+        e = _diag_gaussian_emis(X[t], means, stds)
         a = pred * e
         s = a.sum()
         alpha[t] = a / s if s > 0 else pred
     return alpha
 
 
-def build_causal_regime_series(bars: pd.DataFrame, min_fit_year: int = 2019) -> pd.Series:
-    """Returns a pandas Series indexed by 60-min-bar right-edge timestamp ->
-    causally filtered most-likely regime state (0 or 1), walk-forward refit
-    annually. Years before `min_fit_year` (no prior-year data) get state -1
-    (no gate / unknown -- callers should treat -1 as "gate does not apply,
-    do not block")."""
+def fit_session_hmm(X_train, n_states, random_state):
+    """Fit a diagonal-covariance GaussianHMM on standardized training data
+    and return (startprob, transmat, means, covars) reordered so state 0 is
+    lowest fitted volatility, state (n_states-1) is highest."""
     if GaussianHMM is None:
         raise RuntimeError("hmmlearn not available")
+    model = GaussianHMM(
+        n_components=n_states, covariance_type="diag", n_iter=20,
+        tol=1e-2, random_state=random_state,
+    )
+    model.fit(X_train)
+    order = np.argsort(model.means_[:, VOL_COL_IDX])
+    startprob = model.startprob_[order]
+    transmat = model.transmat_[np.ix_(order, order)]
+    means = model.means_[order]
+    covars = np.asarray(model.covars_)[order]
+    if covars.ndim == 3:  # (k,d,d) -> diag
+        covars = np.array([np.diag(c) for c in covars])
+    return startprob, transmat, means, covars
 
-    logret = _resample_60m_logret(bars)
-    years = sorted(set(logret.index.year))
-    out = pd.Series(-1, index=logret.index, dtype=int)
 
-    for y in years:
-        if y < min_fit_year:
+def causal_session_regime_probs(features_df, target_sessions, *, n_states=2,
+                                 min_sessions=20, max_sessions=120,
+                                 random_state=42):
+    """Walk-forward, session-refit causal HMM regime probabilities.
+
+    Only computes probabilities for sessions in `target_sessions` (an
+    iterable of session dates) -- this is the data-firewall enforcement
+    point for Stage D: no other session's classification is ever computed.
+
+    Returns (regime_df, meta):
+      regime_df: DataFrame indexed by 5-min bar timestamp (only rows for
+        classified sessions), columns state_prob_0..state_prob_{n_states-1}
+        (ascending fitted volatility order), plus 'session' and
+        'n_train_sessions'.
+      meta: dict with 'n_sessions_requested', 'n_sessions_skipped_insufficient_history',
+        'n_sessions_classified', 'skipped_sessions' (list).
+    """
+    target_sessions = set(target_sessions)
+    sessions_sorted = sorted(features_df["session"].unique())
+    sess_rows = {s: g for s, g in features_df.groupby("session")}
+
+    frames = []
+    skipped = []
+    n_classified = 0
+    for i, sess in enumerate(sessions_sorted):
+        if sess not in target_sessions:
             continue
-        train = logret[logret.index.year < y]
-        test = logret[logret.index.year == y]
-        if len(train) < 200 or len(test) == 0:
+        prior = sessions_sorted[:i]
+        if len(prior) < min_sessions:
+            skipped.append(sess)
             continue
-        model = GaussianHMM(n_components=2, covariance_type="diag", n_iter=100, random_state=0)
-        model.fit(train.values.reshape(-1, 1))
-        alpha = _forward_filter(
-            test.values, model.startprob_, model.transmat_,
-            model.means_, model.covars_,
-        )
-        states = alpha.argmax(axis=1)
-        out.loc[test.index] = states
+        train_sessions = prior[-max_sessions:]
+        train_df = pd.concat([sess_rows[s] for s in train_sessions])
+        X_train_raw = train_df[FEATURE_COLS].values
+        mu, sd = X_train_raw.mean(axis=0), X_train_raw.std(axis=0)
+        sd = np.where(sd == 0, 1.0, sd)
+        Xs_train = (X_train_raw - mu) / sd
 
-    return out
+        startprob, transmat, means, covars = fit_session_hmm(Xs_train, n_states, random_state)
+
+        test_df = sess_rows[sess]
+        Xs_test = (test_df[FEATURE_COLS].values - mu) / sd  # train-only standardization
+        alpha = forward_filter(Xs_test, startprob, transmat, means, covars)
+
+        cols = {f"state_prob_{j}": alpha[:, j] for j in range(n_states)}
+        cols["session"] = sess
+        cols["n_train_sessions"] = len(train_sessions)
+        frames.append(pd.DataFrame(cols, index=test_df.index))
+        n_classified += 1
+
+    regime_df = pd.concat(frames).sort_index() if frames else pd.DataFrame()
+    meta = {
+        "n_sessions_requested": len(target_sessions),
+        "n_sessions_skipped_insufficient_history": len(skipped),
+        "n_sessions_classified": n_classified,
+        "skipped_sessions": [str(s) for s in skipped],
+        "n_states": n_states,
+        "min_sessions": min_sessions,
+        "max_sessions": max_sessions,
+        "random_state": random_state,
+    }
+    return regime_df, meta
 
 
-def make_hmm_gate(regime_series: pd.Series, target_state: int, bars_tz: str = "America/New_York"):
-    """Returns a callable gate(ts) -> bool. ts is looked up against the most
-    recently completed 60-min bar strictly before ts (causal: the regime of a
-    bar isn't known until that bar closes)."""
-    idx = regime_series.index
+def make_gate(regime_df, *, state_idx=None, exclude_idx=None, threshold=0.55):
+    """Returns callable gate(ts) -> bool. Exactly one of state_idx/exclude_idx
+    should be set:
+      - state_idx: allow only if causally filtered P(state==state_idx) > threshold
+      - exclude_idx: allow only if causally filtered P(state!=exclude_idx) > threshold
+    A touch at ts is checked against the most recently COMPLETED 5-min bar
+    strictly before ts (the bar containing ts itself is not yet closed).
+    Sessions with no classification (insufficient history, or not in
+    regime_df at all) fail OPEN (gate does not block), per the task's
+    explicit skip/no-gate rule."""
+    if regime_df is None or len(regime_df) == 0:
+        return lambda ts: True
+    idx = regime_df.index
 
     def gate(ts) -> bool:
-        # 60-min bars are right-labeled (label of the bar's close time); the
-        # most recently completed bar strictly before ts:
         pos = idx.searchsorted(ts, side="left") - 1
         if pos < 0:
-            return True  # no history yet -> do not block (fail-open, matches min_fit_year design)
-        state = regime_series.iloc[pos]
-        if state == -1:
-            return True  # gate not active for this period (pre-fit years)
-        return bool(state == target_state)
+            return True
+        row = regime_df.iloc[pos]
+        if state_idx is not None:
+            return bool(row[f"state_prob_{state_idx}"] > threshold)
+        if exclude_idx is not None:
+            return bool((1.0 - row[f"state_prob_{exclude_idx}"]) > threshold)
+        return True
 
     return gate
