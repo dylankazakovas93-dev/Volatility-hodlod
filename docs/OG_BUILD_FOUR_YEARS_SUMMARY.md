@@ -1,5 +1,24 @@
 # OG Build-Four-Years — Final Frozen Configuration & Robustness Summary
 
+> **STATUS NOTE (Phase 1 rigor follow-up, in progress, not complete):** a
+> human reviewer judged the Phase 1 result below (Stages B-E) to be
+> prematurely concluded -- too few candidates per stage, and a pseudo-LOBYO
+> (`scripts/og_lobyo.py`) that re-evaluates one already-chosen config per
+> year rather than genuinely re-selecting per fold. This follow-up work item
+> requires: (1) a permanent `PROP_HARD_BLACKOUT` 16:00-19:00 ET rule --
+> **done**, see `docs/OG_PROP_HARD_BLACKOUT.md` and
+> `tests/test_prop_hard_blackout.py`; (2) renaming the Stage E
+> "10:00-16:00" selection to `RESEARCH_ENTRY_BLACKOUT_10_16` -- **not yet
+> done** across all docs/code; (3) a full preregistered Stage C management
+> family sweep -- **not done**; (4) a full Stage D HMM matrix (3-feature,
+> 2/3-state, confidence-gated, perturbation-validated) -- **not done**; (5) a
+> full Stage E blackout-window matrix -- **not done**; (6) genuine
+> fold-based LOBYO for Stages B/C/D/E -- **not done**. The content below this
+> note is the *original*, reviewer-flagged Phase 1 result and should be
+> treated as superseded/incomplete pending that follow-up work. See the
+> final report for an honest breakdown of what could and could not be
+> completed in the available session.
+
 Branch: `research/og-build-four-years`, built from
 `research/og-stage-a-independent-verification` (commit `f972581`).
 

@@ -36,8 +36,37 @@ from src.metrics import profit_factor, max_drawdown, max_loss_streak
 
 OG_BUILD_YEARS = {2018, 2020, 2023, 2026}
 
+# --- PROP_HARD_BLACKOUT -----------------------------------------------------
+# Permanent, hard-coded, always-on prohibition on trading activity during
+# 16:00-19:00 ET. This is structurally SEPARATE from:
+#   - the research-selected blocked entry interval (RESEARCH_ENTRY_BLACKOUT_10_16
+#     and its Stage E siblings), which is a *parameter* passed as blocked_window;
+#   - the forced-liquidation cutoff (currently 15:00 ET, session_cutoff());
+#   - the 19:00 ET session boundary (session_date()).
+# It cannot be disabled, widened, or bypassed by any candidate/variant
+# parameters and must be checked unconditionally in run_variant(), independent
+# of blocked_window. This encodes a defensive guarantee: even if a future
+# change moves the liquidation cutoff or session/window parameters, no entry
+# may ever occur at/after 16:00 ET and before 19:00 ET, and no position may
+# remain open into that interval.
+PROP_HARD_BLACKOUT_START_MIN = 16 * 60  # 16:00 ET, inclusive start of blackout
+PROP_HARD_BLACKOUT_END_MIN = 19 * 60    # 19:00 ET, exclusive end (new session)
+
+
+def in_prop_hard_blackout(ts):
+    """True if timestamp ts falls within the permanent 16:00-19:00 ET
+    blackout (16:00 inclusive, 19:00 exclusive -- 19:00 begins the next
+    session per session_date())."""
+    et = ts.tz_convert(ET)
+    m = et.hour * 60 + et.minute
+    return PROP_HARD_BLACKOUT_START_MIN <= m < PROP_HARD_BLACKOUT_END_MIN
+
 
 def entry_allowed_window(ts, blocked_start_min=11 * 60, blocked_end_min=15 * 60):
+    """Research-selected blocked ENTRY interval (e.g. Stage E's
+    RESEARCH_ENTRY_BLACKOUT_10_16): entries are blocked from blocked_start_min
+    until blocked_end_min (in ET minutes-since-midnight). This is independent
+    of, and does not replace, PROP_HARD_BLACKOUT."""
     et = ts.tz_convert(ET)
     m = et.hour * 60 + et.minute
     return not (blocked_start_min <= m < blocked_end_min)
@@ -130,6 +159,15 @@ def run_variant(bars, ranges, events, *,
                 record_skip(e, "no_anchor")
             continue
 
+        if in_prop_hard_blackout(ts):
+            # Permanent hard blackout: this touch is consumed here and will
+            # never be retried, including after 19:00 -- groups are keyed by
+            # the original touched_at timestamp and iterated exactly once in
+            # chronological order, so there is no re-queue path.
+            for e in group:
+                record_skip(e, "prop_hard_blackout")
+            continue
+
         if not entry_allowed_window(ts, *blocked_window):
             for e in group:
                 record_skip(e, "blocked_time")
@@ -203,6 +241,19 @@ def run_variant(bars, ranges, events, *,
             sal_armed_at = exit_ts
 
     ex_df = pd.DataFrame(executed)
+
+    # Defensive structural assertions for PROP_HARD_BLACKOUT (16:00-19:00 ET):
+    # no entry may ever fall in the blackout, and no position may remain open
+    # into it. Given the canonical 15:00 ET liquidation cutoff this should be
+    # moot for exit times, but we assert it explicitly rather than assuming.
+    if len(ex_df):
+        assert not ex_df["entry_time"].apply(in_prop_hard_blackout).any(), (
+            "PROP_HARD_BLACKOUT violated: an entry occurred at/after 16:00 "
+            "and before 19:00 ET")
+        assert not ex_df["exit_time"].apply(in_prop_hard_blackout).any(), (
+            "PROP_HARD_BLACKOUT violated: a position remained open into "
+            "16:00-19:00 ET")
+
     summary = {
         "total_physical_touches": total_physical_touches,
         "executed": len(ex_df),
@@ -210,6 +261,7 @@ def run_variant(bars, ranges, events, *,
         "skipped_position_open": skip_counts.get("position_open", 0),
         "skipped_hmm_gate": skip_counts.get("hmm_gate", 0),
         "skipped_blocked_time": skip_counts.get("blocked_time", 0),
+        "skipped_prop_hard_blackout": skip_counts.get("prop_hard_blackout", 0),
     }
     if len(ex_df):
         exs = ex_df["exit_reason"].value_counts()
