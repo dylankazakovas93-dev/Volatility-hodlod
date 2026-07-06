@@ -1,0 +1,855 @@
+{
+  "B": {
+    "stage": "B",
+    "objective": "(n_positive_build_years, aggregate_net_pts) over the non-held-out years, per docs/OG_STAGE_B_SAL.md",
+    "candidate_pool": [
+      "SAL_on",
+      "SAL_off"
+    ],
+    "folds": {
+      "2018": {
+        "selected_on_other_years": [
+          2020,
+          2023,
+          2026
+        ],
+        "candidate_scores_on_other_years": {
+          "SAL_on": [
+            2,
+            3394.67
+          ],
+          "SAL_off": [
+            3,
+            3799.53
+          ]
+        },
+        "fold_winner": "SAL_off",
+        "held_out_year_metrics_for_winner": {
+          "n": 141,
+          "net_pts": 240.24,
+          "PF": 1.1735,
+          "win_rate": 0.4043,
+          "avg_trade": 1.704,
+          "max_drawdown": -235.61,
+          "TP": 55,
+          "SL": 39,
+          "BE": 38,
+          "cutoff": 9
+        }
+      },
+      "2020": {
+        "selected_on_other_years": [
+          2018,
+          2023,
+          2026
+        ],
+        "candidate_scores_on_other_years": {
+          "SAL_on": [
+            2,
+            2751.89
+          ],
+          "SAL_off": [
+            3,
+            3068.77
+          ]
+        },
+        "fold_winner": "SAL_off",
+        "held_out_year_metrics_for_winner": {
+          "n": 156,
+          "net_pts": 971.0,
+          "PF": 1.3106,
+          "win_rate": 0.3205,
+          "avg_trade": 6.224,
+          "max_drawdown": -721.54,
+          "TP": 48,
+          "SL": 48,
+          "BE": 49,
+          "cutoff": 11
+        }
+      },
+      "2023": {
+        "selected_on_other_years": [
+          2018,
+          2020,
+          2026
+        ],
+        "candidate_scores_on_other_years": {
+          "SAL_on": [
+            3,
+            3595.3199999999997
+          ],
+          "SAL_off": [
+            3,
+            3951.6000000000004
+          ]
+        },
+        "fold_winner": "SAL_off",
+        "held_out_year_metrics_for_winner": {
+          "n": 137,
+          "net_pts": 88.17,
+          "PF": 1.0294,
+          "win_rate": 0.3869,
+          "avg_trade": 0.644,
+          "max_drawdown": -702.32,
+          "TP": 44,
+          "SL": 36,
+          "BE": 35,
+          "cutoff": 22
+        }
+      },
+      "2026": {
+        "selected_on_other_years": [
+          2018,
+          2020,
+          2023
+        ],
+        "candidate_scores_on_other_years": {
+          "SAL_on": [
+            2,
+            755.6
+          ],
+          "SAL_off": [
+            3,
+            1299.41
+          ]
+        },
+        "fold_winner": "SAL_off",
+        "held_out_year_metrics_for_winner": {
+          "n": 73,
+          "net_pts": 2740.36,
+          "PF": 2.9494,
+          "win_rate": 0.5068,
+          "avg_trade": 37.539,
+          "max_drawdown": -355.12,
+          "TP": 33,
+          "SL": 12,
+          "BE": 19,
+          "cutoff": 9
+        }
+      }
+    },
+    "all_years_frozen_winner": "SAL_off",
+    "all_years_recomputed_winner": "SAL_off",
+    "selection_frequency_across_4_folds": {
+      "SAL_off": 4
+    },
+    "stability_verdict": {
+      "full_year_fold_winners": {
+        "2018": "SAL_off",
+        "2020": "SAL_off",
+        "2023": "SAL_off"
+      },
+      "fold_2026_winner": "SAL_off",
+      "unanimous_across_all_4_folds": true,
+      "unanimous_across_3_full_year_folds": true,
+      "2026_fold_winner_differs_from_full_year_consensus": false
+    },
+    "n_positive_held_out_folds_of_3_full_years": 3,
+    "n_positive_held_out_folds_of_4": 4
+  },
+  "C": {
+    "stage": "C",
+    "objective": "(n_positive_years, trade-count-weighted mean PF_pts) over the non-held-out years, approximating docs/OG_STAGE_C_MANAGEMENT_COMPLETE.md's 'ex-2026 PF + all/most-years-positive + no-cliff-edge' standard",
+    "candidate_pool": [
+      "BE30",
+      "BE45",
+      "BE60",
+      "BE75",
+      "BE90",
+      "noBE"
+    ],
+    "folds": {
+      "2018": {
+        "selected_on_other_years": [
+          2020,
+          2023,
+          2026
+        ],
+        "candidate_scores_on_other_years": {
+          "BE30": [
+            3,
+            1.5770236413043477
+          ],
+          "BE45": [
+            3,
+            1.5322065573770491
+          ],
+          "BE60": [
+            3,
+            1.5224100000000003
+          ],
+          "BE75": [
+            3,
+            1.2747784313725492
+          ],
+          "BE90": [
+            3,
+            1.4480640449438202
+          ],
+          "noBE": [
+            3,
+            1.419852906976744
+          ]
+        },
+        "fold_winner": "BE30",
+        "held_out_year_metrics_for_winner": {
+          "net_pts": -20.01,
+          "PF_pts": 0.9863,
+          "n_trades": 144
+        }
+      },
+      "2020": {
+        "selected_on_other_years": [
+          2018,
+          2023,
+          2026
+        ],
+        "candidate_scores_on_other_years": {
+          "BE30": [
+            2,
+            1.452512324929972
+          ],
+          "BE45": [
+            3,
+            1.4866025641025642
+          ],
+          "BE60": [
+            3,
+            1.4020245714285715
+          ],
+          "BE75": [
+            2,
+            1.232148115942029
+          ],
+          "BE90": [
+            2,
+            1.407271676300578
+          ],
+          "noBE": [
+            2,
+            1.2988404191616765
+          ]
+        },
+        "fold_winner": "BE45",
+        "held_out_year_metrics_for_winner": {
+          "net_pts": 971.0,
+          "PF_pts": 1.3106,
+          "n_trades": 156
+        }
+      },
+      "2023": {
+        "selected_on_other_years": [
+          2018,
+          2020,
+          2026
+        ],
+        "candidate_scores_on_other_years": {
+          "BE30": [
+            2,
+            1.4770595174262733
+          ],
+          "BE45": [
+            3,
+            1.5816845945945945
+          ],
+          "BE60": [
+            3,
+            1.5333220385674933
+          ],
+          "BE75": [
+            2,
+            1.2458720670391064
+          ],
+          "BE90": [
+            2,
+            1.3974670391061452
+          ],
+          "noBE": [
+            2,
+            1.3177800578034682
+          ]
+        },
+        "fold_winner": "BE45",
+        "held_out_year_metrics_for_winner": {
+          "net_pts": 88.17,
+          "PF_pts": 1.0294,
+          "n_trades": 137
+        }
+      },
+      "2026": {
+        "selected_on_other_years": [
+          2018,
+          2020,
+          2023
+        ],
+        "candidate_scores_on_other_years": {
+          "BE30": [
+            2,
+            1.1810066210045662
+          ],
+          "BE45": [
+            3,
+            1.1772923963133641
+          ],
+          "BE60": [
+            3,
+            1.1677018735362998
+          ],
+          "BE75": [
+            2,
+            1.0041075829383888
+          ],
+          "BE90": [
+            2,
+            1.0781924170616113
+          ],
+          "noBE": [
+            2,
+            1.1116916461916462
+          ]
+        },
+        "fold_winner": "BE45",
+        "held_out_year_metrics_for_winner": {
+          "net_pts": 2740.36,
+          "PF_pts": 2.9494,
+          "n_trades": 73
+        }
+      }
+    },
+    "all_years_frozen_winner": "BE60",
+    "all_years_recomputed_winner": "BE45",
+    "selection_frequency_across_4_folds": {
+      "BE30": 1,
+      "BE45": 3
+    },
+    "stability_verdict": {
+      "full_year_fold_winners": {
+        "2018": "BE30",
+        "2020": "BE45",
+        "2023": "BE45"
+      },
+      "fold_2026_winner": "BE45",
+      "unanimous_across_all_4_folds": false,
+      "unanimous_across_3_full_year_folds": false,
+      "2026_fold_winner_differs_from_full_year_consensus": false
+    },
+    "n_positive_held_out_folds_of_3_full_years": 2,
+    "n_positive_held_out_folds_of_4": 3
+  },
+  "D": {
+    "stage": "D",
+    "objective": "(n_positive_years, aggregate_net_pts) over the non-held-out years; APPROXIMATION using already-computed per-year breakdowns from the full HMM matrix (docs/OG_STAGE_D_HMM.md), reduced candidate set {no_gate, hmm3_HIGH_only_p55, hmm3_exclude_MID_p55} -- no per-fold HMM re-fitting was performed (would require 4x expensive causal session-refits); this is explicitly disclosed as an approximation.",
+    "candidate_pool": [
+      "no_gate",
+      "hmm3_HIGH_only_p55",
+      "hmm3_exclude_MID_p55"
+    ],
+    "folds": {
+      "2018": {
+        "selected_on_other_years": [
+          2020,
+          2023,
+          2026
+        ],
+        "candidate_scores_on_other_years": {
+          "no_gate": [
+            3,
+            4268.74
+          ],
+          "hmm3_HIGH_only_p55": [
+            2,
+            3321.45
+          ],
+          "hmm3_exclude_MID_p55": [
+            3,
+            4115.13
+          ]
+        },
+        "fold_winner": "no_gate",
+        "held_out_year_metrics_for_winner": {
+          "net_pts": 103.61,
+          "PF": 1.0709
+        }
+      },
+      "2020": {
+        "selected_on_other_years": [
+          2018,
+          2023,
+          2026
+        ],
+        "candidate_scores_on_other_years": {
+          "no_gate": [
+            3,
+            3070.51
+          ],
+          "hmm3_HIGH_only_p55": [
+            2,
+            1908.05
+          ],
+          "hmm3_exclude_MID_p55": [
+            3,
+            2994.59
+          ]
+        },
+        "fold_winner": "no_gate",
+        "held_out_year_metrics_for_winner": {
+          "net_pts": 1301.84,
+          "PF": 1.3819
+        }
+      },
+      "2023": {
+        "selected_on_other_years": [
+          2018,
+          2020,
+          2026
+        ],
+        "candidate_scores_on_other_years": {
+          "no_gate": [
+            3,
+            4273.3099999999995
+          ],
+          "hmm3_HIGH_only_p55": [
+            3,
+            3671.34
+          ],
+          "hmm3_exclude_MID_p55": [
+            3,
+            4231.110000000001
+          ]
+        },
+        "fold_winner": "no_gate",
+        "held_out_year_metrics_for_winner": {
+          "net_pts": 99.04,
+          "PF": 1.0321
+        }
+      },
+      "2026": {
+        "selected_on_other_years": [
+          2018,
+          2020,
+          2023
+        ],
+        "candidate_scores_on_other_years": {
+          "no_gate": [
+            3,
+            1504.4899999999998
+          ],
+          "hmm3_HIGH_only_p55": [
+            2,
+            1400.2
+          ],
+          "hmm3_exclude_MID_p55": [
+            3,
+            1951.0
+          ]
+        },
+        "fold_winner": "hmm3_exclude_MID_p55",
+        "held_out_year_metrics_for_winner": {
+          "net_pts": 2479.61,
+          "PF": 3.0857
+        }
+      }
+    },
+    "all_years_frozen_winner": "no_gate (no-HMM)",
+    "all_years_recomputed_winner": "hmm3_exclude_MID_p55",
+    "note": "no_gate's per-year values are identical to Stage C's BE60 canonical-window numbers (same underlying trade population with no gate applied).",
+    "selection_frequency_across_4_folds": {
+      "no_gate": 3,
+      "hmm3_exclude_MID_p55": 1
+    },
+    "stability_verdict": {
+      "full_year_fold_winners": {
+        "2018": "no_gate",
+        "2020": "no_gate",
+        "2023": "no_gate"
+      },
+      "fold_2026_winner": "hmm3_exclude_MID_p55",
+      "unanimous_across_all_4_folds": false,
+      "unanimous_across_3_full_year_folds": true,
+      "2026_fold_winner_differs_from_full_year_consensus": true
+    },
+    "n_positive_held_out_folds_of_3_full_years": 3,
+    "n_positive_held_out_folds_of_4": 4
+  },
+  "E": {
+    "stage": "E",
+    "objective": "(n_positive_years, trade-count-weighted mean PF_pts) over the non-held-out years, approximating docs/OG_STAGE_E_WINDOWS_COMPLETE.md's 'ex-2026 PF + all/most-years-positive + no-cliff-edge' standard",
+    "candidate_pool": [
+      "blocked_0900_until1500",
+      "blocked_0930_until1500",
+      "blocked_1000_until1500",
+      "blocked_1030_until1500",
+      "blocked_1100_until1500",
+      "blocked_1130_until1500",
+      "blocked_1200_until1500"
+    ],
+    "folds": {
+      "2018": {
+        "selected_on_other_years": [
+          2020,
+          2023,
+          2026
+        ],
+        "candidate_scores_on_other_years": {
+          "blocked_0900_until1500": [
+            3,
+            1.9405213333333333
+          ],
+          "blocked_0930_until1500": [
+            3,
+            1.9895405982905983
+          ],
+          "blocked_1000_until1500": [
+            3,
+            1.833316319444444
+          ],
+          "blocked_1030_until1500": [
+            3,
+            1.4875352583586625
+          ],
+          "blocked_1100_until1500": [
+            3,
+            1.5224100000000003
+          ],
+          "blocked_1130_until1500": [
+            3,
+            1.46385672823219
+          ],
+          "blocked_1200_until1500": [
+            3,
+            1.4745960099750626
+          ]
+        },
+        "fold_winner": "blocked_0930_until1500",
+        "held_out_year_metrics_for_winner": {
+          "net_pts": 244.12,
+          "PF_pts": 1.4717,
+          "n_trades": 85
+        }
+      },
+      "2020": {
+        "selected_on_other_years": [
+          2018,
+          2023,
+          2026
+        ],
+        "candidate_scores_on_other_years": {
+          "blocked_0900_until1500": [
+            3,
+            1.9791542288557218
+          ],
+          "blocked_0930_until1500": [
+            3,
+            2.034552380952381
+          ],
+          "blocked_1000_until1500": [
+            3,
+            1.7609420074349442
+          ],
+          "blocked_1030_until1500": [
+            3,
+            1.3962915624999999
+          ],
+          "blocked_1100_until1500": [
+            3,
+            1.4020245714285715
+          ],
+          "blocked_1130_until1500": [
+            2,
+            1.2467061994609165
+          ],
+          "blocked_1200_until1500": [
+            2,
+            1.2108088161209067
+          ]
+        },
+        "fold_winner": "blocked_0930_until1500",
+        "held_out_year_metrics_for_winner": {
+          "net_pts": 1089.41,
+          "PF_pts": 1.499,
+          "n_trades": 109
+        }
+      },
+      "2023": {
+        "selected_on_other_years": [
+          2018,
+          2020,
+          2026
+        ],
+        "candidate_scores_on_other_years": {
+          "blocked_0900_until1500": [
+            3,
+            1.9276740425531917
+          ],
+          "blocked_0930_until1500": [
+            3,
+            2.044731950207469
+          ],
+          "blocked_1000_until1500": [
+            3,
+            1.8273730000000001
+          ],
+          "blocked_1030_until1500": [
+            3,
+            1.4711122023809524
+          ],
+          "blocked_1100_until1500": [
+            3,
+            1.5333220385674933
+          ],
+          "blocked_1130_until1500": [
+            2,
+            1.4031592307692309
+          ],
+          "blocked_1200_until1500": [
+            2,
+            1.3791871359223304
+          ]
+        },
+        "fold_winner": "blocked_0930_until1500",
+        "held_out_year_metrics_for_winner": {
+          "net_pts": 310.51,
+          "PF_pts": 1.2547,
+          "n_trades": 78
+        }
+      },
+      "2026": {
+        "selected_on_other_years": [
+          2018,
+          2020,
+          2023
+        ],
+        "candidate_scores_on_other_years": {
+          "blocked_0900_until1500": [
+            3,
+            1.334606844106464
+          ],
+          "blocked_0930_until1500": [
+            3,
+            1.4204121323529413
+          ],
+          "blocked_1000_until1500": [
+            3,
+            1.4158463556851308
+          ],
+          "blocked_1030_until1500": [
+            3,
+            1.138313417721519
+          ],
+          "blocked_1100_until1500": [
+            3,
+            1.1677018735362998
+          ],
+          "blocked_1130_until1500": [
+            2,
+            1.1635282894736843
+          ],
+          "blocked_1200_until1500": [
+            2,
+            1.1768633196721312
+          ]
+        },
+        "fold_winner": "blocked_0930_until1500",
+        "held_out_year_metrics_for_winner": {
+          "net_pts": 2556.48,
+          "PF_pts": 4.3467,
+          "n_trades": 47
+        }
+      }
+    },
+    "all_years_frozen_winner": "blocked_1000_until1500",
+    "all_years_recomputed_winner": "blocked_0930_until1500",
+    "selection_frequency_across_4_folds": {
+      "blocked_0930_until1500": 4
+    },
+    "stability_verdict": {
+      "full_year_fold_winners": {
+        "2018": "blocked_0930_until1500",
+        "2020": "blocked_0930_until1500",
+        "2023": "blocked_0930_until1500"
+      },
+      "fold_2026_winner": "blocked_0930_until1500",
+      "unanimous_across_all_4_folds": true,
+      "unanimous_across_3_full_year_folds": true,
+      "2026_fold_winner_differs_from_full_year_consensus": false
+    },
+    "n_positive_held_out_folds_of_3_full_years": 3,
+    "n_positive_held_out_folds_of_4": 4
+  },
+  "F": {
+    "stage": "F",
+    "objective": "(n_positive_years, trade-count-weighted mean PF_R) over the non-held-out years, approximating docs/OG_STAGE_F_RR.md's 'PF_R/avg-R-per-trade monotonicity + no isolated max' standard, Lane B (BE60) candidates only",
+    "candidate_pool": [
+      "laneB_be60_rr075",
+      "laneB_be60_rr100",
+      "laneB_be60_rr125",
+      "laneB_be60_rr150",
+      "laneB_be60_rr200"
+    ],
+    "folds": {
+      "2018": {
+        "selected_on_other_years": [
+          2020,
+          2023,
+          2026
+        ],
+        "candidate_scores_on_other_years": {
+          "laneB_be60_rr075": [
+            3,
+            1.412770588235294
+          ],
+          "laneB_be60_rr100": [
+            3,
+            1.484367361111111
+          ],
+          "laneB_be60_rr125": [
+            3,
+            1.289933216783217
+          ],
+          "laneB_be60_rr150": [
+            3,
+            1.350502797202797
+          ],
+          "laneB_be60_rr200": [
+            3,
+            1.1502664335664334
+          ]
+        },
+        "fold_winner": "laneB_be60_rr100",
+        "held_out_year_metrics_for_winner": {
+          "net_pts": 285.8,
+          "PF_R": 1.3058,
+          "cap_norm_R_avg": 0.092,
+          "n_trades": 112.0
+        }
+      },
+      "2020": {
+        "selected_on_other_years": [
+          2018,
+          2023,
+          2026
+        ],
+        "candidate_scores_on_other_years": {
+          "laneB_be60_rr075": [
+            3,
+            1.532789219330855
+          ],
+          "laneB_be60_rr100": [
+            3,
+            1.6188732342007435
+          ],
+          "laneB_be60_rr125": [
+            3,
+            1.3582168539325843
+          ],
+          "laneB_be60_rr150": [
+            3,
+            1.4329430711610487
+          ],
+          "laneB_be60_rr200": [
+            3,
+            1.2610093632958799
+          ]
+        },
+        "fold_winner": "laneB_be60_rr100",
+        "held_out_year_metrics_for_winner": {
+          "net_pts": 1478.9,
+          "PF_R": 1.0555,
+          "cap_norm_R_avg": 0.0206,
+          "n_trades": 131.0
+        }
+      },
+      "2023": {
+        "selected_on_other_years": [
+          2018,
+          2020,
+          2026
+        ],
+        "candidate_scores_on_other_years": {
+          "laneB_be60_rr075": [
+            3,
+            1.2600448504983388
+          ],
+          "laneB_be60_rr100": [
+            3,
+            1.4554913333333335
+          ],
+          "laneB_be60_rr125": [
+            3,
+            1.2482735785953178
+          ],
+          "laneB_be60_rr150": [
+            3,
+            1.325541137123746
+          ],
+          "laneB_be60_rr200": [
+            3,
+            1.1243568561872908
+          ]
+        },
+        "fold_winner": "laneB_be60_rr100",
+        "held_out_year_metrics_for_winner": {
+          "net_pts": 543.09,
+          "PF_R": 1.371,
+          "cap_norm_R_avg": 0.1164,
+          "n_trades": 100.0
+        }
+      },
+      "2026": {
+        "selected_on_other_years": [
+          2018,
+          2020,
+          2023
+        ],
+        "candidate_scores_on_other_years": {
+          "laneB_be60_rr075": [
+            3,
+            1.1928662790697675
+          ],
+          "laneB_be60_rr100": [
+            3,
+            1.229213119533528
+          ],
+          "laneB_be60_rr125": [
+            3,
+            1.2549359649122807
+          ],
+          "laneB_be60_rr150": [
+            3,
+            1.2766216374269006
+          ],
+          "laneB_be60_rr200": [
+            3,
+            1.1107608187134501
+          ]
+        },
+        "fold_winner": "laneB_be60_rr150",
+        "held_out_year_metrics_for_winner": {
+          "net_pts": 2131.87,
+          "PF_R": 1.7379,
+          "cap_norm_R_avg": 0.2187,
+          "n_trades": 56.0
+        }
+      }
+    },
+    "all_years_frozen_winner": "laneB_be60_rr150",
+    "all_years_recomputed_winner": "laneB_be60_rr100",
+    "selection_frequency_across_4_folds": {
+      "laneB_be60_rr100": 3,
+      "laneB_be60_rr150": 1
+    },
+    "stability_verdict": {
+      "full_year_fold_winners": {
+        "2018": "laneB_be60_rr100",
+        "2020": "laneB_be60_rr100",
+        "2023": "laneB_be60_rr100"
+      },
+      "fold_2026_winner": "laneB_be60_rr150",
+      "unanimous_across_all_4_folds": false,
+      "unanimous_across_3_full_year_folds": true,
+      "2026_fold_winner_differs_from_full_year_consensus": true
+    },
+    "n_positive_held_out_folds_of_3_full_years": 3,
+    "n_positive_held_out_folds_of_4": 4
+  }
+}
