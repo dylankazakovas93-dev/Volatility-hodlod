@@ -1,4 +1,6 @@
 data/nq_1m/
+data/external_2013_2015/raw/*.csv
+data/external_2013_2015/normalized/*.csv
 __pycache__/
 *.pyc
 .pytest_cache/
