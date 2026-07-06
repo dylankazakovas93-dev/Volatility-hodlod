@@ -1,0 +1,207 @@
+{
+  "winner": "bc_BE60",
+  "winner_param": {
+    "be_bars": 60
+  },
+  "perturbation_type": "bar-count +/-15 and +/-30",
+  "winner_per_year": {
+    "2018": {
+      "n": 140,
+      "net_pts": 103.61,
+      "PF": 1.0709,
+      "avg_pts_per_trade": 0.74,
+      "max_drawdown": -317.36
+    },
+    "2020": {
+      "n": 150,
+      "net_pts": 1301.84,
+      "PF": 1.3819,
+      "avg_pts_per_trade": 8.679,
+      "max_drawdown": -563.16
+    },
+    "2023": {
+      "n": 137,
+      "net_pts": 99.04,
+      "PF": 1.0321,
+      "avg_pts_per_trade": 0.723,
+      "max_drawdown": -793.77
+    },
+    "2026": {
+      "n": 73,
+      "net_pts": 2867.86,
+      "PF": 2.7313,
+      "avg_pts_per_trade": 39.286,
+      "max_drawdown": -423.81
+    }
+  },
+  "winner_ex2026": {
+    "n": 427,
+    "net_pts": 1504.48,
+    "PF": 1.1891,
+    "avg_pts_per_trade": 3.523
+  },
+  "neighbors": {
+    "bc_BE30": {
+      "offset": "-30 (BE30)",
+      "per_year": {
+        "2018": {
+          "n": 144,
+          "net_pts": -20.01,
+          "PF": 0.9863,
+          "avg_pts_per_trade": -0.139,
+          "max_drawdown": -414.06
+        },
+        "2020": {
+          "n": 155,
+          "net_pts": 996.37,
+          "PF": 1.315,
+          "avg_pts_per_trade": 6.428,
+          "max_drawdown": -542.05
+        },
+        "2023": {
+          "n": 139,
+          "net_pts": 630.15,
+          "PF": 1.2333,
+          "avg_pts_per_trade": 4.533,
+          "max_drawdown": -512.83
+        },
+        "2026": {
+          "n": 74,
+          "net_pts": 2731.17,
+          "PF": 2.7715,
+          "avg_pts_per_trade": 36.908,
+          "max_drawdown": -345.0
+        }
+      },
+      "ex2026": {
+        "n": 438,
+        "net_pts": 1606.51,
+        "PF": 1.2193,
+        "avg_pts_per_trade": 3.668
+      },
+      "all_years_positive": false
+    },
+    "bc_BE45": {
+      "offset": "-15 (BE45)",
+      "per_year": {
+        "2018": {
+          "n": 141,
+          "net_pts": 240.24,
+          "PF": 1.1735,
+          "avg_pts_per_trade": 1.704,
+          "max_drawdown": -235.61
+        },
+        "2020": {
+          "n": 156,
+          "net_pts": 971.0,
+          "PF": 1.3106,
+          "avg_pts_per_trade": 6.224,
+          "max_drawdown": -721.54
+        },
+        "2023": {
+          "n": 137,
+          "net_pts": 88.17,
+          "PF": 1.0294,
+          "avg_pts_per_trade": 0.644,
+          "max_drawdown": -702.32
+        },
+        "2026": {
+          "n": 73,
+          "net_pts": 2740.36,
+          "PF": 2.9494,
+          "avg_pts_per_trade": 37.539,
+          "max_drawdown": -355.12
+        }
+      },
+      "ex2026": {
+        "n": 434,
+        "net_pts": 1299.41,
+        "PF": 1.1731,
+        "avg_pts_per_trade": 2.994
+      },
+      "all_years_positive": true
+    },
+    "bc_BE75": {
+      "offset": "+15 (BE75)",
+      "per_year": {
+        "2018": {
+          "n": 137,
+          "net_pts": -113.87,
+          "PF": 0.9359,
+          "avg_pts_per_trade": -0.831,
+          "max_drawdown": -512.44
+        },
+        "2020": {
+          "n": 149,
+          "net_pts": 237.81,
+          "PF": 1.0619,
+          "avg_pts_per_trade": 1.596,
+          "max_drawdown": -871.27
+        },
+        "2023": {
+          "n": 136,
+          "net_pts": 30.31,
+          "PF": 1.0095,
+          "avg_pts_per_trade": 0.223,
+          "max_drawdown": -932.6
+        },
+        "2026": {
+          "n": 72,
+          "net_pts": 2222.73,
+          "PF": 2.2164,
+          "avg_pts_per_trade": 30.871,
+          "max_drawdown": -423.81
+        }
+      },
+      "ex2026": {
+        "n": 422,
+        "net_pts": 154.25,
+        "PF": 1.0175,
+        "avg_pts_per_trade": 0.366
+      },
+      "all_years_positive": false
+    },
+    "bc_BE90": {
+      "offset": "+30 (BE90)",
+      "per_year": {
+        "2018": {
+          "n": 138,
+          "net_pts": -11.86,
+          "PF": 0.9932,
+          "avg_pts_per_trade": -0.086,
+          "max_drawdown": -439.69
+        },
+        "2020": {
+          "n": 148,
+          "net_pts": 453.91,
+          "PF": 1.1193,
+          "avg_pts_per_trade": 3.067,
+          "max_drawdown": -768.14
+        },
+        "2023": {
+          "n": 136,
+          "net_pts": 369.57,
+          "PF": 1.1197,
+          "avg_pts_per_trade": 2.717,
+          "max_drawdown": -482.02
+        },
+        "2026": {
+          "n": 72,
+          "net_pts": 3005.71,
+          "PF": 2.7441,
+          "avg_pts_per_trade": 41.746,
+          "max_drawdown": -345.0
+        }
+      },
+      "ex2026": {
+        "n": 422,
+        "net_pts": 811.63,
+        "PF": 1.0939,
+        "avg_pts_per_trade": 1.923
+      },
+      "all_years_positive": false
+    }
+  },
+  "winner_all_years_positive": true,
+  "verdict": "FAILS clean pass: neighbor BE30 (-30) and BE90 (+30) both flip 2018 net-negative (-20.01 and -11.86 respectively), and neighbor BE75 (+15) shows a severe, discontinuous collapse in expectancy (avg_pts_per_trade 8.745->4.812 aggregate, 3.523->0.366 ex-2026) and PF (1.4548->1.2231 aggregate, 1.1891->1.0175 ex-2026) alongside a materially worse max_drawdown (-793.77->-932.60). The mechanism does not show a smooth, stable neighborhood around be_bars=60; 2018 in particular is fragile across the entire bar-count family (near-zero or negative at 30/45/60/90, clearly negative at 75), suggesting the apparent 'BE60 is best' result may be partly a peak that does not generalize robustly. Selected as the most defensible available option (see rationale) but WITH THIS CAVEAT EXPLICITLY STATED, not as a validated, robust finding."
+}

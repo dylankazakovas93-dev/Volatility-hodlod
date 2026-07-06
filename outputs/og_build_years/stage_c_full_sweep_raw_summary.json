@@ -1,0 +1,328 @@
+{
+  "ctrl_BE45": {
+    "mgmt_kwargs": {
+      "mode": "barcount",
+      "be_bars": 45
+    },
+    "n_all_touches_summary": {
+      "total_physical_touches": 3486,
+      "executed": 1278,
+      "skipped_SAL": 0,
+      "skipped_position_open": 389,
+      "skipped_hmm_gate": 0,
+      "skipped_blocked_time": 968,
+      "skipped_prop_hard_blackout": 137
+    },
+    "build_year_n": 507
+  },
+  "ctrl_noBE": {
+    "mgmt_kwargs": {
+      "mode": "none"
+    },
+    "n_all_touches_summary": {
+      "total_physical_touches": 3486,
+      "executed": 1218,
+      "skipped_SAL": 0,
+      "skipped_position_open": 444,
+      "skipped_hmm_gate": 0,
+      "skipped_blocked_time": 968,
+      "skipped_prop_hard_blackout": 137
+    },
+    "build_year_n": 477
+  },
+  "bc_BE30": {
+    "mgmt_kwargs": {
+      "mode": "barcount",
+      "be_bars": 30
+    },
+    "n_all_touches_summary": {
+      "total_physical_touches": 3486,
+      "executed": 1295,
+      "skipped_SAL": 0,
+      "skipped_position_open": 368,
+      "skipped_hmm_gate": 0,
+      "skipped_blocked_time": 968,
+      "skipped_prop_hard_blackout": 137
+    },
+    "build_year_n": 512
+  },
+  "bc_BE45": {
+    "mgmt_kwargs": {
+      "mode": "barcount",
+      "be_bars": 45
+    },
+    "n_all_touches_summary": {
+      "total_physical_touches": 3486,
+      "executed": 1278,
+      "skipped_SAL": 0,
+      "skipped_position_open": 389,
+      "skipped_hmm_gate": 0,
+      "skipped_blocked_time": 968,
+      "skipped_prop_hard_blackout": 137
+    },
+    "build_year_n": 507
+  },
+  "bc_BE60": {
+    "mgmt_kwargs": {
+      "mode": "barcount",
+      "be_bars": 60
+    },
+    "n_all_touches_summary": {
+      "total_physical_touches": 3486,
+      "executed": 1266,
+      "skipped_SAL": 0,
+      "skipped_position_open": 398,
+      "skipped_hmm_gate": 0,
+      "skipped_blocked_time": 968,
+      "skipped_prop_hard_blackout": 137
+    },
+    "build_year_n": 500
+  },
+  "bc_BE75": {
+    "mgmt_kwargs": {
+      "mode": "barcount",
+      "be_bars": 75
+    },
+    "n_all_touches_summary": {
+      "total_physical_touches": 3486,
+      "executed": 1267,
+      "skipped_SAL": 0,
+      "skipped_position_open": 396,
+      "skipped_hmm_gate": 0,
+      "skipped_blocked_time": 968,
+      "skipped_prop_hard_blackout": 137
+    },
+    "build_year_n": 494
+  },
+  "bc_BE90": {
+    "mgmt_kwargs": {
+      "mode": "barcount",
+      "be_bars": 90
+    },
+    "n_all_touches_summary": {
+      "total_physical_touches": 3486,
+      "executed": 1261,
+      "skipped_SAL": 0,
+      "skipped_position_open": 401,
+      "skipped_hmm_gate": 0,
+      "skipped_blocked_time": 968,
+      "skipped_prop_hard_blackout": 137
+    },
+    "build_year_n": 494
+  },
+  "exr_050": {
+    "mgmt_kwargs": {
+      "mode": "exact_r",
+      "r_trigger": 0.5
+    },
+    "n_all_touches_summary": {
+      "total_physical_touches": 3486,
+      "executed": 1274,
+      "skipped_SAL": 0,
+      "skipped_position_open": 393,
+      "skipped_hmm_gate": 0,
+      "skipped_blocked_time": 968,
+      "skipped_prop_hard_blackout": 137
+    },
+    "build_year_n": 503
+  },
+  "exr_075": {
+    "mgmt_kwargs": {
+      "mode": "exact_r",
+      "r_trigger": 0.75
+    },
+    "n_all_touches_summary": {
+      "total_physical_touches": 3486,
+      "executed": 1238,
+      "skipped_SAL": 0,
+      "skipped_position_open": 423,
+      "skipped_hmm_gate": 0,
+      "skipped_blocked_time": 968,
+      "skipped_prop_hard_blackout": 137
+    },
+    "build_year_n": 484
+  },
+  "exr_100": {
+    "mgmt_kwargs": {
+      "mode": "exact_r",
+      "r_trigger": 1.0
+    },
+    "n_all_touches_summary": {
+      "total_physical_touches": 3486,
+      "executed": 1218,
+      "skipped_SAL": 0,
+      "skipped_position_open": 444,
+      "skipped_hmm_gate": 0,
+      "skipped_blocked_time": 968,
+      "skipped_prop_hard_blackout": 137
+    },
+    "build_year_n": 477
+  },
+  "exr_125": {
+    "mgmt_kwargs": {
+      "mode": "exact_r",
+      "r_trigger": 1.25
+    },
+    "n_all_touches_summary": {
+      "total_physical_touches": 3486,
+      "executed": 1218,
+      "skipped_SAL": 0,
+      "skipped_position_open": 444,
+      "skipped_hmm_gate": 0,
+      "skipped_blocked_time": 968,
+      "skipped_prop_hard_blackout": 137
+    },
+    "build_year_n": 477
+  },
+  "lock_075_010": {
+    "mgmt_kwargs": {
+      "mode": "profit_lock",
+      "r_trigger": 0.75,
+      "lock_r": 0.1
+    },
+    "n_all_touches_summary": {
+      "total_physical_touches": 3486,
+      "executed": 1238,
+      "skipped_SAL": 0,
+      "skipped_position_open": 423,
+      "skipped_hmm_gate": 0,
+      "skipped_blocked_time": 968,
+      "skipped_prop_hard_blackout": 137
+    },
+    "build_year_n": 484
+  },
+  "lock_100_010": {
+    "mgmt_kwargs": {
+      "mode": "profit_lock",
+      "r_trigger": 1.0,
+      "lock_r": 0.1
+    },
+    "n_all_touches_summary": {
+      "total_physical_touches": 3486,
+      "executed": 1218,
+      "skipped_SAL": 0,
+      "skipped_position_open": 444,
+      "skipped_hmm_gate": 0,
+      "skipped_blocked_time": 968,
+      "skipped_prop_hard_blackout": 137
+    },
+    "build_year_n": 477
+  },
+  "lock_125_010": {
+    "mgmt_kwargs": {
+      "mode": "profit_lock",
+      "r_trigger": 1.25,
+      "lock_r": 0.1
+    },
+    "n_all_touches_summary": {
+      "total_physical_touches": 3486,
+      "executed": 1218,
+      "skipped_SAL": 0,
+      "skipped_position_open": 444,
+      "skipped_hmm_gate": 0,
+      "skipped_blocked_time": 968,
+      "skipped_prop_hard_blackout": 137
+    },
+    "build_year_n": 477
+  },
+  "time_30": {
+    "mgmt_kwargs": {
+      "mode": "time_be",
+      "minutes_elapsed": 30,
+      "mfe_r": 0.25
+    },
+    "n_all_touches_summary": {
+      "total_physical_touches": 3486,
+      "executed": 1265,
+      "skipped_SAL": 0,
+      "skipped_position_open": 399,
+      "skipped_hmm_gate": 0,
+      "skipped_blocked_time": 968,
+      "skipped_prop_hard_blackout": 137
+    },
+    "build_year_n": 497
+  },
+  "time_45": {
+    "mgmt_kwargs": {
+      "mode": "time_be",
+      "minutes_elapsed": 45,
+      "mfe_r": 0.25
+    },
+    "n_all_touches_summary": {
+      "total_physical_touches": 3486,
+      "executed": 1261,
+      "skipped_SAL": 0,
+      "skipped_position_open": 405,
+      "skipped_hmm_gate": 0,
+      "skipped_blocked_time": 968,
+      "skipped_prop_hard_blackout": 137
+    },
+    "build_year_n": 499
+  },
+  "time_60": {
+    "mgmt_kwargs": {
+      "mode": "time_be",
+      "minutes_elapsed": 60,
+      "mfe_r": 0.25
+    },
+    "n_all_touches_summary": {
+      "total_physical_touches": 3486,
+      "executed": 1254,
+      "skipped_SAL": 0,
+      "skipped_position_open": 411,
+      "skipped_hmm_gate": 0,
+      "skipped_blocked_time": 968,
+      "skipped_prop_hard_blackout": 137
+    },
+    "build_year_n": 495
+  },
+  "time_75": {
+    "mgmt_kwargs": {
+      "mode": "time_be",
+      "minutes_elapsed": 75,
+      "mfe_r": 0.25
+    },
+    "n_all_touches_summary": {
+      "total_physical_touches": 3486,
+      "executed": 1256,
+      "skipped_SAL": 0,
+      "skipped_position_open": 411,
+      "skipped_hmm_gate": 0,
+      "skipped_blocked_time": 968,
+      "skipped_prop_hard_blackout": 137
+    },
+    "build_year_n": 491
+  },
+  "scratch_050": {
+    "mgmt_kwargs": {
+      "mode": "scratch",
+      "adverse_r": 0.5
+    },
+    "n_all_touches_summary": {
+      "total_physical_touches": 3486,
+      "executed": 1246,
+      "skipped_SAL": 0,
+      "skipped_position_open": 426,
+      "skipped_hmm_gate": 0,
+      "skipped_blocked_time": 968,
+      "skipped_prop_hard_blackout": 137
+    },
+    "build_year_n": 487
+  },
+  "scratch_075": {
+    "mgmt_kwargs": {
+      "mode": "scratch",
+      "adverse_r": 0.75
+    },
+    "n_all_touches_summary": {
+      "total_physical_touches": 3486,
+      "executed": 1223,
+      "skipped_SAL": 0,
+      "skipped_position_open": 443,
+      "skipped_hmm_gate": 0,
+      "skipped_blocked_time": 968,
+      "skipped_prop_hard_blackout": 137
+    },
+    "build_year_n": 479
+  }
+}
