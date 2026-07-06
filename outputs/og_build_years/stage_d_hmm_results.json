@@ -1,0 +1,194 @@
+{
+  "no_hmm": {
+    "build_years_summary": {
+      "n": 500,
+      "net_pts": 4372.34,
+      "PF": 1.4548,
+      "win_rate": 0.41,
+      "avg_trade": 8.745,
+      "max_drawdown": -793.77,
+      "TP": 188,
+      "SL": 143,
+      "BE": 116,
+      "cutoff": 53
+    },
+    "per_year": {
+      "2018": {
+        "n": 140,
+        "net_pts": 103.61,
+        "PF": 1.0709,
+        "win_rate": 0.3857,
+        "avg_trade": 0.74,
+        "max_drawdown": -317.36,
+        "TP": 52,
+        "SL": 40,
+        "BE": 38,
+        "cutoff": 10
+      },
+      "2020": {
+        "n": 150,
+        "net_pts": 1301.84,
+        "PF": 1.3819,
+        "win_rate": 0.38,
+        "avg_trade": 8.679,
+        "max_drawdown": -563.16,
+        "TP": 53,
+        "SL": 51,
+        "BE": 33,
+        "cutoff": 13
+      },
+      "2023": {
+        "n": 137,
+        "net_pts": 99.04,
+        "PF": 1.0321,
+        "win_rate": 0.4015,
+        "avg_trade": 0.723,
+        "max_drawdown": -793.77,
+        "TP": 48,
+        "SL": 38,
+        "BE": 31,
+        "cutoff": 20
+      },
+      "2026": {
+        "n": 73,
+        "net_pts": 2867.86,
+        "PF": 2.7313,
+        "win_rate": 0.5342,
+        "avg_trade": 39.286,
+        "max_drawdown": -423.81,
+        "TP": 35,
+        "SL": 14,
+        "BE": 14,
+        "cutoff": 10
+      }
+    }
+  },
+  "hmm_state0": {
+    "build_years_summary": {
+      "n": 438,
+      "net_pts": 1739.25,
+      "PF": 1.2233,
+      "win_rate": 0.4018,
+      "avg_trade": 3.971,
+      "max_drawdown": -1197.64,
+      "TP": 166,
+      "SL": 134,
+      "BE": 99,
+      "cutoff": 39
+    },
+    "per_year": {
+      "2018": {
+        "n": 140,
+        "net_pts": 103.61,
+        "PF": 1.0709,
+        "win_rate": 0.3857,
+        "avg_trade": 0.74,
+        "max_drawdown": -317.36,
+        "TP": 52,
+        "SL": 40,
+        "BE": 38,
+        "cutoff": 10
+      },
+      "2020": {
+        "n": 122,
+        "net_pts": -701.07,
+        "PF": 0.7376,
+        "win_rate": 0.3279,
+        "avg_trade": -5.747,
+        "max_drawdown": -1047.77,
+        "TP": 38,
+        "SL": 47,
+        "BE": 27,
+        "cutoff": 10
+      },
+      "2023": {
+        "n": 122,
+        "net_pts": 372.41,
+        "PF": 1.1404,
+        "win_rate": 0.4262,
+        "avg_trade": 3.053,
+        "max_drawdown": -512.41,
+        "TP": 48,
+        "SL": 36,
+        "BE": 25,
+        "cutoff": 13
+      },
+      "2026": {
+        "n": 54,
+        "net_pts": 1964.31,
+        "PF": 2.9609,
+        "win_rate": 0.5556,
+        "avg_trade": 36.376,
+        "max_drawdown": -285.06,
+        "TP": 28,
+        "SL": 11,
+        "BE": 9,
+        "cutoff": 6
+      }
+    }
+  },
+  "hmm_state1": {
+    "build_years_summary": {
+      "n": 212,
+      "net_pts": 2941.12,
+      "PF": 1.8283,
+      "win_rate": 0.4151,
+      "avg_trade": 13.873,
+      "max_drawdown": -563.99,
+      "TP": 76,
+      "SL": 51,
+      "BE": 57,
+      "cutoff": 28
+    },
+    "per_year": {
+      "2018": {
+        "n": 140,
+        "net_pts": 103.61,
+        "PF": 1.0709,
+        "win_rate": 0.3857,
+        "avg_trade": 0.74,
+        "max_drawdown": -317.36,
+        "TP": 52,
+        "SL": 40,
+        "BE": 38,
+        "cutoff": 10
+      },
+      "2020": {
+        "n": 34,
+        "net_pts": 2141.9,
+        "PF": 3.4142,
+        "win_rate": 0.5588,
+        "avg_trade": 62.997,
+        "max_drawdown": -221.12,
+        "TP": 16,
+        "SL": 6,
+        "BE": 8,
+        "cutoff": 4
+      },
+      "2023": {
+        "n": 18,
+        "net_pts": -344.43,
+        "PF": 0.3708,
+        "win_rate": 0.2778,
+        "avg_trade": -19.135,
+        "max_drawdown": -426.82,
+        "TP": 0,
+        "SL": 2,
+        "BE": 6,
+        "cutoff": 10
+      },
+      "2026": {
+        "n": 20,
+        "net_pts": 1040.04,
+        "PF": 2.5885,
+        "win_rate": 0.5,
+        "avg_trade": 52.002,
+        "max_drawdown": -338.75,
+        "TP": 8,
+        "SL": 3,
+        "BE": 5,
+        "cutoff": 4
+      }
+    }
+  }
+}
