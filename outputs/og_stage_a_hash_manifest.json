@@ -19,5 +19,6 @@
   "outputs/og_stage_a_yearly_metrics.csv": "a319f258174d03b3ee9cf918191074a6271809460be64c67bf032c64ff4ead75",
   "outputs/og_stage_a_skip_reconciliation.json": "075a2a73036dbc16c1904048503f8c077992eb844def4720eaa1dcb1757727e8",
   "tests/test_og_stage_a_invariants.py": "0563a3a81ea21e29c585451f84a58cf3c52d5e96e7710b803e29cf3ac8a1e6e8",
-  "data/nq_1m/nq_continuous_2018_2026_1m.csv": "ABSENT_FROM_REPO_AND_ENVIRONMENT -- see docs/OG_STAGE_A_VERIFICATION_REPORT.md"
+  "data/nq_1m/nq_continuous_2018_2026_1m.csv": "ABSENT_FROM_REPO_AND_ENVIRONMENT -- see docs/OG_STAGE_A_VERIFICATION_REPORT.md",
+  "docs/OG_STAGE_A_VERIFICATION_REPORT.md": "fdabe44757fd0ab5be27702b67b9add8cfc8946ea705a27f57a70ed072afff2c"
 }
