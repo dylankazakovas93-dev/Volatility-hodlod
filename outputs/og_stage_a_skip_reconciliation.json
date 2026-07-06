@@ -1,0 +1,18 @@
+{
+  "total_physical_touches": 3486,
+  "eligibility_counts": {
+    "executed": 1107,
+    "skipped": 2379
+  },
+  "skip_reason_counts": {
+    "blocked_time": 968,
+    "no_cutoff": 458,
+    "position_open": 315,
+    "no_anchor": 219,
+    "SAL": 318,
+    "simultaneous_collision": 94,
+    "same_bar_reentry": 7
+  },
+  "source_file": "outputs/baseline_skipped.csv (pre-existing, canonical commit a375818)",
+  "note": "Recomputed by independently parsing the pre-existing ledger CSV; matches outputs/baseline_summary.json exactly (see report)."
+}

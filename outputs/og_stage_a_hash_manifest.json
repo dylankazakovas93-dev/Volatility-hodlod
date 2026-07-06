@@ -1,0 +1,23 @@
+{
+  "configs/nq_current_config.yaml": "0ecd9f9f0f231e2aa508c31ea01f2aebe115e6c7132ee562d2e87c1bf5e1b9a4",
+  "src/strict_engine.py": "9ffc0224310ef4904f012d946a56b0db94d777290b07fd5b3ee5d38fadf539f5",
+  "src/independent_strict_engine.py": "513b0a06ef6cd1249c8f9664134b044307eff3ac4a016531e4b8ca6643a758a0",
+  "src/level_generation.py": "6e7edf10265c66f0dc41164ad8e1aec5dfa18ece1af663d307bb39365557df9c",
+  "data/vxn_daily_2018_2026.csv": "76cc072c941542183d8c82174fe4f552b0f140f9cb368c302ad51f651992dc4e",
+  "manifests/data_manifest.json": "7629d097a6aa3d91bf009b605fe299a6fb04f103a853b393f5816c1394d01111",
+  "manifests/output_manifest.json": "31f8478e5d3ae17f0fed75f059fdd549dac7b6f79cb547b4b8e022d7e4973c3f",
+  "outputs/baseline_executed.csv": "b9419b1be06310a179ec7c7fb05f6c4a4189ab9951ebfe3f5e42be19f4a0e56a",
+  "outputs/baseline_skipped.csv": "3032b995eedf0cb66660c531379f1db7bc200a5881e47933d27e549fe8b63789",
+  "outputs/baseline_physical_touches.csv": "5702e6facdaf1f20346f6847977c9e451c439850d97fd2cde955eb62ca3f93cd",
+  "outputs/baseline_eligible_1841.csv": "610e3b60f3bcd86b8caa23f484f0dde1e4d576ef84bdd6f3ff0a2ce9e6e1d416",
+  "outputs/baseline_yearly.csv": "adca71291b2df18c1389bbbcbe5b94bab5795ca40a5f770c2b274c035db56015",
+  "outputs/baseline_summary.json": "dcde2aa3a5485de26bb50a73e652a280295e12cec0b95e117bba42a6b4d9c000",
+  "outputs/independent_executed.csv": "26f6d9ad9d5b509584617d9531df6834bf0c932bb0ac2581b6a038ce69a4780e",
+  "outputs/engine_comparison.json": "291a6747bc4a9e7f62de6b470629710d49f5a35438bfe248c145a4ab093eb5d4",
+  "outputs/og_stage_a_trade_ledger.csv": "79f4a128ea918336363d8f2cf6ca001f4201af759c97ea4d38323c753c2e6e07",
+  "outputs/og_stage_a_touch_reconciliation.csv": "567cc76f0b8e3145342e99a19c385cd8626a237afabf49138835a8cff49731ce",
+  "outputs/og_stage_a_yearly_metrics.csv": "a319f258174d03b3ee9cf918191074a6271809460be64c67bf032c64ff4ead75",
+  "outputs/og_stage_a_skip_reconciliation.json": "075a2a73036dbc16c1904048503f8c077992eb844def4720eaa1dcb1757727e8",
+  "tests/test_og_stage_a_invariants.py": "0563a3a81ea21e29c585451f84a58cf3c52d5e96e7710b803e29cf3ac8a1e6e8",
+  "data/nq_1m/nq_continuous_2018_2026_1m.csv": "ABSENT_FROM_REPO_AND_ENVIRONMENT -- see docs/OG_STAGE_A_VERIFICATION_REPORT.md"
+}
