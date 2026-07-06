@@ -2,12 +2,16 @@
 #
 # RETROSPECTIVE_BUILD_ONLY__NOT_VALIDATED
 #
-# This configuration is the final chained selection from Phase 1 research
-# (docs/OG_PHASE1_FINAL_REPORT.md): SAL off (Stage B) + BE60 management
-# (Stage C) + no HMM gate (Stage D) + entries blocked 10:00-15:00 ET
-# (Stage E, RESEARCH_ENTRY_BLACKOUT_10_15) + target 1.50R with BE60 / Lane B
-# (Stage F). It was selected using ONLY {2018 (full), 2020 (full), 2023
-# (full), 2026 (partial, through 2026-06-07)} outcome data -- OG_BUILD_YEARS.
+# This configuration is the final chained selection from Phase 1 research,
+# UPDATED by docs/OG_FINAL_BUILDOFF_BE45.md (final 4-candidate bakeoff under
+# the human-overridden BE45 setting, superseding the earlier BE60-based
+# Stage F pick): SAL off (Stage B) + BE45 management (human override --
+# canonical OG setting + genuine LOBYO selected BE45 in 3/4 folds, see
+# docs/OG_GENUINE_LOBYO.md) + no HMM gate (Stage D) + entries blocked
+# 10:00-15:00 ET (RESEARCH_ENTRY_BLACKOUT_10_15) + target 1.50R (Candidate B
+# of the final buildoff, docs/OG_FINAL_BUILDOFF_BE45.md). It was selected
+# using ONLY {2018 (full), 2020 (full), 2023 (full), 2026 (partial, through
+# 2026-06-07)} outcome data -- OG_BUILD_YEARS.
 # No 2019/2021/2022/2024/2025 trade outcome informed any part of this
 # config. It has NOT been evaluated against any locked/held-out year, is
 # NOT validated for prop-account or live use, and NO OG_PRE_VALIDATION_LOCK
@@ -42,7 +46,9 @@ sal_enabled: false   # Stage B: docs/OG_STAGE_B_SAL.md -- SAL off
 
 management:
   mode: barcount
-  be_bars: 60          # Stage C: docs/OG_STAGE_C_MANAGEMENT_COMPLETE.md -- BE60_CONFIRMED
+  be_bars: 45          # Human override (canonical OG setting; genuine LOBYO selected
+                        # BE45 in 3/4 folds, docs/OG_GENUINE_LOBYO.md), confirmed by the
+                        # final buildoff: docs/OG_FINAL_BUILDOFF_BE45.md
   be_extra_lock: 0.0   # no additional lock beyond exact breakeven
 
 hmm_gate:
@@ -58,8 +64,9 @@ entry_blackout:
     Independent of, and checked after, PROP_HARD_BLACKOUT.
 
 target:
-  target_r: 1.50         # Stage F: docs/OG_STAGE_F_RR.md -- RR_SELECTED, 1.50R, Lane B (BE60)
-  lane: "B"               # Lane B = BE60 management (Lane A / no-management was comparison only)
+  target_r: 1.50         # Final buildoff: docs/OG_FINAL_BUILDOFF_BE45.md -- Candidate B
+                          # (BE45, blocked 10:00-15:00 ET, target 1.50R)
+  lane: "B"               # barcount BE45 management (no-management lane was comparison only)
   note: >
     target_dist = target_r * cap. The stop distance/cap itself is never
     changed by this parameter; Stage F only moves the target.

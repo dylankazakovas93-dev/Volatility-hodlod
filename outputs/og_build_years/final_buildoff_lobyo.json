@@ -1,0 +1,265 @@
+{
+  "objective": "avg_R_per_trade over completed build years available in the fold's training set (selection restricted to the 4 candidates A/B/C/D, no new parameter search)",
+  "folds": {
+    "2018": {
+      "train_years": [
+        2020,
+        2023
+      ],
+      "candidate_scores_on_train_years": {
+        "A": {
+          "avg_R_per_trade": 0.04428116655510599,
+          "PF_R": 1.1399779415054059,
+          "n_trades": 237
+        },
+        "B": {
+          "avg_R_per_trade": 0.07225120814213053,
+          "PF_R": 1.220869885974258,
+          "n_trades": 236
+        },
+        "C": {
+          "avg_R_per_trade": 0.044789417094764444,
+          "PF_R": 1.1490257167006477,
+          "n_trades": 193
+        },
+        "D": {
+          "avg_R_per_trade": 0.06076821949774034,
+          "PF_R": 1.1915353831167939,
+          "n_trades": 193
+        }
+      },
+      "fold_winner": "B",
+      "held_out_year": 2018,
+      "held_out_year_metrics_for_winner": {
+        "candidate": "B",
+        "year": 2018,
+        "n_trades": 113,
+        "net_pts": 620.93,
+        "PF_pts": 1.6764,
+        "PF_R": 1.5656,
+        "cap_norm_R_total": 20.1915,
+        "avg_R_per_trade": 0.1787,
+        "win_rate": 0.3363,
+        "avg_winner_pts": 40.497,
+        "avg_loser_pts": -25.499,
+        "payoff_ratio": 1.588,
+        "max_dd_pts": -154.69,
+        "max_dd_R": -5.0,
+        "n_TP": 37,
+        "n_SL": 35,
+        "n_BE": 39,
+        "n_cutoff": 2,
+        "hold_mean_min": 167.0,
+        "hold_median_min": 88.0,
+        "trades_per_year": 113.0,
+        "profitable_days": 37,
+        "losing_days": 31,
+        "breakeven_days": 22,
+        "avg_daily_pnl": 6.899,
+        "median_daily_pnl": 0.0,
+        "longest_run_no_profitable_day": 7
+      }
+    },
+    "2020": {
+      "train_years": [
+        2018,
+        2023
+      ],
+      "candidate_scores_on_train_years": {
+        "A": {
+          "avg_R_per_trade": 0.11286509449278229,
+          "PF_R": 1.3812172770714162,
+          "n_trades": 213
+        },
+        "B": {
+          "avg_R_per_trade": 0.1628239879224913,
+          "PF_R": 1.5305518931627204,
+          "n_trades": 212
+        },
+        "C": {
+          "avg_R_per_trade": 0.11433350169673986,
+          "PF_R": 1.417969190010642,
+          "n_trades": 165
+        },
+        "D": {
+          "avg_R_per_trade": 0.14450574601556124,
+          "PF_R": 1.505854718260157,
+          "n_trades": 165
+        }
+      },
+      "fold_winner": "B",
+      "held_out_year": 2020,
+      "held_out_year_metrics_for_winner": {
+        "candidate": "B",
+        "year": 2020,
+        "n_trades": 137,
+        "net_pts": 1401.01,
+        "PF_pts": 1.5454,
+        "PF_R": 1.0569,
+        "cap_norm_R_total": 2.7241,
+        "avg_R_per_trade": 0.0199,
+        "win_rate": 0.2701,
+        "avg_winner_pts": 107.292,
+        "avg_loser_pts": -49.4,
+        "payoff_ratio": 2.172,
+        "max_dd_pts": -713.25,
+        "max_dd_R": -8.5015,
+        "n_TP": 30,
+        "n_SL": 46,
+        "n_BE": 48,
+        "n_cutoff": 13,
+        "hold_mean_min": 193.2,
+        "hold_median_min": 81.0,
+        "trades_per_year": 137.0,
+        "profitable_days": 35,
+        "losing_days": 46,
+        "breakeven_days": 24,
+        "avg_daily_pnl": 13.343,
+        "median_daily_pnl": 0.0,
+        "longest_run_no_profitable_day": 10
+      }
+    },
+    "2023": {
+      "train_years": [
+        2018,
+        2020
+      ],
+      "candidate_scores_on_train_years": {
+        "A": {
+          "avg_R_per_trade": 0.06024727578991355,
+          "PF_R": 1.18992458547647,
+          "n_trades": 250
+        },
+        "B": {
+          "avg_R_per_trade": 0.09166266137791719,
+          "PF_R": 1.2743362877027824,
+          "n_trades": 250
+        },
+        "C": {
+          "avg_R_per_trade": 0.06821450356102704,
+          "PF_R": 1.2340603615584844,
+          "n_trades": 202
+        },
+        "D": {
+          "avg_R_per_trade": 0.09237839768376258,
+          "PF_R": 1.3005001605868827,
+          "n_trades": 202
+        }
+      },
+      "fold_winner": "D",
+      "held_out_year": 2023,
+      "held_out_year_metrics_for_winner": {
+        "candidate": "D",
+        "year": 2023,
+        "n_trades": 78,
+        "net_pts": 315.24,
+        "PF_pts": 1.2532,
+        "PF_R": 1.3655,
+        "cap_norm_R_total": 8.4556,
+        "avg_R_per_trade": 0.1084,
+        "win_rate": 0.2821,
+        "avg_winner_pts": 70.92,
+        "avg_loser_pts": -51.875,
+        "payoff_ratio": 1.367,
+        "max_dd_pts": -438.19,
+        "max_dd_R": -7.0,
+        "n_TP": 20,
+        "n_SL": 23,
+        "n_BE": 32,
+        "n_cutoff": 3,
+        "hold_mean_min": 169.7,
+        "hold_median_min": 74.0,
+        "trades_per_year": 78.0,
+        "profitable_days": 22,
+        "losing_days": 21,
+        "breakeven_days": 28,
+        "avg_daily_pnl": 4.44,
+        "median_daily_pnl": 0.0,
+        "longest_run_no_profitable_day": 11
+      }
+    },
+    "2026": {
+      "train_years": [
+        2018,
+        2020,
+        2023
+      ],
+      "candidate_scores_on_train_years": {
+        "A": {
+          "avg_R_per_trade": 0.0708524579257159,
+          "PF_R": 1.2281992352532445,
+          "n_trades": 350
+        },
+        "B": {
+          "avg_R_per_trade": 0.10671294542348173,
+          "PF_R": 1.3298835458179605,
+          "n_trades": 349
+        },
+        "C": {
+          "avg_R_per_trade": 0.07372984821174834,
+          "PF_R": 1.2548503291709896,
+          "n_trades": 280
+        },
+        "D": {
+          "avg_R_per_trade": 0.09684312640669916,
+          "PF_R": 1.3181409571515752,
+          "n_trades": 280
+        }
+      },
+      "fold_winner": "B",
+      "held_out_year": 2026,
+      "held_out_year_metrics_for_winner": {
+        "candidate": "B",
+        "year": 2026,
+        "n_trades": 55,
+        "net_pts": 1932.07,
+        "PF_pts": 2.2112,
+        "PF_R": 1.5926,
+        "cap_norm_R_total": 10.2309,
+        "avg_R_per_trade": 0.186,
+        "win_rate": 0.3636,
+        "avg_winner_pts": 176.363,
+        "avg_loser_pts": -88.622,
+        "payoff_ratio": 1.99,
+        "max_dd_pts": -571.12,
+        "max_dd_R": -7.3423,
+        "n_TP": 18,
+        "n_SL": 16,
+        "n_BE": 17,
+        "n_cutoff": 4,
+        "hold_mean_min": 207.7,
+        "hold_median_min": 103.0,
+        "trades_per_year": 55.0,
+        "profitable_days": 20,
+        "losing_days": 15,
+        "breakeven_days": 12,
+        "avg_daily_pnl": 41.108,
+        "median_daily_pnl": 0.0,
+        "longest_run_no_profitable_day": 7
+      }
+    }
+  },
+  "all_completed_years_scores": {
+    "A": {
+      "avg_R_per_trade": 0.0708524579257159,
+      "PF_R": 1.2281992352532445,
+      "n_trades": 350
+    },
+    "B": {
+      "avg_R_per_trade": 0.10671294542348173,
+      "PF_R": 1.3298835458179605,
+      "n_trades": 349
+    },
+    "C": {
+      "avg_R_per_trade": 0.07372984821174834,
+      "PF_R": 1.2548503291709896,
+      "n_trades": 280
+    },
+    "D": {
+      "avg_R_per_trade": 0.09684312640669916,
+      "PF_R": 1.3181409571515752,
+      "n_trades": 280
+    }
+  },
+  "all_completed_years_winner": "B"
+}

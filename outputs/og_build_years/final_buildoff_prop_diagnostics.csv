@@ -1,0 +1,5 @@
+candidate,window,target_r,scope,pct_trades_positive,pct_days_positive,avg_profit_per_winning_day,avg_loss_per_losing_day,days_elapsed_to_5_profitable_days,large_day_threshold_p90,n_large_winning_days,max_consecutive_losing_days,max_consecutive_nonwinning_days,pct_net_from_best5_days,pct_net_from_best10_days
+A,10:00-15:00,1.0,completed_years_2018_2020_2023,0.3886,0.4377,54.162,-45.941,40,125.85,13,7,7,45.39,80.95
+B,10:00-15:00,1.5,completed_years_2018_2020_2023,0.3066,0.3665,73.651,-46.847,65,149.976,11,7,10,49.27,85.82
+C,09:30-15:00,1.0,completed_years_2018_2020_2023,0.3643,0.4043,51.926,-45.248,42,122.25,11,6,8,60.54,102.8
+D,09:30-15:00,1.5,completed_years_2018_2020_2023,0.2821,0.3277,70.862,-46.333,75,146.707,8,6,11,74.38,118.77
