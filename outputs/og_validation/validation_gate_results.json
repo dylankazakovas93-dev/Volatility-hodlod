@@ -1,0 +1,186 @@
+{
+  "years": [
+    2019,
+    2021,
+    2022,
+    2024,
+    2025
+  ],
+  "family_verdict": "DUAL_CONFIG_FAIL",
+  "results": {
+    "OG_PRIMARY_150R": {
+      "summary": {
+        "total_physical_touches": 3486,
+        "executed": 1034,
+        "skipped_SAL": 0,
+        "skipped_position_open": 284,
+        "skipped_hmm_gate": 0,
+        "skipped_blocked_time": 1330,
+        "skipped_prop_hard_blackout": 137
+      },
+      "n_validation_trades": 630,
+      "gate": {
+        "2_pooled_net_positive": {
+          "value": 1717.4198621828027,
+          "pass": true
+        },
+        "3_pooled_R_positive": {
+          "value": -10.849599706751988,
+          "pass": false
+        },
+        "4_pooled_PF_pts_ge_1.15": {
+          "value": 1.1208719012430104,
+          "pass": false
+        },
+        "5_pooled_PF_R_ge_1.05": {
+          "value": 0.9579284879474436,
+          "pass": false
+        },
+        "6_avg_R_per_trade_positive": {
+          "value": -0.017221586836114265,
+          "pass": false
+        },
+        "7_at_least_3_of_5_years_positive_R": {
+          "value": 3,
+          "pass": true
+        },
+        "8_at_least_3_of_5_years_PF_pts_gt_1.05": {
+          "value": 3,
+          "pass": true
+        },
+        "9_total_R_positive_excl_best_year": {
+          "value": -27.90203412448287,
+          "pass": false
+        },
+        "10_at_least_250_trades": {
+          "value": 630,
+          "pass": true
+        },
+        "11_no_year_gt_80pct_of_positive_net": {
+          "value": 0.5060127728126353,
+          "pass": true
+        }
+      },
+      "per_year": {
+        "2019": {
+          "n_trades": 124,
+          "net_pts": -415.81953378152775,
+          "total_R": -22.6113324729328,
+          "PF_pts": 0.7206233725195906
+        },
+        "2021": {
+          "n_trades": 131,
+          "net_pts": 941.7426436846563,
+          "total_R": 17.052434417730883,
+          "PF_pts": 1.378175628213695
+        },
+        "2022": {
+          "n_trades": 125,
+          "net_pts": 1303.0010644811464,
+          "total_R": 4.878548445721618,
+          "PF_pts": 1.4337560306525325
+        },
+        "2024": {
+          "n_trades": 117,
+          "net_pts": -441.79652109070594,
+          "total_R": -12.983186027001299,
+          "PF_pts": 0.8765923497068276
+        },
+        "2025": {
+          "n_trades": 133,
+          "net_pts": 330.29220888923373,
+          "total_R": 2.8139359297296123,
+          "PF_pts": 1.0905899531053762
+        }
+      },
+      "overall_pass": false
+    },
+    "OG_OPERATIONAL_100R": {
+      "summary": {
+        "total_physical_touches": 3486,
+        "executed": 1040,
+        "skipped_SAL": 0,
+        "skipped_position_open": 282,
+        "skipped_hmm_gate": 0,
+        "skipped_blocked_time": 1330,
+        "skipped_prop_hard_blackout": 137
+      },
+      "n_validation_trades": 633,
+      "gate": {
+        "2_pooled_net_positive": {
+          "value": 1813.2803382259872,
+          "pass": true
+        },
+        "3_pooled_R_positive": {
+          "value": -15.696762302142236,
+          "pass": false
+        },
+        "4_pooled_PF_pts_ge_1.15": {
+          "value": 1.1356106755616664,
+          "pass": false
+        },
+        "5_pooled_PF_R_ge_1.05": {
+          "value": 0.9353479648074843,
+          "pass": false
+        },
+        "6_avg_R_per_trade_positive": {
+          "value": -0.02479741279959279,
+          "pass": false
+        },
+        "7_at_least_3_of_5_years_positive_R": {
+          "value": 3,
+          "pass": true
+        },
+        "8_at_least_3_of_5_years_PF_pts_gt_1.05": {
+          "value": 3,
+          "pass": true
+        },
+        "9_total_R_positive_excl_best_year": {
+          "value": -23.434228749441495,
+          "pass": false
+        },
+        "10_at_least_250_trades": {
+          "value": 633,
+          "pass": true
+        },
+        "11_no_year_gt_80pct_of_positive_net": {
+          "value": 0.5460042403181776,
+          "pass": true
+        }
+      },
+      "per_year": {
+        "2019": {
+          "n_trades": 124,
+          "net_pts": -500.00846430026013,
+          "total_R": -24.51499289120533,
+          "PF_pts": 0.6463271521396639
+        },
+        "2021": {
+          "n_trades": 133,
+          "net_pts": 559.8950952814739,
+          "total_R": 5.4138735860430796,
+          "PF_pts": 1.2324686566405636
+        },
+        "2022": {
+          "n_trades": 125,
+          "net_pts": 1499.8797298456193,
+          "total_R": 7.7374664472992585,
+          "PF_pts": 1.546280833569634
+        },
+        "2024": {
+          "n_trades": 117,
+          "net_pts": -433.72233601652624,
+          "total_R": -12.022827981364287,
+          "PF_pts": 0.869923041675227
+        },
+        "2025": {
+          "n_trades": 134,
+          "net_pts": 687.2363134156803,
+          "total_R": 7.689718537085038,
+          "PF_pts": 1.198107120785779
+        }
+      },
+      "overall_pass": false
+    }
+  }
+}
