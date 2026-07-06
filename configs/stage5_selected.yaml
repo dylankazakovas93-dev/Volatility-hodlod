@@ -1,0 +1,96 @@
+# Stage 5 result: window/cutoff selected on top of frozen F2 + profit_lock_0.75R +
+# hmm3_exclude_LOW_VOL (user-mandated override of Stage 4's hmm3_HIGH_VOL_only pick;
+# do not substitute exclude_MID_VOL or HIGH_VOL_only here).
+status: WINDOW_CUTOFF_SELECTED
+
+frozen_inputs:
+  tpsl_formula: F2  # mfeq=0.50, maeq=0.50, learned quantile-regression, dev-years-only fit
+  management_rule: profit_lock_0.75R  # trigger_r=0.75, lock_r=0.10, next-bar activation
+  regime_gate: hmm3_exclude_LOW_VOL  # blocks LOW_VOL only; MID_VOL and HIGH_VOL both allowed
+  sal: off
+  dev_years: [2018, 2020, 2023, 2026]
+  reserved_years_excluded: [2019, 2021, 2022, 2024, 2025]
+
+blocks_A_to_I:
+  A: [0, 360]     # 18:00-00:00 ET
+  B: [360, 480]   # 00:00-02:00
+  C: [480, 540]   # 02:00-03:00
+  D: [540, 660]   # 03:00-05:00
+  E: [660, 720]   # 05:00-06:00
+  F: [720, 840]   # 06:00-08:00
+  G: [840, 900]   # 08:00-09:00
+  H: [900, 930]   # 09:00-09:30
+  I: [930, 1020]  # 09:30-11:00
+
+selected_window:
+  name: contig_EFGHI
+  blocks: [E, F, G, H, I]
+  clock_range_et: "05:00-11:00"
+  minutes_elapsed_range: [660, 1020]
+
+selected_cutoff:
+  label: "15:59"
+  minutes_elapsed: 1319
+
+selected_result:
+  trades: 250
+  net_pts: 1929.89
+  total_R: 21.436
+  avg_R: 0.0857
+  PF: 1.4004
+  max_dd_pts: -429.78
+  true_tp_win_rate: 0.424
+  ex_2026_net_pts: 1037.38
+  ex_2026_PF: 1.2529
+  ex_2026_total_R: 11.3136
+  years_profitable_net_pts: 4  # all of 2018/2020/2023/2026
+  note_2020: "2020 is net-point-positive (+240.91) but total_R negative (-1.976) -- flagged, not smoothed over."
+
+control_08_11_GHI:
+  trades: 214
+  net_pts: 1699.13
+  total_R: 20.378
+  avg_R: 0.0952
+  PF: 1.4095
+  max_dd_pts: -387.19
+
+old_19_11_window:
+  trades: 375
+  net_pts: 1508.01
+  total_R: 19.696
+  PF: 1.185
+  max_dd_pts: -803.48
+  years_profitable_net_pts: 2
+  verdict: "dominated by contig_EFGHI on every selection criterion; not recommended"
+
+best_broken_session_window:
+  name: london_or_newyork
+  blocks: "C+D+E (02:00-06:00) OR H+I (09:00-11:00)"
+  trades: 261
+  net_pts: 1432.06
+  total_R: 15.9249
+  PF: 1.2698
+  max_dd_pts: -650.77
+  years_profitable_net_pts: 4
+
+pine_hmm_comparison:
+  frozen_fit_years: [2018, 2020, 2023]
+  applied_to: "2026 touches only, no refitting"
+  state_agreement_pct: 81.25
+  agreement_sample_n: 96  # of 149 2026 touches; 53 fall outside the 18:00-11:00 tested span
+  trade_level_2026:
+    rolling_hmm: {trades: 39, net_pts: 892.51, total_R: 10.1221, avg_R: 0.2595}
+    frozen_pine_hmm: {trades: 37, net_pts: 975.16, total_R: 11.0221, avg_R: 0.2979}
+  verdict: "reasonably close -- Pine indicator written"
+
+pine_script_path: pine/stage5_hmm_regime_filter.pine
+frozen_pine_params_path: outputs/stage5_pine_hmm_frozen_params.json
+
+selection_rationale: >
+  contig_EFGHI (05:00-11:00) at cutoff 15:59 has the highest total_R and net_pts of
+  any window clearing "all four dev years individually net-point-positive", beating
+  both the current 08:00-11:00 control and the old 19:00-11:00 window on total R,
+  annual consistency, PF, and drawdown, at the cost of a slightly lower avg_R/trade --
+  the explicitly instructed tradeoff preference (wider window, materially higher
+  annual R, slightly lower avg R) for this stage. 15:59 dominates every other cutoff
+  tested (11:00-15:00) on every window tested in Part 4.

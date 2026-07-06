@@ -1,0 +1,152 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0
+//@version=6
+indicator("NQ 3-State HMM Regime Filter (Frozen, Stage 5)", overlay=false)
+
+// =====================================================================
+// Frozen parameters, fit ONCE on 2018+2020+2023 5-minute NQ log-return /
+// realized-vol / trend features (never refit on 2026 or later data).
+// State order is fixed ascending by fitted realized-vol mean:
+//   state 0 = LOW_VOL   (block trading)
+//   state 1 = MID_VOL   (trade allowed)
+//   state 2 = HIGH_VOL  (trade allowed)
+// Values below are copied verbatim from
+// outputs/stage5_pine_hmm_frozen_params.json -- do not hand-edit without
+// regenerating from that file.
+// =====================================================================
+
+// -- standardization (mean/std of [ret, vol30, trend30], frozen) --
+MU_RET    = 3.839377072766536e-06
+MU_VOL30  = 0.000668993965696507
+MU_TREND30 = 2.305116907369567e-05
+SD_RET    = 0.0009928453021309026
+SD_VOL30  = 0.0007371271947007752
+SD_TREND30 = 0.0023998575672983134
+
+// -- initial state distribution --
+START0 = 0.9981404800488988
+START1 = 0.0018595199511011948
+START2 = 1.0113585816627933e-101
+
+// -- transition matrix (row = from-state, col = to-state) --
+T00 = 0.3146172892617528
+T01 = 0.6834263071145089
+T02 = 0.001956403623738255
+T10 = 0.6958362768831949
+T11 = 0.2574745228294776
+T12 = 0.04668920028732765
+T20 = 0.00020695160467049348
+T21 = 0.05033419354327859
+T22 = 0.9494588548520508
+
+// -- state means, per feature [ret, vol30, trend30] --
+M0_RET = 0.0026699291038926706
+M0_VOL = -0.4907284671644555
+M0_TRD = 0.018355029106086614
+M1_RET = 0.007947983895052371
+M1_VOL = -0.3867424175396445
+M1_TRD = 0.025094522928405583
+M2_RET = -0.011067960390032456
+M2_VOL = 0.9190246271732011
+M2_TRD = -0.045411167169566474
+
+// -- state (diagonal) variances, per feature --
+V0_RET = 0.05566645127042107
+V0_VOL = 0.044029143983185685
+V0_TRD = 0.09447447402105284
+V1_RET = 0.2232948831743462
+V1_VOL = 0.06229250609453222
+V1_TRD = 0.15274146048739012
+V2_RET = 2.802037452109202
+V2_VOL = 1.7278363561394448
+V2_TRD = 2.8314970921781835
+
+// =====================================================================
+// Feature computation -- completed 5-minute bars only. Add this
+// indicator on a 5-minute NQ chart; it does not resample internally, so
+// running it on any other timeframe changes the feature definitions.
+// No lookahead: every value below uses only the current confirmed bar
+// and strictly prior confirmed bars.
+// =====================================================================
+
+ret = math.log(close / close[1])
+vol30 = ta.stdev(ret, 6)   // trailing 30-minute realized vol = 6 x 5-min bars
+trend30 = ret + ret[1] + ret[2] + ret[3] + ret[4] + ret[5]  // trailing 30-minute cumulative return
+
+x_ret = (ret - MU_RET) / SD_RET
+x_vol = (vol30 - MU_VOL30) / SD_VOL30
+x_trd = (trend30 - MU_TREND30) / SD_TREND30
+
+// =====================================================================
+// Per-state Gaussian log-likelihood (diagonal covariance)
+// =====================================================================
+logNormal(x, mean, variance) =>
+    -0.5 * (math.log(2 * math.pi * variance) + math.pow(x - mean, 2) / variance)
+
+logLik0 = logNormal(x_ret, M0_RET, V0_RET) + logNormal(x_vol, M0_VOL, V0_VOL) + logNormal(x_trd, M0_TRD, V0_TRD)
+logLik1 = logNormal(x_ret, M1_RET, V1_RET) + logNormal(x_vol, M1_VOL, V1_VOL) + logNormal(x_trd, M1_TRD, V1_TRD)
+logLik2 = logNormal(x_ret, M2_RET, V2_RET) + logNormal(x_vol, M2_VOL, V2_VOL) + logNormal(x_trd, M2_TRD, V2_TRD)
+
+maxLog = math.max(logLik0, math.max(logLik1, logLik2))
+lik0 = math.exp(logLik0 - maxLog)
+lik1 = math.exp(logLik1 - maxLog)
+lik2 = math.exp(logLik2 - maxLog)
+
+// =====================================================================
+// Causal forward-algorithm filtering (NOT smoothed, NOT Viterbi).
+// Persistent state carried bar-to-bar; only updates on confirmed bars.
+// =====================================================================
+var float alpha0 = na
+var float alpha1 = na
+var float alpha2 = na
+
+if barstate.isconfirmed
+    if na(alpha0)
+        a0 = START0 * lik0
+        a1 = START1 * lik1
+        a2 = START2 * lik2
+        s = a0 + a1 + a2
+        alpha0 := s > 0 ? a0 / s : 1.0 / 3.0
+        alpha1 := s > 0 ? a1 / s : 1.0 / 3.0
+        alpha2 := s > 0 ? a2 / s : 1.0 / 3.0
+    else
+        prior0 = alpha0
+        prior1 = alpha1
+        prior2 = alpha2
+        a0 = (prior0 * T00 + prior1 * T10 + prior2 * T20) * lik0
+        a1 = (prior0 * T01 + prior1 * T11 + prior2 * T21) * lik1
+        a2 = (prior0 * T02 + prior1 * T12 + prior2 * T22) * lik2
+        s = a0 + a1 + a2
+        alpha0 := s > 0 ? a0 / s : 1.0 / 3.0
+        alpha1 := s > 0 ? a1 / s : 1.0 / 3.0
+        alpha2 := s > 0 ? a2 / s : 1.0 / 3.0
+
+maxProb = math.max(alpha0, math.max(alpha1, alpha2))
+isLow = alpha0 == maxProb
+isMid = alpha1 == maxProb and not isLow
+isHigh = alpha2 == maxProb and not isLow and not isMid
+
+tradeAllowed = not isLow
+
+// =====================================================================
+// Plots and alerts
+// =====================================================================
+plot(alpha0, title="P(LOW_VOL)", color=color.red, linewidth=2)
+plot(alpha1, title="P(MID_VOL)", color=color.orange, linewidth=2)
+plot(alpha2, title="P(HIGH_VOL)", color=color.green, linewidth=2)
+hline(0.55, title="0.55 confidence", color=color.gray, linestyle=hline.style_dotted)
+hline(0.65, title="0.65 confidence", color=color.gray, linestyle=hline.style_dotted)
+
+bgcolor(isLow ? color.new(color.red, 85) : color.new(color.green, 92))
+
+var label stateLabel = na
+label.delete(stateLabel)
+labelText = isLow ? "LOW VOL — DO NOT TRADE" : isMid ? "MID VOL — TRADE ALLOWED" : "HIGH VOL — TRADE ALLOWED"
+labelColor = isLow ? color.red : color.green
+stateLabel := label.new(bar_index, alpha2 + 0.08, labelText, style=label.style_none,
+     textcolor=labelColor, size=size.small)
+
+allowedPrev = tradeAllowed[1]
+alertcondition(tradeAllowed and not allowedPrev, title="Regime: entry now ALLOWED",
+     message="HMM regime filter: LOW_VOL cleared, trading now allowed")
+alertcondition(not tradeAllowed and allowedPrev, title="Regime: entry now BLOCKED",
+     message="HMM regime filter: entered LOW_VOL, trading blocked")

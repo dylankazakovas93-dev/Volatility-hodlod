@@ -69,7 +69,7 @@ def contiguous_windows():
 
 def session_cutoff_ts(session_date, cutoff_minutes):
     start = session_start_ts(session_date)
-    return start + pd.Timedelta(minutes=cutoff_minutes)
+    return (start + pd.Timedelta(minutes=cutoff_minutes)).tz_convert("UTC")
 
 
 def run_replay(bars, master_with_dist, allow_entry_fn, cutoff_minutes=1319):
