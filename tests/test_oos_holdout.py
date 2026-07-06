@@ -223,9 +223,8 @@ def test_reproducibility_hash_matches_report():
     with open(p) as f:
         report = json.load(f)
     import hashlib
-    d = _rolling_ledger()
-    computed = hashlib.sha256(pd.util.hash_pandas_object(
-        pd.read_csv(os.path.join(OUT_DIR, "oos_ledger_rolling_python_hmm.csv")), index=True).values.tobytes()).hexdigest()
+    ledger_path = os.path.join(OUT_DIR, "oos_ledger_rolling_python_hmm.csv")
+    computed = hashlib.sha256(open(ledger_path, "rb").read()).hexdigest()
     assert computed == report["hashes"]["ledger_rolling_hash"]
 
 

@@ -1,0 +1,1057 @@
+{
+  "status": "OOS_MARGINAL_PASS",
+  "years_with_positive_total_R": 2,
+  "years_with_PF_pts_gt_1.05": 2,
+  "rolling_python_hmm": {
+    "pooled": {
+      "n_trades": 430,
+      "net_pts": 904.72,
+      "total_R": 1.6677,
+      "avg_R": 0.0039,
+      "PF_pts": 1.083,
+      "PF_R": 1.0092,
+      "max_dd_pts": -843.75,
+      "max_dd_R": -19.1667,
+      "longest_loss_streak": 6,
+      "avg_tp": 70.612,
+      "avg_sl": 61.923,
+      "avg_structural_rr": 1.0837,
+      "true_tp_win_rate": 0.3744,
+      "TP_exits": 161,
+      "SL_exits": 178,
+      "LOCK_exits": 76,
+      "cutoff_exits": 15,
+      "long_n": 204,
+      "short_n": 226,
+      "long_net_pts": 403.77,
+      "short_net_pts": 500.95,
+      "avg_hold_minutes": 81.03,
+      "median_hold_minutes": 48.5,
+      "monthly_distribution": {
+        "2019-01": {
+          "n": 6,
+          "net_pts": 72.03
+        },
+        "2019-02": {
+          "n": 6,
+          "net_pts": 112.7
+        },
+        "2019-03": {
+          "n": 5,
+          "net_pts": 115.1
+        },
+        "2019-04": {
+          "n": 4,
+          "net_pts": 37.0
+        },
+        "2019-05": {
+          "n": 6,
+          "net_pts": -184.75
+        },
+        "2019-06": {
+          "n": 10,
+          "net_pts": -68.59
+        },
+        "2019-07": {
+          "n": 5,
+          "net_pts": 4.03
+        },
+        "2019-08": {
+          "n": 9,
+          "net_pts": 153.6
+        },
+        "2019-09": {
+          "n": 3,
+          "net_pts": -48.74
+        },
+        "2019-10": {
+          "n": 9,
+          "net_pts": -102.07
+        },
+        "2019-11": {
+          "n": 3,
+          "net_pts": 16.59
+        },
+        "2019-12": {
+          "n": 10,
+          "net_pts": -70.87
+        },
+        "2021-01": {
+          "n": 8,
+          "net_pts": -182.77
+        },
+        "2021-02": {
+          "n": 6,
+          "net_pts": 208.73
+        },
+        "2021-03": {
+          "n": 12,
+          "net_pts": -106.92
+        },
+        "2021-04": {
+          "n": 6,
+          "net_pts": 9.97
+        },
+        "2021-05": {
+          "n": 6,
+          "net_pts": -9.4
+        },
+        "2021-06": {
+          "n": 5,
+          "net_pts": 54.5
+        },
+        "2021-07": {
+          "n": 7,
+          "net_pts": -97.8
+        },
+        "2021-08": {
+          "n": 7,
+          "net_pts": -193.0
+        },
+        "2021-09": {
+          "n": 6,
+          "net_pts": -154.88
+        },
+        "2021-10": {
+          "n": 4,
+          "net_pts": 5.76
+        },
+        "2021-11": {
+          "n": 9,
+          "net_pts": 288.67
+        },
+        "2021-12": {
+          "n": 9,
+          "net_pts": 502.27
+        },
+        "2022-01": {
+          "n": 6,
+          "net_pts": -214.27
+        },
+        "2022-02": {
+          "n": 3,
+          "net_pts": -39.5
+        },
+        "2022-03": {
+          "n": 5,
+          "net_pts": 173.7
+        },
+        "2022-04": {
+          "n": 7,
+          "net_pts": -234.02
+        },
+        "2022-05": {
+          "n": 10,
+          "net_pts": -172.1
+        },
+        "2022-06": {
+          "n": 8,
+          "net_pts": 244.75
+        },
+        "2022-07": {
+          "n": 6,
+          "net_pts": -27.9
+        },
+        "2022-08": {
+          "n": 11,
+          "net_pts": 238.07
+        },
+        "2022-09": {
+          "n": 5,
+          "net_pts": 127.38
+        },
+        "2022-10": {
+          "n": 9,
+          "net_pts": 24.75
+        },
+        "2022-11": {
+          "n": 12,
+          "net_pts": -48.03
+        },
+        "2022-12": {
+          "n": 5,
+          "net_pts": -339.75
+        },
+        "2024-01": {
+          "n": 10,
+          "net_pts": 8.25
+        },
+        "2024-02": {
+          "n": 9,
+          "net_pts": -34.25
+        },
+        "2024-03": {
+          "n": 10,
+          "net_pts": 377.78
+        },
+        "2024-04": {
+          "n": 5,
+          "net_pts": 16.75
+        },
+        "2024-05": {
+          "n": 8,
+          "net_pts": -51.67
+        },
+        "2024-06": {
+          "n": 3,
+          "net_pts": -180.75
+        },
+        "2024-07": {
+          "n": 9,
+          "net_pts": -122.12
+        },
+        "2024-08": {
+          "n": 3,
+          "net_pts": 11.78
+        },
+        "2024-09": {
+          "n": 11,
+          "net_pts": 124.92
+        },
+        "2024-10": {
+          "n": 10,
+          "net_pts": -144.17
+        },
+        "2024-11": {
+          "n": 4,
+          "net_pts": 37.25
+        },
+        "2024-12": {
+          "n": 10,
+          "net_pts": -173.33
+        },
+        "2025-01": {
+          "n": 14,
+          "net_pts": 167.1
+        },
+        "2025-02": {
+          "n": 11,
+          "net_pts": -86.55
+        },
+        "2025-03": {
+          "n": 9,
+          "net_pts": 396.32
+        },
+        "2025-04": {
+          "n": 5,
+          "net_pts": 19.5
+        },
+        "2025-05": {
+          "n": 7,
+          "net_pts": 211.95
+        },
+        "2025-06": {
+          "n": 5,
+          "net_pts": -119.45
+        },
+        "2025-07": {
+          "n": 3,
+          "net_pts": -43.75
+        },
+        "2025-08": {
+          "n": 9,
+          "net_pts": -86.98
+        },
+        "2025-09": {
+          "n": 5,
+          "net_pts": -75.85
+        },
+        "2025-10": {
+          "n": 8,
+          "net_pts": 413.97
+        },
+        "2025-11": {
+          "n": 8,
+          "net_pts": 87.05
+        },
+        "2025-12": {
+          "n": 6,
+          "net_pts": 56.75
+        }
+      }
+    },
+    "per_year": {
+      "2019": {
+        "n_trades": 76,
+        "net_pts": 36.03,
+        "total_R": 1.9772,
+        "avg_R": 0.026,
+        "PF_pts": 1.0355,
+        "PF_R": 1.0705,
+        "max_dd_pts": -333.42,
+        "max_dd_R": -8.2016,
+        "longest_loss_streak": 4,
+        "avg_tp": 33.211,
+        "avg_sl": 35.586,
+        "avg_structural_rr": 0.8967,
+        "true_tp_win_rate": 0.4079,
+        "TP_exits": 31,
+        "SL_exits": 26,
+        "LOCK_exits": 8,
+        "cutoff_exits": 11,
+        "long_n": 30,
+        "short_n": 46,
+        "long_net_pts": 171.55,
+        "short_net_pts": -135.52,
+        "avg_hold_minutes": 132.53,
+        "median_hold_minutes": 88.0
+      },
+      "2021": {
+        "n_trades": 85,
+        "net_pts": 325.12,
+        "total_R": -1.5633,
+        "avg_R": -0.0184,
+        "PF_pts": 1.1581,
+        "PF_R": 0.9589,
+        "max_dd_pts": -530.66,
+        "max_dd_R": -10.0651,
+        "longest_loss_streak": 6,
+        "avg_tp": 65.956,
+        "avg_sl": 59.274,
+        "avg_structural_rr": 1.0744,
+        "true_tp_win_rate": 0.3765,
+        "TP_exits": 32,
+        "SL_exits": 37,
+        "LOCK_exits": 13,
+        "cutoff_exits": 3,
+        "long_n": 37,
+        "short_n": 48,
+        "long_net_pts": 361.85,
+        "short_net_pts": -36.73,
+        "avg_hold_minutes": 87.85,
+        "median_hold_minutes": 53.0
+      },
+      "2022": {
+        "n_trades": 87,
+        "net_pts": -266.93,
+        "total_R": -2.7371,
+        "avg_R": -0.0315,
+        "PF_pts": 0.9021,
+        "PF_R": 0.9298,
+        "max_dd_pts": -535.2,
+        "max_dd_R": -6.7188,
+        "longest_loss_streak": 5,
+        "avg_tp": 82.391,
+        "avg_sl": 69.704,
+        "avg_structural_rr": 1.1535,
+        "true_tp_win_rate": 0.3563,
+        "TP_exits": 31,
+        "SL_exits": 39,
+        "LOCK_exits": 17,
+        "cutoff_exits": 0,
+        "long_n": 49,
+        "short_n": 38,
+        "long_net_pts": -246.5,
+        "short_net_pts": -20.43,
+        "avg_hold_minutes": 64.8,
+        "median_hold_minutes": 44.0
+      },
+      "2024": {
+        "n_trades": 92,
+        "net_pts": -129.57,
+        "total_R": -3.2931,
+        "avg_R": -0.0358,
+        "PF_pts": 0.9488,
+        "PF_R": 0.9216,
+        "max_dd_pts": -674.42,
+        "max_dd_R": -10.3951,
+        "longest_loss_streak": 4,
+        "avg_tp": 66.785,
+        "avg_sl": 60.573,
+        "avg_structural_rr": 1.0733,
+        "true_tp_win_rate": 0.3804,
+        "TP_exits": 35,
+        "SL_exits": 42,
+        "LOCK_exits": 15,
+        "cutoff_exits": 0,
+        "long_n": 38,
+        "short_n": 54,
+        "long_net_pts": -124.25,
+        "short_net_pts": -5.32,
+        "avg_hold_minutes": 72.33,
+        "median_hold_minutes": 42.5
+      },
+      "2025": {
+        "n_trades": 90,
+        "net_pts": 940.07,
+        "total_R": 7.284,
+        "avg_R": 0.0809,
+        "PF_pts": 1.3664,
+        "PF_R": 1.2142,
+        "max_dd_pts": -333.85,
+        "max_dd_R": -4.7479,
+        "longest_loss_streak": 3,
+        "avg_tp": 99.117,
+        "avg_sl": 80.525,
+        "avg_structural_rr": 1.1936,
+        "true_tp_win_rate": 0.3556,
+        "TP_exits": 32,
+        "SL_exits": 34,
+        "LOCK_exits": 23,
+        "cutoff_exits": 1,
+        "long_n": 50,
+        "short_n": 40,
+        "long_net_pts": 241.12,
+        "short_net_pts": 698.95,
+        "avg_hold_minutes": 55.7,
+        "median_hold_minutes": 24.0
+      }
+    },
+    "best_year": 2025,
+    "best_year_pct_of_pooled_profit": 103.91,
+    "excluding_best_year": {
+      "n_trades": 340,
+      "net_pts": -35.35,
+      "total_R": -5.6162,
+      "avg_R": -0.0165,
+      "PF_pts": 0.9958,
+      "PF_R": 0.9618,
+      "max_dd_pts": -800.25,
+      "max_dd_R": -19.1667,
+      "longest_loss_streak": 6,
+      "avg_tp": 63.066,
+      "avg_sl": 56.999,
+      "avg_structural_rr": 1.0546,
+      "true_tp_win_rate": 0.3794,
+      "TP_exits": 129,
+      "SL_exits": 144,
+      "LOCK_exits": 53,
+      "cutoff_exits": 14,
+      "long_n": 154,
+      "short_n": 186,
+      "long_net_pts": 162.65,
+      "short_net_pts": -198.0,
+      "avg_hold_minutes": 87.74,
+      "median_hold_minutes": 53.0,
+      "monthly_distribution": {
+        "2019-01": {
+          "n": 6,
+          "net_pts": 72.03
+        },
+        "2019-02": {
+          "n": 6,
+          "net_pts": 112.7
+        },
+        "2019-03": {
+          "n": 5,
+          "net_pts": 115.1
+        },
+        "2019-04": {
+          "n": 4,
+          "net_pts": 37.0
+        },
+        "2019-05": {
+          "n": 6,
+          "net_pts": -184.75
+        },
+        "2019-06": {
+          "n": 10,
+          "net_pts": -68.59
+        },
+        "2019-07": {
+          "n": 5,
+          "net_pts": 4.03
+        },
+        "2019-08": {
+          "n": 9,
+          "net_pts": 153.6
+        },
+        "2019-09": {
+          "n": 3,
+          "net_pts": -48.74
+        },
+        "2019-10": {
+          "n": 9,
+          "net_pts": -102.07
+        },
+        "2019-11": {
+          "n": 3,
+          "net_pts": 16.59
+        },
+        "2019-12": {
+          "n": 10,
+          "net_pts": -70.87
+        },
+        "2021-01": {
+          "n": 8,
+          "net_pts": -182.77
+        },
+        "2021-02": {
+          "n": 6,
+          "net_pts": 208.73
+        },
+        "2021-03": {
+          "n": 12,
+          "net_pts": -106.92
+        },
+        "2021-04": {
+          "n": 6,
+          "net_pts": 9.97
+        },
+        "2021-05": {
+          "n": 6,
+          "net_pts": -9.4
+        },
+        "2021-06": {
+          "n": 5,
+          "net_pts": 54.5
+        },
+        "2021-07": {
+          "n": 7,
+          "net_pts": -97.8
+        },
+        "2021-08": {
+          "n": 7,
+          "net_pts": -193.0
+        },
+        "2021-09": {
+          "n": 6,
+          "net_pts": -154.88
+        },
+        "2021-10": {
+          "n": 4,
+          "net_pts": 5.76
+        },
+        "2021-11": {
+          "n": 9,
+          "net_pts": 288.67
+        },
+        "2021-12": {
+          "n": 9,
+          "net_pts": 502.27
+        },
+        "2022-01": {
+          "n": 6,
+          "net_pts": -214.27
+        },
+        "2022-02": {
+          "n": 3,
+          "net_pts": -39.5
+        },
+        "2022-03": {
+          "n": 5,
+          "net_pts": 173.7
+        },
+        "2022-04": {
+          "n": 7,
+          "net_pts": -234.02
+        },
+        "2022-05": {
+          "n": 10,
+          "net_pts": -172.1
+        },
+        "2022-06": {
+          "n": 8,
+          "net_pts": 244.75
+        },
+        "2022-07": {
+          "n": 6,
+          "net_pts": -27.9
+        },
+        "2022-08": {
+          "n": 11,
+          "net_pts": 238.07
+        },
+        "2022-09": {
+          "n": 5,
+          "net_pts": 127.38
+        },
+        "2022-10": {
+          "n": 9,
+          "net_pts": 24.75
+        },
+        "2022-11": {
+          "n": 12,
+          "net_pts": -48.03
+        },
+        "2022-12": {
+          "n": 5,
+          "net_pts": -339.75
+        },
+        "2024-01": {
+          "n": 10,
+          "net_pts": 8.25
+        },
+        "2024-02": {
+          "n": 9,
+          "net_pts": -34.25
+        },
+        "2024-03": {
+          "n": 10,
+          "net_pts": 377.78
+        },
+        "2024-04": {
+          "n": 5,
+          "net_pts": 16.75
+        },
+        "2024-05": {
+          "n": 8,
+          "net_pts": -51.67
+        },
+        "2024-06": {
+          "n": 3,
+          "net_pts": -180.75
+        },
+        "2024-07": {
+          "n": 9,
+          "net_pts": -122.12
+        },
+        "2024-08": {
+          "n": 3,
+          "net_pts": 11.78
+        },
+        "2024-09": {
+          "n": 11,
+          "net_pts": 124.92
+        },
+        "2024-10": {
+          "n": 10,
+          "net_pts": -144.17
+        },
+        "2024-11": {
+          "n": 4,
+          "net_pts": 37.25
+        },
+        "2024-12": {
+          "n": 10,
+          "net_pts": -173.33
+        }
+      }
+    },
+    "worst_year": 2022,
+    "excluding_worst_year": {
+      "n_trades": 343,
+      "net_pts": 1171.65,
+      "total_R": 4.4049,
+      "avg_R": 0.0128,
+      "PF_pts": 1.1434,
+      "PF_R": 1.031,
+      "max_dd_pts": -800.25,
+      "max_dd_R": -19.1667,
+      "longest_loss_streak": 6,
+      "avg_tp": 67.624,
+      "avg_sl": 59.95,
+      "avg_structural_rr": 1.066,
+      "true_tp_win_rate": 0.379,
+      "TP_exits": 130,
+      "SL_exits": 139,
+      "LOCK_exits": 59,
+      "cutoff_exits": 15,
+      "long_n": 155,
+      "short_n": 188,
+      "long_net_pts": 650.27,
+      "short_net_pts": 521.38,
+      "avg_hold_minutes": 85.15,
+      "median_hold_minutes": 49.0,
+      "monthly_distribution": {
+        "2019-01": {
+          "n": 6,
+          "net_pts": 72.03
+        },
+        "2019-02": {
+          "n": 6,
+          "net_pts": 112.7
+        },
+        "2019-03": {
+          "n": 5,
+          "net_pts": 115.1
+        },
+        "2019-04": {
+          "n": 4,
+          "net_pts": 37.0
+        },
+        "2019-05": {
+          "n": 6,
+          "net_pts": -184.75
+        },
+        "2019-06": {
+          "n": 10,
+          "net_pts": -68.59
+        },
+        "2019-07": {
+          "n": 5,
+          "net_pts": 4.03
+        },
+        "2019-08": {
+          "n": 9,
+          "net_pts": 153.6
+        },
+        "2019-09": {
+          "n": 3,
+          "net_pts": -48.74
+        },
+        "2019-10": {
+          "n": 9,
+          "net_pts": -102.07
+        },
+        "2019-11": {
+          "n": 3,
+          "net_pts": 16.59
+        },
+        "2019-12": {
+          "n": 10,
+          "net_pts": -70.87
+        },
+        "2021-01": {
+          "n": 8,
+          "net_pts": -182.77
+        },
+        "2021-02": {
+          "n": 6,
+          "net_pts": 208.73
+        },
+        "2021-03": {
+          "n": 12,
+          "net_pts": -106.92
+        },
+        "2021-04": {
+          "n": 6,
+          "net_pts": 9.97
+        },
+        "2021-05": {
+          "n": 6,
+          "net_pts": -9.4
+        },
+        "2021-06": {
+          "n": 5,
+          "net_pts": 54.5
+        },
+        "2021-07": {
+          "n": 7,
+          "net_pts": -97.8
+        },
+        "2021-08": {
+          "n": 7,
+          "net_pts": -193.0
+        },
+        "2021-09": {
+          "n": 6,
+          "net_pts": -154.88
+        },
+        "2021-10": {
+          "n": 4,
+          "net_pts": 5.76
+        },
+        "2021-11": {
+          "n": 9,
+          "net_pts": 288.67
+        },
+        "2021-12": {
+          "n": 9,
+          "net_pts": 502.27
+        },
+        "2024-01": {
+          "n": 10,
+          "net_pts": 8.25
+        },
+        "2024-02": {
+          "n": 9,
+          "net_pts": -34.25
+        },
+        "2024-03": {
+          "n": 10,
+          "net_pts": 377.78
+        },
+        "2024-04": {
+          "n": 5,
+          "net_pts": 16.75
+        },
+        "2024-05": {
+          "n": 8,
+          "net_pts": -51.67
+        },
+        "2024-06": {
+          "n": 3,
+          "net_pts": -180.75
+        },
+        "2024-07": {
+          "n": 9,
+          "net_pts": -122.12
+        },
+        "2024-08": {
+          "n": 3,
+          "net_pts": 11.78
+        },
+        "2024-09": {
+          "n": 11,
+          "net_pts": 124.92
+        },
+        "2024-10": {
+          "n": 10,
+          "net_pts": -144.17
+        },
+        "2024-11": {
+          "n": 4,
+          "net_pts": 37.25
+        },
+        "2024-12": {
+          "n": 10,
+          "net_pts": -173.33
+        },
+        "2025-01": {
+          "n": 14,
+          "net_pts": 167.1
+        },
+        "2025-02": {
+          "n": 11,
+          "net_pts": -86.55
+        },
+        "2025-03": {
+          "n": 9,
+          "net_pts": 396.32
+        },
+        "2025-04": {
+          "n": 5,
+          "net_pts": 19.5
+        },
+        "2025-05": {
+          "n": 7,
+          "net_pts": 211.95
+        },
+        "2025-06": {
+          "n": 5,
+          "net_pts": -119.45
+        },
+        "2025-07": {
+          "n": 3,
+          "net_pts": -43.75
+        },
+        "2025-08": {
+          "n": 9,
+          "net_pts": -86.98
+        },
+        "2025-09": {
+          "n": 5,
+          "net_pts": -75.85
+        },
+        "2025-10": {
+          "n": 8,
+          "net_pts": 413.97
+        },
+        "2025-11": {
+          "n": 8,
+          "net_pts": 87.05
+        },
+        "2025-12": {
+          "n": 6,
+          "net_pts": 56.75
+        }
+      }
+    }
+  },
+  "frozen_pine_hmm_2024_2025": {
+    "pooled": {
+      "n_trades": 185,
+      "net_pts": 921.07,
+      "total_R": 5.5515,
+      "avg_R": 0.03,
+      "PF_pts": 1.1774,
+      "PF_R": 1.0721,
+      "max_dd_pts": -771.92,
+      "max_dd_R": -12.06,
+      "longest_loss_streak": 4,
+      "avg_tp": 83.047,
+      "avg_sl": 70.595,
+      "avg_structural_rr": 1.1353,
+      "true_tp_win_rate": 0.373,
+      "TP_exits": 69,
+      "SL_exits": 77,
+      "LOCK_exits": 38,
+      "cutoff_exits": 1,
+      "long_n": 89,
+      "short_n": 96,
+      "long_net_pts": 177.88,
+      "short_net_pts": 743.2,
+      "avg_hold_minutes": 64.3,
+      "median_hold_minutes": 30.0,
+      "monthly_distribution": {
+        "2024-01": {
+          "n": 12,
+          "net_pts": 233.95
+        },
+        "2024-02": {
+          "n": 8,
+          "net_pts": -64.5
+        },
+        "2024-03": {
+          "n": 10,
+          "net_pts": 377.78
+        },
+        "2024-04": {
+          "n": 5,
+          "net_pts": 16.75
+        },
+        "2024-05": {
+          "n": 8,
+          "net_pts": -61.67
+        },
+        "2024-06": {
+          "n": 3,
+          "net_pts": -180.75
+        },
+        "2024-07": {
+          "n": 9,
+          "net_pts": -122.12
+        },
+        "2024-08": {
+          "n": 3,
+          "net_pts": 11.78
+        },
+        "2024-09": {
+          "n": 11,
+          "net_pts": 124.92
+        },
+        "2024-10": {
+          "n": 10,
+          "net_pts": -144.17
+        },
+        "2024-11": {
+          "n": 5,
+          "net_pts": -60.25
+        },
+        "2024-12": {
+          "n": 10,
+          "net_pts": -173.33
+        },
+        "2025-01": {
+          "n": 14,
+          "net_pts": 185.1
+        },
+        "2025-02": {
+          "n": 11,
+          "net_pts": -86.55
+        },
+        "2025-03": {
+          "n": 9,
+          "net_pts": 396.32
+        },
+        "2025-04": {
+          "n": 5,
+          "net_pts": 19.5
+        },
+        "2025-05": {
+          "n": 7,
+          "net_pts": 213.2
+        },
+        "2025-06": {
+          "n": 7,
+          "net_pts": -266.95
+        },
+        "2025-07": {
+          "n": 3,
+          "net_pts": -43.75
+        },
+        "2025-08": {
+          "n": 10,
+          "net_pts": -7.98
+        },
+        "2025-09": {
+          "n": 6,
+          "net_pts": 17.4
+        },
+        "2025-10": {
+          "n": 7,
+          "net_pts": 485.72
+        },
+        "2025-11": {
+          "n": 7,
+          "net_pts": 77.42
+        },
+        "2025-12": {
+          "n": 5,
+          "net_pts": -26.75
+        }
+      }
+    },
+    "per_year": {
+      "2024": {
+        "n_trades": 94,
+        "net_pts": -41.62,
+        "total_R": -1.83,
+        "avg_R": -0.0195,
+        "PF_pts": 0.9838,
+        "PF_R": 0.9564,
+        "max_dd_pts": -771.92,
+        "max_dd_R": -11.3951,
+        "longest_loss_streak": 4,
+        "avg_tp": 68.141,
+        "avg_sl": 61.37,
+        "avg_structural_rr": 1.0803,
+        "true_tp_win_rate": 0.383,
+        "TP_exits": 36,
+        "SL_exits": 42,
+        "LOCK_exits": 16,
+        "cutoff_exits": 0,
+        "long_n": 39,
+        "short_n": 55,
+        "long_net_pts": -59.0,
+        "short_net_pts": 17.38,
+        "avg_hold_minutes": 75.31,
+        "median_hold_minutes": 43.0
+      },
+      "2025": {
+        "n_trades": 91,
+        "net_pts": 962.7,
+        "total_R": 7.3815,
+        "avg_R": 0.0811,
+        "PF_pts": 1.3663,
+        "PF_R": 1.2109,
+        "max_dd_pts": -452.77,
+        "max_dd_R": -5.6633,
+        "longest_loss_streak": 3,
+        "avg_tp": 98.445,
+        "avg_sl": 80.124,
+        "avg_structural_rr": 1.1921,
+        "true_tp_win_rate": 0.3626,
+        "TP_exits": 33,
+        "SL_exits": 35,
+        "LOCK_exits": 22,
+        "cutoff_exits": 1,
+        "long_n": 50,
+        "short_n": 41,
+        "long_net_pts": 236.88,
+        "short_net_pts": 725.82,
+        "avg_hold_minutes": 52.92,
+        "median_hold_minutes": 24.0
+      }
+    },
+    "state_agreement_pct": 79.84,
+    "allow_block_agreement_pct": 97.2,
+    "exit_reason_agreement_pct_given_both_entered": 100.0,
+    "n_touches_compared": 749
+  },
+  "skip_reason_reconciliation": {
+    "total_reserved_year_touches_in_master": 1840,
+    "total_rows_in_rolling_ledger": 1840,
+    "reserved_year_only_skip_counts": {
+      "blocked_window": 1132,
+      "EXECUTED": 430,
+      "position_open": 156,
+      "blocked_low_vol": 96,
+      "same_bar_reentry": 26
+    },
+    "global_replay_skip_counts_all_years": {
+      "blocked_non_tradeable_year": 1274,
+      "blocked_window": 1132,
+      "blocked_low_vol": 96,
+      "blocked_at_or_after_cutoff": 0,
+      "position_open": 156,
+      "same_bar_reentry": 26
+    },
+    "executed": 430
+  },
+  "hashes": {
+    "bars_file_sha256": "9f427eb053b6c63e50f79baf666f239f851558d1558e706fc126cbe69f3a5af4",
+    "ledger_rolling_hash": "d1f945aa8d438b2d63cc8a59b79467e3e6978c1346396b44c13cc99c253af428",
+    "ledger_pine_hash": "6be411cdbdaed4c7a3f35ebc7a362848c8eb4fe9657a7811b6d5e8ad76a9478a",
+    "config_hashes": {
+      "scripts/oos_engine.py": "5057267985cd0726d579eb2b1117773d63b95917b5c748a630eda8a9e2f00e6c",
+      "scripts/run_oos_holdout.py": "ad11407b454bd30fac2dd8336df7c621071878c6a875c05d17532a8e050cfc8c",
+      "scripts/stage2_engine.py": "660e6dd3fb5426a0c694eef3b78506d964babf733ef5ed883172df2723f383b7",
+      "scripts/stage3_engine.py": "fa5e13fd6f5542ee4e8230101102d3bb9ddd1f68f899ad20006746ee64b9c3cc",
+      "scripts/stage4_hmm.py": "4a2edf106816e79ee6a524b347e26db9aca933b3b9dd043093d461a4688db14c",
+      "scripts/stage4_regime_data.py": "29ba128a4fbb57dab1570dcbd82c579414ffb94326a1738a5e2352499b8a0dd7",
+      "scripts/stage5_engine.py": "fc0bab379c81a3fadb8378069495cd1c016831ffb218ee41c05a376b3db9f65d"
+    }
+  }
+}

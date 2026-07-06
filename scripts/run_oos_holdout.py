@@ -42,8 +42,8 @@ from scripts.oos_engine import (  # noqa: E402
 PINE_YEARS = [2024, 2025]
 
 
-def df_hash(df):
-    return hashlib.sha256(pd.util.hash_pandas_object(df, index=True).values.tobytes()).hexdigest()
+def file_hash(path):
+    return hashlib.sha256(open(path, "rb").read()).hexdigest()
 
 
 def longest_loss_streak(pnl_series):
@@ -170,6 +170,9 @@ def main():
         return state_before_rich(cache_probs, cache_meta, session, ts)
 
     ledger_rolling, skip_counts_rolling = run_oos_replay(bars, full_df, rolling_lookup, RESERVED_YEARS)
+    for c in ["touched_at", "entry_time", "exit_time", "profit_lock_trigger_ts",
+              "profit_lock_activation_ts", "hmm_last_bar_ts"]:
+        ledger_rolling[c] = pd.to_datetime(ledger_rolling[c], utc=True, errors="coerce")
     ledger_rolling.to_csv(os.path.join(out_dir, "oos_ledger_rolling_python_hmm.csv"), index=False)
 
     pooled_rolling = pooled_metrics(ledger_rolling, RESERVED_YEARS)
@@ -197,6 +200,9 @@ def main():
         return {"hmm_state": label, "hmm_prob": prob}
 
     ledger_pine, skip_counts_pine = run_oos_replay(bars, full_df, pine_lookup, PINE_YEARS)
+    for c in ["touched_at", "entry_time", "exit_time", "profit_lock_trigger_ts",
+              "profit_lock_activation_ts", "hmm_last_bar_ts"]:
+        ledger_pine[c] = pd.to_datetime(ledger_pine[c], utc=True, errors="coerce")
     ledger_pine.to_csv(os.path.join(out_dir, "oos_ledger_frozen_pine_hmm.csv"), index=False)
     pooled_pine = pooled_metrics(ledger_pine, PINE_YEARS)
     per_year_pine = {y: year_metrics(ledger_pine, y) for y in PINE_YEARS}
@@ -214,19 +220,28 @@ def main():
     exit_agree = float((both_entered["exit_reason_roll"] == both_entered["exit_reason_pine"]).mean()) if len(both_entered) else None
 
     # -------------------- skip-reason reconciliation --------------------
+    # skip_counts_rolling is GLOBAL (spans the full chronological replay,
+    # including non-reserved-year touches skipped as blocked_non_tradeable_
+    # year); the reserved-year-only breakdown below is the one that
+    # reconciles against total_reserved_year_touches_in_master.
     reserved_all = full_df[full_df["year"].isin(RESERVED_YEARS)]
+    reserved_ledger_rows = ledger_rolling[ledger_rolling["year"].isin(RESERVED_YEARS)]
+    reserved_skip_counts = (
+        reserved_ledger_rows["skip_reason"].fillna("EXECUTED").value_counts().to_dict()
+    )
     skip_recon = {
         "total_reserved_year_touches_in_master": int(len(reserved_all)),
-        "total_rows_in_rolling_ledger": int(len(ledger_rolling[ledger_rolling["year"].isin(RESERVED_YEARS)])),
-        "skip_counts": skip_counts_rolling,
+        "total_rows_in_rolling_ledger": int(len(reserved_ledger_rows)),
+        "reserved_year_only_skip_counts": {k: int(v) for k, v in reserved_skip_counts.items()},
+        "global_replay_skip_counts_all_years": skip_counts_rolling,
         "executed": int(pooled_rolling.get("n_trades", 0)),
     }
 
     # -------------------- hashes --------------------
     hashes = {
         "bars_file_sha256": hashlib.sha256(open(args.bars, "rb").read()).hexdigest(),
-        "ledger_rolling_hash": df_hash(ledger_rolling),
-        "ledger_pine_hash": df_hash(ledger_pine),
+        "ledger_rolling_hash": file_hash(os.path.join(out_dir, "oos_ledger_rolling_python_hmm.csv")),
+        "ledger_pine_hash": file_hash(os.path.join(out_dir, "oos_ledger_frozen_pine_hmm.csv")),
         "config_hashes": {
             f: hashlib.sha256(open(os.path.join(REPO_ROOT, f), "rb").read()).hexdigest()
             for f in [
