@@ -1,0 +1,6 @@
+rr,n_mgmt_exits,avoided_full_stop,sacrificed_full_target,reached_this_rr_target_after_mgmt_exit,baseline_1R_TP_converted_to_cutoff,baseline_1R_TP_converted_to_mgmt_exit
+0.75,80,24,48,48,0,0
+1.0,93,32,48,48,0,0
+1.25,113,44,51,51,9,20
+1.5,126,55,45,45,13,33
+2.0,144,64,37,37,26,51

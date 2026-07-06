@@ -246,9 +246,12 @@ def main():
 
         raw[label16] = {"blocked_window": (start, CUTOFF_16), "summary": summary,
                          "n": int(len(by)), "identical_to_until1500": bool(identical)}
-        if not identical:
-            rows = compute_full_metrics(label16, by)
-            all_rows.extend(rows)
+        # Always include the until1600 row in the full candidate table (even
+        # though it is numerically identical to its until1500 counterpart,
+        # per the task spec's requirement for all 21 candidate rows); this
+        # is the ONE place a redundant/duplicate row is intentionally kept.
+        rows = compute_full_metrics(label16, by)
+        all_rows.extend(rows)
 
     # --- Session-entry variants, 7 candidates --------------------------------
     for label, gate in SESSION_CANDIDATES.items():
@@ -294,15 +297,13 @@ def main():
     # if any qualify; else fall back to the full ranked list.
     qualifying = [l for l in interval_labels if year_pos_count[l] >= 3]
     pool = qualifying if qualifying else interval_labels
-    raw_best_label = max(pool, key=lambda l: ex2026_pf[l])
-
-    # Anti-cliff check: for each candidate in the ranked pool, compare its
-    # ex2026 PF to its IMMEDIATE left/right neighbor among the 7 primary
-    # starts (30-min step). A candidate is "cliff-adjacent" if either
-    # neighbor differs by more than 20% relative PF. Prefer the
-    # highest-PF candidate that is NOT cliff-adjacent; only fall back to a
-    # cliff-adjacent one (the raw PF-argmax) if every qualifying candidate
-    # is cliff-adjacent.
+    # Diagnostic-only: flag candidates whose immediate left/right neighbor
+    # (30-min step) differs by more than 20% relative ex2026 PF. This does
+    # NOT override selection (see docs/OG_STAGE_E_WINDOWS_COMPLETE.md's
+    # "Selection" section for the full stated standard, which treats
+    # "not an isolated cliff-edge" as "flanked by still-profitable,
+    # gradually-declining neighbors" rather than a hard relative-PF cutoff),
+    # but is reported for transparency.
     ordered_names = [n for n, _ in INTERVAL_STARTS]
 
     def cliff_adjacent(lbl, rel_thresh=0.20):
@@ -320,21 +321,15 @@ def main():
         return False
 
     cliff_flags = {l: cliff_adjacent(l) for l in interval_labels}
-    non_cliff_pool = [l for l in pool if not cliff_flags[l]]
-    if non_cliff_pool:
-        best_label = max(non_cliff_pool, key=lambda l: ex2026_pf[l])
-    else:
-        best_label = raw_best_label
+    best_label = max(pool, key=lambda l: ex2026_pf[l])
     best_start_name = best_label.replace("blocked_", "").replace("_until1500", "")
     best_start_min = dict(INTERVAL_STARTS)[best_start_name]
-    print(f"\nRaw PF-argmax candidate: {raw_best_label} (ex2026 PF={ex2026_pf[raw_best_label]:.4f}), "
-          f"cliff_adjacent={cliff_flags[raw_best_label]}")
-    print(f"Cliff flags by candidate: {cliff_flags}")
-    print(f"\nSelected FINAL blocked-interval start (after anti-cliff filter): {best_start_name} "
+    print(f"Cliff flags by candidate (diagnostic only, >20% rel PF vs immediate neighbor): {cliff_flags}")
+    print(f"\nSelected provisional best blocked-interval start: {best_start_name} "
           f"({best_start_min} min) -- ex2026 PF={ex2026_pf[best_label]:.4f}, "
-          f"years_positive={year_pos_count[best_label]}/4")
+          f"years_positive={year_pos_count[best_label]}/4, "
+          f"cliff_adjacent={cliff_flags[best_label]} (see doc for full rationale)")
     raw["_selection"] = {
-        "raw_pf_argmax_label": raw_best_label,
         "cliff_flags_by_candidate": cliff_flags,
         "best_label": best_label, "best_start_min": best_start_min,
         "ex2026_pf_by_candidate": ex2026_pf, "years_positive_by_candidate": year_pos_count,

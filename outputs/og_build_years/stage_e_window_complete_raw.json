@@ -367,6 +367,15 @@
     }
   ],
   "_selection": {
+    "cliff_flags_by_candidate": {
+      "blocked_0900_until1500": false,
+      "blocked_0930_until1500": false,
+      "blocked_1000_until1500": true,
+      "blocked_1030_until1500": false,
+      "blocked_1100_until1500": false,
+      "blocked_1130_until1500": false,
+      "blocked_1200_until1500": false
+    },
     "best_label": "blocked_1000_until1500",
     "best_start_min": 600,
     "ex2026_pf_by_candidate": {

@@ -1,0 +1,142 @@
+{
+  "laneA_none_rr075": {
+    "lane": "A_no_mgmt",
+    "rr": 0.75,
+    "summary": {
+      "total_physical_touches": 3486,
+      "executed": 1004,
+      "skipped_SAL": 0,
+      "skipped_position_open": 315,
+      "skipped_hmm_gate": 0,
+      "skipped_blocked_time": 1330,
+      "skipped_prop_hard_blackout": 137
+    },
+    "n": 386
+  },
+  "laneB_be60_rr075": {
+    "lane": "B_BE60",
+    "rr": 0.75,
+    "summary": {
+      "total_physical_touches": 3486,
+      "executed": 1038,
+      "skipped_SAL": 0,
+      "skipped_position_open": 283,
+      "skipped_hmm_gate": 0,
+      "skipped_blocked_time": 1330,
+      "skipped_prop_hard_blackout": 137
+    },
+    "n": 401
+  },
+  "laneA_none_rr100": {
+    "lane": "A_no_mgmt",
+    "rr": 1.0,
+    "summary": {
+      "total_physical_touches": 3486,
+      "executed": 991,
+      "skipped_SAL": 0,
+      "skipped_position_open": 328,
+      "skipped_hmm_gate": 0,
+      "skipped_blocked_time": 1330,
+      "skipped_prop_hard_blackout": 137
+    },
+    "n": 382
+  },
+  "laneB_be60_rr100": {
+    "lane": "B_BE60",
+    "rr": 1.0,
+    "summary": {
+      "total_physical_touches": 3486,
+      "executed": 1032,
+      "skipped_SAL": 0,
+      "skipped_position_open": 288,
+      "skipped_hmm_gate": 0,
+      "skipped_blocked_time": 1330,
+      "skipped_prop_hard_blackout": 137
+    },
+    "n": 400
+  },
+  "laneA_none_rr125": {
+    "lane": "A_no_mgmt",
+    "rr": 1.25,
+    "summary": {
+      "total_physical_touches": 3486,
+      "executed": 979,
+      "skipped_SAL": 0,
+      "skipped_position_open": 337,
+      "skipped_hmm_gate": 0,
+      "skipped_blocked_time": 1330,
+      "skipped_prop_hard_blackout": 137
+    },
+    "n": 377
+  },
+  "laneB_be60_rr125": {
+    "lane": "B_BE60",
+    "rr": 1.25,
+    "summary": {
+      "total_physical_touches": 3486,
+      "executed": 1027,
+      "skipped_SAL": 0,
+      "skipped_position_open": 289,
+      "skipped_hmm_gate": 0,
+      "skipped_blocked_time": 1330,
+      "skipped_prop_hard_blackout": 137
+    },
+    "n": 398
+  },
+  "laneA_none_rr150": {
+    "lane": "A_no_mgmt",
+    "rr": 1.5,
+    "summary": {
+      "total_physical_touches": 3486,
+      "executed": 973,
+      "skipped_SAL": 0,
+      "skipped_position_open": 342,
+      "skipped_hmm_gate": 0,
+      "skipped_blocked_time": 1330,
+      "skipped_prop_hard_blackout": 137
+    },
+    "n": 375
+  },
+  "laneB_be60_rr150": {
+    "lane": "B_BE60",
+    "rr": 1.5,
+    "summary": {
+      "total_physical_touches": 3486,
+      "executed": 1024,
+      "skipped_SAL": 0,
+      "skipped_position_open": 292,
+      "skipped_hmm_gate": 0,
+      "skipped_blocked_time": 1330,
+      "skipped_prop_hard_blackout": 137
+    },
+    "n": 398
+  },
+  "laneA_none_rr200": {
+    "lane": "A_no_mgmt",
+    "rr": 2.0,
+    "summary": {
+      "total_physical_touches": 3486,
+      "executed": 969,
+      "skipped_SAL": 0,
+      "skipped_position_open": 346,
+      "skipped_hmm_gate": 0,
+      "skipped_blocked_time": 1330,
+      "skipped_prop_hard_blackout": 137
+    },
+    "n": 375
+  },
+  "laneB_be60_rr200": {
+    "lane": "B_BE60",
+    "rr": 2.0,
+    "summary": {
+      "total_physical_touches": 3486,
+      "executed": 1022,
+      "skipped_SAL": 0,
+      "skipped_position_open": 294,
+      "skipped_hmm_gate": 0,
+      "skipped_blocked_time": 1330,
+      "skipped_prop_hard_blackout": 137
+    },
+    "n": 398
+  }
+}

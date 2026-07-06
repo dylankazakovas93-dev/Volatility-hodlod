@@ -55,8 +55,16 @@ def _fav_adv(sign, h, l, entry_fill):
 def simulate_managed(bars, touched_at, cutoff, entry_fill, sign, cap, *,
                       mode="barcount", be_bars=BE_BARS, r_trigger=None,
                       lock_r=None, minutes_elapsed=None, mfe_r=0.25,
-                      adverse_r=None):
+                      adverse_r=None, target_r=1.0):
     """Generalized touch-bar-stop-only + full-state-machine simulator.
+
+    `target_r` (Stage F): the target distance as a multiple of the per-trade
+    stop distance `cap` (1R). Default 1.0 reproduces every prior stage's
+    behavior exactly (target == cap, i.e. 1:1). The stop distance/cap itself
+    is never changed by this parameter -- only the target moves. When
+    target_r != 1.0, a hit of target returns a pnl of target_r * cap (not
+    the flat `cap` constant used previously), so payoff/PF reflect the true
+    R:R tested.
 
     Returns (pnl, exit_type, exit_ts). exit_type in {"SL","TP","BE","LOCK",
     "SCRATCH","cutoff"}.
@@ -72,7 +80,8 @@ def simulate_managed(bars, touched_at, cutoff, entry_fill, sign, cap, *,
     if rest.empty:
         return sign * (float(touch_row["close"]) - entry_fill), "cutoff", touched_at
 
-    target = entry_fill + sign * cap
+    target_dist = target_r * cap
+    target = entry_fill + sign * target_dist
     hi, lo, op, cl = (rest["high"].values, rest["low"].values, rest["open"].values, rest["close"].values)
     idx = rest.index
     n = len(hi)
@@ -97,12 +106,12 @@ def simulate_managed(bars, touched_at, cutoff, entry_fill, sign, cap, *,
                 if l <= stop:
                     return sign * (stop - entry_fill), ("BE" if (i >= eff_be_bars and armed) else "SL"), idx[i]
                 if h >= target:
-                    return cap, "TP", idx[i]
+                    return target_dist, "TP", idx[i]
             else:
                 if h >= stop:
                     return sign * (stop - entry_fill), ("BE" if (i >= eff_be_bars and armed) else "SL"), idx[i]
                 if l <= target:
-                    return cap, "TP", idx[i]
+                    return target_dist, "TP", idx[i]
         return sign * (float(cl[-1]) - entry_fill), "cutoff", (idx[-1] if n else touched_at)
 
     # --- generic MFE/MAE-driven families -----------------------------------
@@ -126,25 +135,25 @@ def simulate_managed(bars, touched_at, cutoff, entry_fill, sign, cap, *,
                 if scratch_armed and h >= entry_fill:
                     return 0.0, "SCRATCH", idx[i]
                 if h >= target:
-                    return cap, "TP", idx[i]
+                    return target_dist, "TP", idx[i]
             else:
                 if h >= orig_stop:
                     return sign * (orig_stop - entry_fill), "SL", idx[i]
                 if scratch_armed and l <= entry_fill:
                     return 0.0, "SCRATCH", idx[i]
                 if l <= target:
-                    return cap, "TP", idx[i]
+                    return target_dist, "TP", idx[i]
         else:
             if sign > 0:
                 if l <= current_stop:
                     return sign * (current_stop - entry_fill), current_label, idx[i]
                 if h >= target:
-                    return cap, "TP", idx[i]
+                    return target_dist, "TP", idx[i]
             else:
                 if h >= current_stop:
                     return sign * (current_stop - entry_fill), current_label, idx[i]
                 if l <= target:
-                    return cap, "TP", idx[i]
+                    return target_dist, "TP", idx[i]
 
         # 2. update running MFE/MAE/close-favorable using THIS bar's data
         #    (now fully observed -- causal, no lookahead into future bars).
