@@ -16,21 +16,26 @@ liquidation 15:00 ET, PROP_HARD_BLACKOUT unconditional.
 
 Candidates: `noBE`, `BE30`, `BE45`, `BE60`, `BE75`, `BE90` (bar-count family,
 via `mode="barcount"` / `mode="none"` in `src/og_management_variants.py`,
-driven by `scripts/og_stage_c_confirm.py`).
+driven by `scripts/og_stage_c_management_complete.py`, which also runs the
+diagnostic-only `BE45_lock2pt_DIAGNOSTIC_ONLY` reference in the same pass).
 
-### Omitted diagnostic candidate — disclosed, not fabricated
+### Diagnostic-only reference candidate: `BE45_lock2pt_DIAGNOSTIC_ONLY`
 
-The task requested a labeled diagnostic-only reference candidate,
-`BE45+2pt-lock` (arm at 45 bars elapsed, then lock a fixed +2pt profit rather
-than exact breakeven). This is **not representable** by the existing
-`simulate_managed()` primitives in `src/og_management_variants.py` without
-new engine code: the `profit_lock` mode there triggers on exact-R
-(`r_trigger`), not elapsed bar-count, and there is no bar-count-triggered
-fixed-point-lock mode. Per the instruction to reuse existing infrastructure
-rather than rebuild from scratch, and to avoid fabricating or silently
-approximating a result, this diagnostic candidate was **not run**. If it is
-needed, `simulate_managed` needs a new mode (e.g. `barcount_lock` taking
-`be_bars` + `lock_pts`) — flagged for a follow-up, not invented here.
+The `profit_lock` mode in `src/og_management_variants.py` triggers on
+exact-R (`r_trigger`), not elapsed bar-count, so it cannot directly express
+"arm at 45 bars elapsed, then lock +2pts." `scripts/og_stage_c_management_complete.py`
+implements this candidate with a small dedicated simulator
+(`_lock2pt_managed`), identical in arming timing to the barcount BE45
+mechanism (arm-check via the bar's open at i==45), but locking the stop at
+`entry_fill + sign*2.0` instead of exact breakeven once armed. It is run
+through the same chronological `run_variant_managed` engine via a
+narrowly-scoped monkeypatch of `simulate_managed`, restored immediately
+after. Results (ex-2026): net_pts 1300.28, PF 1.173, win_rate 0.650, payoff
+0.632 — similar net PF to BE45 exact-breakeven but a materially different
+win/payoff mix (higher win rate, lower payoff, consistent with locking a
+smaller guaranteed profit instead of scratching at breakeven). **This
+candidate is diagnostic-only and not eligible for selection**, per the task
+spec; it does not change the BE60 decision below.
 
 ## Results (build years 2018/2020/2023/2026 only)
 
@@ -107,6 +112,9 @@ target 1.0R unchanged until Stage F.
 
 ## Reproduction
 
-`python3 scripts/og_stage_c_confirm.py` (requires
+`python3 scripts/og_stage_c_management_complete.py` (requires
 `outputs/og_build_years/_cache.pkl`, produced by the existing Stage C/D
-pipeline). Output: `outputs/og_build_years/stage_c_management_complete.csv`.
+pipeline). Outputs: `outputs/og_build_years/stage_c_management_complete.csv`
+(full metric table), `outputs/og_build_years/stage_c_management_complete_raw.json`
+(raw per-candidate summaries), and per-candidate build-year trade ledgers
+`outputs/og_build_years/stage_c_complete_<candidate>_build_years_trades.csv`.
