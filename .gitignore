@@ -3,3 +3,4 @@ __pycache__/
 *.pyc
 .pytest_cache/
 *.egg-info/
+outputs/og_build_years/_cache.pkl
