@@ -1,0 +1,381 @@
+{
+  "years": [
+    2013,
+    2014,
+    2015
+  ],
+  "bars_file": "data/external_2013_2015/normalized/nq_continuous_2013_2015_1m.csv",
+  "bars_sha256": "026aab199422298cfac7d03b1c58e883b74598d3bd0c66cb52cf6b3d2f5ce4da",
+  "vxn_file": "data/external_2013_2015/normalized/vxn_daily_2012warmup_2015.csv",
+  "vxn_sha256": "9355c3d720ef33707810638e158e513dc1fb037ad77a74bc3a6bfd27664a37c7",
+  "first_eligible_traded_date": "2013-01-07",
+  "family_verdict": "EXTERNAL_DUAL_NO_SUPPORT",
+  "diagnostic_only": true,
+  "does_not_reverse_locked_validation": "DUAL_CONFIG_FAIL (commit add8f30)",
+  "results": {
+    "OG_PRIMARY_150R": {
+      "summary": {
+        "total_physical_touches": 1317,
+        "executed": 315,
+        "skipped_SAL": 0,
+        "skipped_position_open": 53,
+        "skipped_hmm_gate": 0,
+        "skipped_blocked_time": 704,
+        "skipped_prop_hard_blackout": 56
+      },
+      "n_trades": 315,
+      "pooled_metrics": {
+        "config": "OG_PRIMARY_150R",
+        "n_trades": 315,
+        "net_pts": -45.69,
+        "PF_pts": 0.969,
+        "PF_R": 1.0232,
+        "total_R": 3.0254,
+        "avg_R_per_trade": 0.0096,
+        "win_rate": 0.3048,
+        "avg_winner": 14.889,
+        "avg_loser": -10.846,
+        "payoff_ratio": 1.3728,
+        "max_drawdown_pts": -318.36,
+        "max_drawdown_R": -28.8973,
+        "TP": 84,
+        "SL": 127,
+        "BE": 83,
+        "cutoff": 21,
+        "mean_holding_min": 129.57,
+        "median_holding_min": 63.0,
+        "profitable_days": 91,
+        "losing_days": 114,
+        "breakeven_days": 61,
+        "longest_non_winning_day_run": 15
+      },
+      "yearly_metrics": {
+        "2013": {
+          "config": "OG_PRIMARY_150R",
+          "n_trades": 86,
+          "net_pts": 115.21,
+          "PF_pts": 1.4842,
+          "PF_R": 1.7723,
+          "total_R": 20.1281,
+          "avg_R_per_trade": 0.234,
+          "win_rate": 0.3721,
+          "avg_winner": 11.035,
+          "avg_loser": -8.812,
+          "payoff_ratio": 1.2523,
+          "max_drawdown_pts": -49.5,
+          "max_drawdown_R": -5.0,
+          "TP": 29,
+          "SL": 26,
+          "BE": 27,
+          "cutoff": 4,
+          "mean_holding_min": 107.93,
+          "median_holding_min": 61.0,
+          "profitable_days": 30,
+          "losing_days": 22,
+          "breakeven_days": 22,
+          "longest_non_winning_day_run": 8
+        },
+        "2014": {
+          "config": "OG_PRIMARY_150R",
+          "n_trades": 109,
+          "net_pts": -104.86,
+          "PF_pts": 0.7934,
+          "PF_R": 0.7155,
+          "total_R": -15.6199,
+          "avg_R_per_trade": -0.1433,
+          "win_rate": 0.2752,
+          "avg_winner": 13.423,
+          "avg_loser": -9.064,
+          "payoff_ratio": 1.481,
+          "max_drawdown_pts": -167.79,
+          "max_drawdown_R": -19.9783,
+          "TP": 25,
+          "SL": 54,
+          "BE": 23,
+          "cutoff": 7,
+          "mean_holding_min": 123.87,
+          "median_holding_min": 56.0,
+          "profitable_days": 28,
+          "losing_days": 47,
+          "breakeven_days": 18,
+          "longest_non_winning_day_run": 7
+        },
+        "2015": {
+          "config": "OG_PRIMARY_150R",
+          "n_trades": 120,
+          "net_pts": -56.04,
+          "PF_pts": 0.9232,
+          "PF_R": 0.97,
+          "total_R": -1.4827,
+          "avg_R_per_trade": -0.0124,
+          "win_rate": 0.2833,
+          "avg_winner": 19.81,
+          "avg_loser": -13.766,
+          "payoff_ratio": 1.4391,
+          "max_drawdown_pts": -233.25,
+          "max_drawdown_R": -12.419,
+          "TP": 30,
+          "SL": 47,
+          "BE": 33,
+          "cutoff": 10,
+          "mean_holding_min": 150.25,
+          "median_holding_min": 73.5,
+          "profitable_days": 33,
+          "losing_days": 45,
+          "breakeven_days": 21,
+          "longest_non_winning_day_run": 15
+        }
+      },
+      "gate": {
+        "3_pooled_net_positive": {
+          "value": -45.69437390800158,
+          "pass": false
+        },
+        "4_pooled_R_positive": {
+          "value": 3.0254047973831764,
+          "pass": true
+        },
+        "5_pooled_PF_pts_ge_1.10": {
+          "value": 0.9690220310375899,
+          "pass": false
+        },
+        "6_pooled_PF_R_gt_1.00": {
+          "value": 1.0231967107945243,
+          "pass": true
+        },
+        "7_avg_R_per_trade_positive": {
+          "value": 0.009604459674232306,
+          "pass": true
+        },
+        "8_at_least_2_of_3_years_positive_R": {
+          "value": 1,
+          "pass": false
+        },
+        "9_at_least_2_of_3_years_PF_pts_gt_1.00": {
+          "value": 1,
+          "pass": false
+        },
+        "10_total_R_positive_excl_best_year": {
+          "value": -17.102650475505982,
+          "pass": false
+        },
+        "11_at_least_150_eligible_trades": {
+          "value": 315,
+          "pass": true
+        },
+        "12_no_year_gt_80pct_of_positive_net": {
+          "value": 1.0,
+          "pass": false
+        },
+        "13_no_single_month_entirely_supplies_result": {
+          "value": 0.1573300080679106,
+          "pass": true
+        }
+      },
+      "per_year_gate_inputs": {
+        "2013": {
+          "n_trades": 86,
+          "net_pts": 115.21017418618976,
+          "total_R": 20.12805527288916,
+          "PF_pts": 1.4842461990145377
+        },
+        "2014": {
+          "n_trades": 109,
+          "net_pts": -104.86214584786921,
+          "total_R": -15.61990311241329,
+          "PF_pts": 0.7933986442948997
+        },
+        "2015": {
+          "n_trades": 120,
+          "net_pts": -56.042402246322126,
+          "total_R": -1.4827473630926944,
+          "PF_pts": 0.9231860176045124
+        }
+      },
+      "overall_pass": false,
+      "ledger_path": "outputs/og_external_2013_2015/primary_150r_trades.csv"
+    },
+    "OG_OPERATIONAL_100R": {
+      "summary": {
+        "total_physical_touches": 1317,
+        "executed": 315,
+        "skipped_SAL": 0,
+        "skipped_position_open": 53,
+        "skipped_hmm_gate": 0,
+        "skipped_blocked_time": 704,
+        "skipped_prop_hard_blackout": 56
+      },
+      "n_trades": 315,
+      "pooled_metrics": {
+        "config": "OG_OPERATIONAL_100R",
+        "n_trades": 315,
+        "net_pts": -261.61,
+        "PF_pts": 0.8193,
+        "PF_R": 0.8618,
+        "total_R": -17.4414,
+        "avg_R_per_trade": -0.0554,
+        "win_rate": 0.3556,
+        "avg_winner": 10.591,
+        "avg_loser": -11.052,
+        "payoff_ratio": 0.9583,
+        "max_drawdown_pts": -385.17,
+        "max_drawdown_R": -37.5226,
+        "TP": 107,
+        "SL": 123,
+        "BE": 72,
+        "cutoff": 13,
+        "mean_holding_min": 106.99,
+        "median_holding_min": 58.0,
+        "profitable_days": 101,
+        "losing_days": 109,
+        "breakeven_days": 56,
+        "longest_non_winning_day_run": 10
+      },
+      "yearly_metrics": {
+        "2013": {
+          "config": "OG_OPERATIONAL_100R",
+          "n_trades": 86,
+          "net_pts": 57.21,
+          "PF_pts": 1.2536,
+          "PF_R": 1.5377,
+          "total_R": 12.9373,
+          "avg_R_per_trade": 0.1504,
+          "win_rate": 0.4302,
+          "avg_winner": 7.642,
+          "avg_loser": -9.022,
+          "payoff_ratio": 0.8471,
+          "max_drawdown_pts": -53.79,
+          "max_drawdown_R": -4.0,
+          "TP": 37,
+          "SL": 24,
+          "BE": 24,
+          "cutoff": 1,
+          "mean_holding_min": 82.97,
+          "median_holding_min": 55.0,
+          "profitable_days": 34,
+          "losing_days": 19,
+          "breakeven_days": 21,
+          "longest_non_winning_day_run": 4
+        },
+        "2014": {
+          "config": "OG_OPERATIONAL_100R",
+          "n_trades": 109,
+          "net_pts": -182.41,
+          "PF_pts": 0.6379,
+          "PF_R": 0.5674,
+          "total_R": -23.3153,
+          "avg_R_per_trade": -0.2139,
+          "win_rate": 0.3028,
+          "avg_winner": 9.739,
+          "avg_loser": -9.16,
+          "payoff_ratio": 1.0632,
+          "max_drawdown_pts": -216.91,
+          "max_drawdown_R": -27.4149,
+          "TP": 30,
+          "SL": 53,
+          "BE": 21,
+          "cutoff": 5,
+          "mean_holding_min": 107.26,
+          "median_holding_min": 51.0,
+          "profitable_days": 30,
+          "losing_days": 46,
+          "breakeven_days": 17,
+          "longest_non_winning_day_run": 7
+        },
+        "2015": {
+          "config": "OG_OPERATIONAL_100R",
+          "n_trades": 120,
+          "net_pts": -136.41,
+          "PF_pts": 0.8101,
+          "PF_R": 0.8537,
+          "total_R": -7.0635,
+          "avg_R_per_trade": -0.0589,
+          "win_rate": 0.35,
+          "avg_winner": 13.859,
+          "avg_loser": -14.088,
+          "payoff_ratio": 0.9837,
+          "max_drawdown_pts": -194.51,
+          "max_drawdown_R": -11.1077,
+          "TP": 40,
+          "SL": 46,
+          "BE": 27,
+          "cutoff": 7,
+          "mean_holding_min": 123.97,
+          "median_holding_min": 68.0,
+          "profitable_days": 37,
+          "losing_days": 44,
+          "breakeven_days": 18,
+          "longest_non_winning_day_run": 10
+        }
+      },
+      "gate": {
+        "3_pooled_net_positive": {
+          "value": -261.6106588338971,
+          "pass": false
+        },
+        "4_pooled_R_positive": {
+          "value": -17.441404229099092,
+          "pass": false
+        },
+        "5_pooled_PF_pts_ge_1.10": {
+          "value": 0.8193073444937756,
+          "pass": false
+        },
+        "6_pooled_PF_R_gt_1.00": {
+          "value": 0.8618442144393331,
+          "pass": false
+        },
+        "7_avg_R_per_trade_positive": {
+          "value": -0.05536953723523521,
+          "pass": false
+        },
+        "8_at_least_2_of_3_years_positive_R": {
+          "value": 1,
+          "pass": false
+        },
+        "9_at_least_2_of_3_years_PF_pts_gt_1.00": {
+          "value": 1,
+          "pass": false
+        },
+        "10_total_R_positive_excl_best_year": {
+          "value": -30.378735673395806,
+          "pass": false
+        },
+        "11_at_least_150_eligible_trades": {
+          "value": 315,
+          "pass": true
+        },
+        "12_no_year_gt_80pct_of_positive_net": {
+          "value": 1.0,
+          "pass": false
+        },
+        "13_no_single_month_entirely_supplies_result": {
+          "value": 0.22111334606673502,
+          "pass": true
+        }
+      },
+      "per_year_gate_inputs": {
+        "2013": {
+          "n_trades": 86,
+          "net_pts": 57.208472372839424,
+          "total_R": 12.937331444296714,
+          "PF_pts": 1.25364939652005
+        },
+        "2014": {
+          "n_trades": 109,
+          "net_pts": -182.41298673886195,
+          "total_R": -23.31525061098612,
+          "PF_pts": 0.6379314527739239
+        },
+        "2015": {
+          "n_trades": 120,
+          "net_pts": -136.40614446787458,
+          "total_R": -7.063485062409683,
+          "PF_pts": 0.8101440528440509
+        }
+      },
+      "overall_pass": false,
+      "ledger_path": "outputs/og_external_2013_2015/operational_100r_trades.csv"
+    }
+  }
+}

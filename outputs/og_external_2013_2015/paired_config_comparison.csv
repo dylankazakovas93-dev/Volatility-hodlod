@@ -1,0 +1,15 @@
+metric,value
+shared_level_ids,315.0
+trades_1.00R_TP_but_1.50R_not,23.0
+trades_1.50R_TP_but_1.00R_not,0.0
+trades_both_TP,84.0
+trades_1.50R_larger_cutoff_gain_when_both_cutoff,0.0
+trades_1.50R_converts_1.00R_winner_to_BE_cutoff_or_loss,16.0
+net_R_gained_from_1.50R_larger_winners,42.0459
+net_R_lost_from_1.50R_lower_target_hit_rate,-21.5791
+win_rate_diff_150_minus_100,-0.0508
+profitable_day_rate_diff_150_minus_100,-0.0376
+max_drawdown_pts_diff_150_minus_100,66.81
+longest_non_winning_day_streak_150,15.0
+longest_non_winning_day_streak_100,10.0
+longest_non_winning_day_streak_diff_150_minus_100,5.0
