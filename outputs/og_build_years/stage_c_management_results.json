@@ -1,0 +1,274 @@
+{
+  "BE45_lock0": {
+    "params": {
+      "be_bars": 45,
+      "be_extra_lock": 0.0
+    },
+    "build_years_summary": {
+      "n": 507,
+      "net_pts": 4039.77,
+      "PF": 1.4533,
+      "win_rate": 0.3886,
+      "avg_trade": 7.968,
+      "max_drawdown": -721.54,
+      "TP": 180,
+      "SL": 135,
+      "BE": 141,
+      "cutoff": 51
+    },
+    "per_year": {
+      "2018": {
+        "n": 141,
+        "net_pts": 240.24,
+        "PF": 1.1735,
+        "win_rate": 0.4043,
+        "avg_trade": 1.704,
+        "max_drawdown": -235.61,
+        "TP": 55,
+        "SL": 39,
+        "BE": 38,
+        "cutoff": 9
+      },
+      "2020": {
+        "n": 156,
+        "net_pts": 971.0,
+        "PF": 1.3106,
+        "win_rate": 0.3205,
+        "avg_trade": 6.224,
+        "max_drawdown": -721.54,
+        "TP": 48,
+        "SL": 48,
+        "BE": 49,
+        "cutoff": 11
+      },
+      "2023": {
+        "n": 137,
+        "net_pts": 88.17,
+        "PF": 1.0294,
+        "win_rate": 0.3869,
+        "avg_trade": 0.644,
+        "max_drawdown": -702.32,
+        "TP": 44,
+        "SL": 36,
+        "BE": 35,
+        "cutoff": 22
+      },
+      "2026": {
+        "n": 73,
+        "net_pts": 2740.36,
+        "PF": 2.9494,
+        "win_rate": 0.5068,
+        "avg_trade": 37.539,
+        "max_drawdown": -355.12,
+        "TP": 33,
+        "SL": 12,
+        "BE": 19,
+        "cutoff": 9
+      }
+    }
+  },
+  "BE30_lock0": {
+    "params": {
+      "be_bars": 30,
+      "be_extra_lock": 0.0
+    },
+    "build_years_summary": {
+      "n": 512,
+      "net_pts": 4337.67,
+      "PF": 1.4891,
+      "win_rate": 0.3809,
+      "avg_trade": 8.472,
+      "max_drawdown": -542.05,
+      "TP": 180,
+      "SL": 131,
+      "BE": 156,
+      "cutoff": 45
+    },
+    "per_year": {
+      "2018": {
+        "n": 144,
+        "net_pts": -20.01,
+        "PF": 0.9863,
+        "win_rate": 0.3611,
+        "avg_trade": -0.139,
+        "max_drawdown": -414.06,
+        "TP": 50,
+        "SL": 38,
+        "BE": 46,
+        "cutoff": 10
+      },
+      "2020": {
+        "n": 155,
+        "net_pts": 996.37,
+        "PF": 1.315,
+        "win_rate": 0.3419,
+        "avg_trade": 6.428,
+        "max_drawdown": -542.05,
+        "TP": 50,
+        "SL": 47,
+        "BE": 47,
+        "cutoff": 11
+      },
+      "2023": {
+        "n": 139,
+        "net_pts": 630.15,
+        "PF": 1.2333,
+        "win_rate": 0.3885,
+        "avg_trade": 4.533,
+        "max_drawdown": -512.83,
+        "TP": 47,
+        "SL": 33,
+        "BE": 43,
+        "cutoff": 16
+      },
+      "2026": {
+        "n": 74,
+        "net_pts": 2731.17,
+        "PF": 2.7715,
+        "win_rate": 0.4865,
+        "avg_trade": 36.908,
+        "max_drawdown": -345.0,
+        "TP": 33,
+        "SL": 13,
+        "BE": 20,
+        "cutoff": 8
+      }
+    }
+  },
+  "BE60_lock0": {
+    "params": {
+      "be_bars": 60,
+      "be_extra_lock": 0.0
+    },
+    "build_years_summary": {
+      "n": 500,
+      "net_pts": 4372.34,
+      "PF": 1.4548,
+      "win_rate": 0.41,
+      "avg_trade": 8.745,
+      "max_drawdown": -793.77,
+      "TP": 188,
+      "SL": 143,
+      "BE": 116,
+      "cutoff": 53
+    },
+    "per_year": {
+      "2018": {
+        "n": 140,
+        "net_pts": 103.61,
+        "PF": 1.0709,
+        "win_rate": 0.3857,
+        "avg_trade": 0.74,
+        "max_drawdown": -317.36,
+        "TP": 52,
+        "SL": 40,
+        "BE": 38,
+        "cutoff": 10
+      },
+      "2020": {
+        "n": 150,
+        "net_pts": 1301.84,
+        "PF": 1.3819,
+        "win_rate": 0.38,
+        "avg_trade": 8.679,
+        "max_drawdown": -563.16,
+        "TP": 53,
+        "SL": 51,
+        "BE": 33,
+        "cutoff": 13
+      },
+      "2023": {
+        "n": 137,
+        "net_pts": 99.04,
+        "PF": 1.0321,
+        "win_rate": 0.4015,
+        "avg_trade": 0.723,
+        "max_drawdown": -793.77,
+        "TP": 48,
+        "SL": 38,
+        "BE": 31,
+        "cutoff": 20
+      },
+      "2026": {
+        "n": 73,
+        "net_pts": 2867.86,
+        "PF": 2.7313,
+        "win_rate": 0.5342,
+        "avg_trade": 39.286,
+        "max_drawdown": -423.81,
+        "TP": 35,
+        "SL": 14,
+        "BE": 14,
+        "cutoff": 10
+      }
+    }
+  },
+  "BE45_lock2": {
+    "params": {
+      "be_bars": 45,
+      "be_extra_lock": 2.0
+    },
+    "build_years_summary": {
+      "n": 507,
+      "net_pts": 3954.65,
+      "PF": 1.4437,
+      "win_rate": 0.6667,
+      "avg_trade": 7.8,
+      "max_drawdown": -711.54,
+      "TP": 174,
+      "SL": 135,
+      "BE": 147,
+      "cutoff": 51
+    },
+    "per_year": {
+      "2018": {
+        "n": 141,
+        "net_pts": 267.12,
+        "PF": 1.1929,
+        "win_rate": 0.6738,
+        "avg_trade": 1.894,
+        "max_drawdown": -223.38,
+        "TP": 52,
+        "SL": 39,
+        "BE": 41,
+        "cutoff": 9
+      },
+      "2020": {
+        "n": 156,
+        "net_pts": 875.0,
+        "PF": 1.2799,
+        "win_rate": 0.6346,
+        "avg_trade": 5.609,
+        "max_drawdown": -711.54,
+        "TP": 46,
+        "SL": 48,
+        "BE": 51,
+        "cutoff": 11
+      },
+      "2023": {
+        "n": 137,
+        "net_pts": 158.17,
+        "PF": 1.0528,
+        "win_rate": 0.6423,
+        "avg_trade": 1.154,
+        "max_drawdown": -654.32,
+        "TP": 44,
+        "SL": 36,
+        "BE": 35,
+        "cutoff": 22
+      },
+      "2026": {
+        "n": 73,
+        "net_pts": 2654.36,
+        "PF": 2.8883,
+        "win_rate": 0.7671,
+        "avg_trade": 36.361,
+        "max_drawdown": -349.12,
+        "TP": 32,
+        "SL": 12,
+        "BE": 20,
+        "cutoff": 9
+      }
+    }
+  }
+}

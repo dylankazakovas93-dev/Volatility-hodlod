@@ -1,0 +1,52 @@
+{
+  "BE45_lock0": {
+    "n": 507,
+    "net_pts": 4039.77,
+    "PF": 1.4533,
+    "win_rate": 0.3886,
+    "avg_trade": 7.968,
+    "max_drawdown": -721.54,
+    "TP": 180,
+    "SL": 135,
+    "BE": 141,
+    "cutoff": 51
+  },
+  "BE30_lock0": {
+    "n": 512,
+    "net_pts": 4337.67,
+    "PF": 1.4891,
+    "win_rate": 0.3809,
+    "avg_trade": 8.472,
+    "max_drawdown": -542.05,
+    "TP": 180,
+    "SL": 131,
+    "BE": 156,
+    "cutoff": 45
+  },
+  "BE60_lock0": {
+    "n": 500,
+    "net_pts": 4372.34,
+    "PF": 1.4548,
+    "win_rate": 0.41,
+    "avg_trade": 8.745,
+    "max_drawdown": -793.77,
+    "TP": 188,
+    "SL": 143,
+    "BE": 116,
+    "cutoff": 53
+  },
+  "BE45_lock2": {
+    "n": 507,
+    "net_pts": 3954.65,
+    "PF": 1.4437,
+    "win_rate": 0.6667,
+    "avg_trade": 7.8,
+    "max_drawdown": -711.54,
+    "TP": 174,
+    "SL": 135,
+    "BE": 147,
+    "cutoff": 51
+  }
+}
+
+Build years used: [2018, 2020, 2023, 2026]
