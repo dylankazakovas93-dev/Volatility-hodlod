@@ -1,0 +1,332 @@
+{
+  "a_canonical_baseline": {
+    "ALL": {
+      "n": 460,
+      "net_pts": 3499.15,
+      "PF_pts": 1.4191,
+      "total_cap_norm_R": 32.4832,
+      "avg_cap_norm_R_per_trade": 0.0706,
+      "max_dd_pts": -756.99,
+      "max_dd_R": -10.5347
+    },
+    "2018": {
+      "n": 130,
+      "net_pts": 104.49,
+      "PF_pts": 1.0771,
+      "total_cap_norm_R": 9.6906,
+      "avg_cap_norm_R_per_trade": 0.0745,
+      "max_dd_pts": -369.11,
+      "max_dd_R": -6.1851
+    },
+    "2020": {
+      "n": 138,
+      "net_pts": 747.27,
+      "PF_pts": 1.2645,
+      "total_cap_norm_R": -4.6025,
+      "avg_cap_norm_R_per_trade": -0.0334,
+      "max_dd_pts": -632.62,
+      "max_dd_R": -10.5347
+    },
+    "2023": {
+      "n": 125,
+      "net_pts": -96.16,
+      "PF_pts": 0.9663,
+      "total_cap_norm_R": 5.8624,
+      "avg_cap_norm_R_per_trade": 0.0469,
+      "max_dd_pts": -756.99,
+      "max_dd_R": -7.5694
+    },
+    "2026": {
+      "n": 67,
+      "net_pts": 2743.56,
+      "PF_pts": 3.0945,
+      "total_cap_norm_R": 21.5327,
+      "avg_cap_norm_R_per_trade": 0.3214,
+      "max_dd_pts": -312.38,
+      "max_dd_R": -3.0
+    },
+    "ALL_ex2026": {
+      "n": 393,
+      "net_pts": 755.59,
+      "PF_pts": 1.1073,
+      "total_cap_norm_R": 10.9505,
+      "avg_cap_norm_R_per_trade": 0.0279,
+      "max_dd_pts": -756.99,
+      "max_dd_R": -10.5347
+    },
+    "ALL_ex_best_year(2026)": {
+      "n": 393,
+      "net_pts": 755.59,
+      "PF_pts": 1.1073,
+      "total_cap_norm_R": 10.9505,
+      "avg_cap_norm_R_per_trade": 0.0279,
+      "max_dd_pts": -756.99,
+      "max_dd_R": -10.5347
+    },
+    "best_year": 2026
+  },
+  "b_sal_off": {
+    "ALL": {
+      "n": 507,
+      "net_pts": 4039.77,
+      "PF_pts": 1.4533,
+      "total_cap_norm_R": 39.3803,
+      "avg_cap_norm_R_per_trade": 0.0777,
+      "max_dd_pts": -721.54,
+      "max_dd_R": -10.4387
+    },
+    "2018": {
+      "n": 141,
+      "net_pts": 240.24,
+      "PF_pts": 1.1735,
+      "total_cap_norm_R": 13.6906,
+      "avg_cap_norm_R_per_trade": 0.0971,
+      "max_dd_pts": -235.61,
+      "max_dd_R": -6.7493
+    },
+    "2020": {
+      "n": 156,
+      "net_pts": 971.0,
+      "PF_pts": 1.3106,
+      "total_cap_norm_R": -2.5065,
+      "avg_cap_norm_R_per_trade": -0.0161,
+      "max_dd_pts": -721.54,
+      "max_dd_R": -10.4387
+    },
+    "2023": {
+      "n": 137,
+      "net_pts": 88.17,
+      "PF_pts": 1.0294,
+      "total_cap_norm_R": 7.5059,
+      "avg_cap_norm_R_per_trade": 0.0548,
+      "max_dd_pts": -702.32,
+      "max_dd_R": -6.5677
+    },
+    "2026": {
+      "n": 73,
+      "net_pts": 2740.36,
+      "PF_pts": 2.9494,
+      "total_cap_norm_R": 20.6904,
+      "avg_cap_norm_R_per_trade": 0.2834,
+      "max_dd_pts": -355.12,
+      "max_dd_R": -4.0
+    },
+    "ALL_ex2026": {
+      "n": 434,
+      "net_pts": 1299.41,
+      "PF_pts": 1.1731,
+      "total_cap_norm_R": 18.6899,
+      "avg_cap_norm_R_per_trade": 0.0431,
+      "max_dd_pts": -721.54,
+      "max_dd_R": -10.4387
+    },
+    "ALL_ex_best_year(2026)": {
+      "n": 434,
+      "net_pts": 1299.41,
+      "PF_pts": 1.1731,
+      "total_cap_norm_R": 18.6899,
+      "avg_cap_norm_R_per_trade": 0.0431,
+      "max_dd_pts": -721.54,
+      "max_dd_R": -10.4387
+    },
+    "best_year": 2026
+  },
+  "c_sal_off_be60": {
+    "ALL": {
+      "n": 500,
+      "net_pts": 4372.34,
+      "PF_pts": 1.4548,
+      "total_cap_norm_R": 39.6941,
+      "avg_cap_norm_R_per_trade": 0.0794,
+      "max_dd_pts": -793.77,
+      "max_dd_R": -10.4987
+    },
+    "2018": {
+      "n": 140,
+      "net_pts": 103.61,
+      "PF_pts": 1.0709,
+      "total_cap_norm_R": 9.2009,
+      "avg_cap_norm_R_per_trade": 0.0657,
+      "max_dd_pts": -317.36,
+      "max_dd_R": -6.7493
+    },
+    "2020": {
+      "n": 150,
+      "net_pts": 1301.84,
+      "PF_pts": 1.3819,
+      "total_cap_norm_R": 0.4335,
+      "avg_cap_norm_R_per_trade": 0.0029,
+      "max_dd_pts": -563.16,
+      "max_dd_R": -10.4987
+    },
+    "2023": {
+      "n": 137,
+      "net_pts": 99.04,
+      "PF_pts": 1.0321,
+      "total_cap_norm_R": 8.9167,
+      "avg_cap_norm_R_per_trade": 0.0651,
+      "max_dd_pts": -793.77,
+      "max_dd_R": -7.0448
+    },
+    "2026": {
+      "n": 73,
+      "net_pts": 2867.86,
+      "PF_pts": 2.7313,
+      "total_cap_norm_R": 21.143,
+      "avg_cap_norm_R_per_trade": 0.2896,
+      "max_dd_pts": -423.81,
+      "max_dd_R": -5.1053
+    },
+    "ALL_ex2026": {
+      "n": 427,
+      "net_pts": 1504.48,
+      "PF_pts": 1.1891,
+      "total_cap_norm_R": 18.5511,
+      "avg_cap_norm_R_per_trade": 0.0434,
+      "max_dd_pts": -793.77,
+      "max_dd_R": -10.4987
+    },
+    "ALL_ex_best_year(2026)": {
+      "n": 427,
+      "net_pts": 1504.48,
+      "PF_pts": 1.1891,
+      "total_cap_norm_R": 18.5511,
+      "avg_cap_norm_R_per_trade": 0.0434,
+      "max_dd_pts": -793.77,
+      "max_dd_R": -10.4987
+    },
+    "best_year": 2026
+  },
+  "d_plus_window_10_15": {
+    "ALL": {
+      "n": 400,
+      "net_pts": 5011.09,
+      "PF_pts": 1.7852,
+      "total_cap_norm_R": 44.9583,
+      "avg_cap_norm_R_per_trade": 0.1124,
+      "max_dd_pts": -563.16,
+      "max_dd_R": -9.5677
+    },
+    "2018": {
+      "n": 112,
+      "net_pts": 285.8,
+      "PF_pts": 1.3439,
+      "total_cap_norm_R": 10.3037,
+      "avg_cap_norm_R_per_trade": 0.092,
+      "max_dd_pts": -139.08,
+      "max_dd_R": -5.6963
+    },
+    "2020": {
+      "n": 131,
+      "net_pts": 1478.9,
+      "PF_pts": 1.5635,
+      "total_cap_norm_R": 2.6981,
+      "avg_cap_norm_R_per_trade": 0.0206,
+      "max_dd_pts": -563.16,
+      "max_dd_R": -9.5677
+    },
+    "2023": {
+      "n": 100,
+      "net_pts": 543.09,
+      "PF_pts": 1.303,
+      "total_cap_norm_R": 11.6362,
+      "avg_cap_norm_R_per_trade": 0.1164,
+      "max_dd_pts": -378.11,
+      "max_dd_R": -3.7536
+    },
+    "2026": {
+      "n": 57,
+      "net_pts": 2703.3,
+      "PF_pts": 3.3838,
+      "total_cap_norm_R": 20.3202,
+      "avg_cap_norm_R_per_trade": 0.3565,
+      "max_dd_pts": -402.75,
+      "max_dd_R": -5.0
+    },
+    "ALL_ex2026": {
+      "n": 343,
+      "net_pts": 2307.78,
+      "PF_pts": 1.4397,
+      "total_cap_norm_R": 24.6381,
+      "avg_cap_norm_R_per_trade": 0.0718,
+      "max_dd_pts": -563.16,
+      "max_dd_R": -9.5677
+    },
+    "ALL_ex_best_year(2026)": {
+      "n": 343,
+      "net_pts": 2307.78,
+      "PF_pts": 1.4397,
+      "total_cap_norm_R": 24.6381,
+      "avg_cap_norm_R_per_trade": 0.0718,
+      "max_dd_pts": -563.16,
+      "max_dd_R": -9.5677
+    },
+    "best_year": 2026
+  },
+  "e_final_plus_rr150": {
+    "ALL": {
+      "n": 398,
+      "net_pts": 4903.34,
+      "PF_pts": 1.6934,
+      "total_cap_norm_R": 43.9018,
+      "avg_cap_norm_R_per_trade": 0.1103,
+      "max_dd_pts": -674.8,
+      "max_dd_R": -8.7396
+    },
+    "2018": {
+      "n": 112,
+      "net_pts": 507.87,
+      "PF_pts": 1.5833,
+      "total_cap_norm_R": 11.6915,
+      "avg_cap_norm_R_per_trade": 0.1044,
+      "max_dd_pts": -122.25,
+      "max_dd_R": -6.0
+    },
+    "2020": {
+      "n": 131,
+      "net_pts": 1716.53,
+      "PF_pts": 1.6076,
+      "total_cap_norm_R": 7.7354,
+      "avg_cap_norm_R_per_trade": 0.059,
+      "max_dd_pts": -548.66,
+      "max_dd_R": -8.7396
+    },
+    "2023": {
+      "n": 99,
+      "net_pts": 547.07,
+      "PF_pts": 1.3038,
+      "total_cap_norm_R": 12.2268,
+      "avg_cap_norm_R_per_trade": 0.1235,
+      "max_dd_pts": -441.48,
+      "max_dd_R": -5.9753
+    },
+    "2026": {
+      "n": 56,
+      "net_pts": 2131.87,
+      "PF_pts": 2.3536,
+      "total_cap_norm_R": 12.248,
+      "avg_cap_norm_R_per_trade": 0.2187,
+      "max_dd_pts": -488.44,
+      "max_dd_R": -6.1454
+    },
+    "ALL_ex2026": {
+      "n": 342,
+      "net_pts": 2771.47,
+      "PF_pts": 1.5042,
+      "total_cap_norm_R": 31.6538,
+      "avg_cap_norm_R_per_trade": 0.0926,
+      "max_dd_pts": -548.66,
+      "max_dd_R": -8.7396
+    },
+    "ALL_ex_best_year(2026)": {
+      "n": 342,
+      "net_pts": 2771.47,
+      "PF_pts": 1.5042,
+      "total_cap_norm_R": 31.6538,
+      "avg_cap_norm_R_per_trade": 0.0926,
+      "max_dd_pts": -548.66,
+      "max_dd_R": -8.7396
+    },
+    "best_year": 2026
+  }
+}

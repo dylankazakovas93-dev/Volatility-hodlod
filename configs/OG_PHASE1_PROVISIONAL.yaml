@@ -1,0 +1,71 @@
+# OG Phase 1 provisional configuration.
+#
+# RETROSPECTIVE_BUILD_ONLY__NOT_VALIDATED
+#
+# This configuration is the final chained selection from Phase 1 research
+# (docs/OG_PHASE1_FINAL_REPORT.md): SAL off (Stage B) + BE60 management
+# (Stage C) + no HMM gate (Stage D) + entries blocked 10:00-15:00 ET
+# (Stage E, RESEARCH_ENTRY_BLACKOUT_10_15) + target 1.50R with BE60 / Lane B
+# (Stage F). It was selected using ONLY {2018 (full), 2020 (full), 2023
+# (full), 2026 (partial, through 2026-06-07)} outcome data -- OG_BUILD_YEARS.
+# No 2019/2021/2022/2024/2025 trade outcome informed any part of this
+# config. It has NOT been evaluated against any locked/held-out year, is
+# NOT validated for prop-account or live use, and NO OG_PRE_VALIDATION_LOCK
+# has been created. See docs/OG_PHASE1_FINAL_REPORT.md for the full
+# rationale, the 2026-concentration discussion, and the genuine LOBYO
+# stability findings (docs/OG_GENUINE_LOBYO.md) before any human decides
+# whether to proceed past Phase 1.
+
+status: RETROSPECTIVE_BUILD_ONLY__NOT_VALIDATED
+
+# --- Level generation / stop-calc / core engine mechanics (unchanged from
+#     canonical src/strict_engine.py) --------------------------------------
+level_generation: canonical_unchanged   # see src/strict_engine.py -- not modified in Phase 1
+stop_calc:
+  cap_formula: "min(1.5 * anchor, SL_CAP)"   # unchanged; Stage F never touches the stop
+  sl_cap: SL_CAP   # canonical constant from src/strict_engine.py, unchanged
+one_global_position: true         # unchanged
+no_overlap: true                  # unchanged
+no_same_minute_reentry: true      # unchanged
+permanent_touch_consumption: true # unchanged (a skipped/blocked touch is never retried)
+tie_order: age                    # unchanged canonical default
+
+# --- Session / time rules (unchanged) --------------------------------------
+forced_liquidation_time_et: "15:00"          # session_cutoff(), unchanged
+prop_hard_blackout:
+  start_et: "16:00"    # inclusive
+  end_et: "19:00"       # exclusive
+  configurable: false   # hard-coded in src/og_build_variant_engine.py::in_prop_hard_blackout, always on
+
+# --- Phase 1 research selections --------------------------------------------
+sal_enabled: false   # Stage B: docs/OG_STAGE_B_SAL.md -- SAL off
+
+management:
+  mode: barcount
+  be_bars: 60          # Stage C: docs/OG_STAGE_C_MANAGEMENT_COMPLETE.md -- BE60_CONFIRMED
+  be_extra_lock: 0.0   # no additional lock beyond exact breakeven
+
+hmm_gate:
+  enabled: false        # Stage D: docs/OG_STAGE_D_HMM.md -- no-HMM (frozen)
+
+entry_blackout:
+  name: RESEARCH_ENTRY_BLACKOUT_10_15
+  blocked_window_et: ["10:00", "15:00"]   # Stage E: docs/OG_STAGE_E_WINDOWS_COMPLETE.md
+  blocked_window_minutes: [600, 900]
+  note: >
+    Entries are blocked from 10:00 ET until the 15:00 ET forced-liquidation
+    cutoff (blocked ENTRY interval, not an "allowed trading window").
+    Independent of, and checked after, PROP_HARD_BLACKOUT.
+
+target:
+  target_r: 1.50         # Stage F: docs/OG_STAGE_F_RR.md -- RR_SELECTED, 1.50R, Lane B (BE60)
+  lane: "B"               # Lane B = BE60 management (Lane A / no-management was comparison only)
+  note: >
+    target_dist = target_r * cap. The stop distance/cap itself is never
+    changed by this parameter; Stage F only moves the target.
+
+# --- Data firewall reminder --------------------------------------------------
+data_firewall:
+  og_build_years: [2018, 2020, 2023, 2026]
+  build_2026_scope: "partial, through 2026-06-07"
+  excluded_years_never_used_for_outcomes: [2019, 2021, 2022, 2024, 2025]
