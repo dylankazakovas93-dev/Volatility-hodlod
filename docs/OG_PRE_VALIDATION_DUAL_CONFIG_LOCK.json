@@ -1,0 +1,85 @@
+{
+  "lock_name": "OG_PRE_VALIDATION_DUAL_CONFIG_LOCK",
+  "branch": "research/og-build-four-years",
+  "documentation_commit": "ebc98d31ac5dbd4e89f474ebba6d3b03c523254d",
+  "data_firewall_confirmation": {
+    "locked_years": [2019, 2021, 2022, 2024, 2025],
+    "statement": "No outcome, trade, or performance data for 2019, 2021, 2022, 2024, or 2025 was accessed, computed, or viewed anywhere in this task's history (docs, configs, or shell commands). No 2013-2015 data was sourced. No Monte Carlo / account-sizing / payout-probability simulation was run.",
+    "og_build_years_used": [2018, 2020, 2023, 2026],
+    "build_2026_scope": "partial, through 2026-06-07"
+  },
+  "configs": {
+    "primary": {
+      "config_id": "OG_PRIMARY_150R",
+      "path": "configs/OG_PRIMARY_150R.yaml",
+      "status": "PRIMARY_RESEARCH_CONFIG__RETROSPECTIVE_BUILD_PASS__NOT_VALIDATED",
+      "candidate_reference": "Candidate B, docs/OG_FINAL_BUILDOFF_BE45.md",
+      "target_r": 1.50,
+      "expected_ledger": {
+        "path": "outputs/og_build_years/final_buildoff_B_build_years_trades.csv",
+        "sha256": "426c42fe0f3d3f674f7b738bbfd6ae843a4b24c7c4abef09153692f472e5a655",
+        "n_rows": 404
+      },
+      "expected_headline_metrics": {
+        "completed_years_2018_2020_2023": {
+          "n_trades": 349, "net_pts": 2667.08, "PF_pts": 1.5066, "PF_R": 1.3299,
+          "cap_norm_R_total": 37.2428, "avg_R_per_trade": 0.1067, "win_rate": 0.3066
+        },
+        "all_build_years_incl_2026": {
+          "n_trades": 404, "net_pts": 4599.14, "PF_pts": 1.6704, "PF_R": 1.3647,
+          "cap_norm_R_total": 47.4737, "avg_R_per_trade": 0.1175, "win_rate": 0.3144
+        }
+      },
+      "build_results_doc": "docs/OG_PRIMARY_150R_BUILD_RESULTS.md"
+    },
+    "secondary": {
+      "config_id": "OG_OPERATIONAL_100R",
+      "path": "configs/OG_OPERATIONAL_100R.yaml",
+      "status": "SECONDARY_OPERATIONAL_CONFIG__RETROSPECTIVE_BUILD_PASS__NOT_VALIDATED",
+      "candidate_reference": "Candidate A, docs/OG_FINAL_BUILDOFF_BE45.md",
+      "target_r": 1.00,
+      "expected_ledger": {
+        "path": "outputs/og_build_years/final_buildoff_A_build_years_trades.csv",
+        "sha256": "3546c0768b57d99de92a76f24a84f1c492bb82e92a959ae04ef3ce51a508c168",
+        "n_rows": 407
+      },
+      "expected_headline_metrics": {
+        "completed_years_2018_2020_2023": {
+          "n_trades": 350, "net_pts": 2159.76, "PF_pts": 1.4353, "PF_R": 1.2282,
+          "cap_norm_R_total": 24.7984, "avg_R_per_trade": 0.0709, "win_rate": 0.3886
+        },
+        "all_build_years_incl_2026": {
+          "n_trades": 407, "net_pts": 4692.76, "PF_pts": 1.7737, "PF_R": 1.3689,
+          "cap_norm_R_total": 44.4520, "avg_R_per_trade": 0.1092, "win_rate": 0.4152
+        }
+      },
+      "build_results_doc": "docs/OG_OPERATIONAL_100R_BUILD_RESULTS.md"
+    },
+    "only_intended_difference": "target.target_r (1.50 primary vs 1.00 secondary). All other parameters identical: level_generation, stop_calc.cap_formula, one_global_position, no_overlap, no_stacking, no_same_minute_reentry, permanent_touch_consumption, tie_order, intrabar_ambiguity, forced_liquidation_time_et, prop_hard_blackout (16:00-19:00 ET), entry_blackout (RESEARCH_ENTRY_BLACKOUT_10_15, 10:00-15:00 ET), sal_enabled=false, management.mode=barcount, management.be_bars=45, management.be_extra_lock=0.0, hmm_gate.enabled=false, data (bars/vxn files and hashes)."
+  },
+  "validation_runner": {
+    "exists_today": "src/og_management_variants.py::run_variant_managed, src/og_build_variant_engine.py (run_variant/filter_build_years/in_prop_hard_blackout), scripts/og_final_buildoff_be45.py (pattern to reuse)",
+    "deferred_not_built": "scripts/og_validation_dual_config.py -- to be written and pointed at years {2019,2021,2022,2024,2025} only once a human authorizes validation. NOT written or run in this task.",
+    "reference_doc": "docs/OG_VALIDATION_PROTOCOL_DUAL_CONFIG.md section 5"
+  },
+  "validation_gate": {
+    "reference_doc": "docs/OG_VALIDATION_PROTOCOL_DUAL_CONFIG.md section 4",
+    "criteria_count": 11,
+    "must_not_be_altered_after_viewing_validation_results": true,
+    "family_labels": ["DUAL_CONFIG_FAMILY_PASS", "PRIMARY_ONLY_PASS", "SECONDARY_ONLY_PASS", "DUAL_CONFIG_FAIL"]
+  },
+  "invariant_tests": {
+    "command": "python -m pytest tests/test_prop_hard_blackout.py tests/test_strategy_invariants.py tests/test_og_stage_a_invariants.py -q",
+    "result_this_session": "45 passed",
+    "referenced_files": [
+      "tests/test_prop_hard_blackout.py",
+      "tests/test_strategy_invariants.py",
+      "tests/test_og_stage_a_invariants.py"
+    ]
+  },
+  "reproduction_commands": {
+    "build_ledgers": "python3 scripts/og_final_buildoff_be45.py",
+    "invariant_tests": "python -m pytest tests/test_prop_hard_blackout.py tests/test_strategy_invariants.py tests/test_og_stage_a_invariants.py -q"
+  },
+  "no_validation_year_data_included": true
+}

@@ -28,7 +28,7 @@ source:
   # of the task that formalized OG_PRIMARY_150R / OG_OPERATIONAL_100R as
   # locked dual configs). See git log for the exact SHA; recorded
   # explicitly once known as:
-  introducing_commit: "<filled in by docs commit — see git log -1 -- configs/OG_OPERATIONAL_100R.yaml>"
+  introducing_commit: "ebc98d31ac5dbd4e89f474ebba6d3b03c523254d"
   engine:
     core_mechanics: src/strict_engine.py        # level generation, anchor/cap, touch consumption — UNMODIFIED
     variant_layer: src/og_management_variants.py    # run_variant_managed(), simulate_managed() (barcount BE, target_r)
