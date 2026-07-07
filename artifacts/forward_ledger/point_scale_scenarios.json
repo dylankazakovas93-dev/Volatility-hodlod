@@ -37,7 +37,30 @@
       "p95": 113.51249999999985,
       "p99": 222.16499999999976
     },
-    "mae_mfe_status": "columns_present_null_missing_source_not_imputed",
+    "mae_pts_quantiles": {
+      "p10": 2.3342561743218546,
+      "p25": 6.0028631785316975,
+      "p50": 15.925618727216715,
+      "p75": 39.9782316486162,
+      "p90": 76.61539976574788,
+      "p95": 101.38937952158813,
+      "p99": 161.94558677746625
+    },
+    "mfe_pts_quantiles": {
+      "p10": 3.858075676689623,
+      "p25": 8.625854791627717,
+      "p50": 21.413773436150223,
+      "p75": 58.3374730948708,
+      "p90": 112.86410086959697,
+      "p95": 159.69088952927385,
+      "p99": 303.12547285119655
+    },
+    "mae_mfe_status": [
+      "computed_from_1m_ohlc_entry_to_exit_inclusive"
+    ],
+    "mae_mfe_resolution": [
+      "1m_ohlc_bar_extrema"
+    ],
     "point_scale_is_independent_from_expectancy": true
   },
   {
@@ -78,7 +101,30 @@
       "p95": 106.61249999999998,
       "p99": 196.08500000000026
     },
-    "mae_mfe_status": "columns_present_null_missing_source_not_imputed",
+    "mae_pts_quantiles": {
+      "p10": 2.117329833293661,
+      "p25": 5.745804794320975,
+      "p50": 15.27642185150762,
+      "p75": 38.66656217643322,
+      "p90": 73.24822403486397,
+      "p95": 97.38407024267217,
+      "p99": 161.94420798279432
+    },
+    "mfe_pts_quantiles": {
+      "p10": 3.853002831723097,
+      "p25": 8.205173196806754,
+      "p50": 20.183844244571446,
+      "p75": 48.622846290136295,
+      "p90": 91.72080112758161,
+      "p95": 130.68017408201558,
+      "p99": 203.87764103022735
+    },
+    "mae_mfe_status": [
+      "computed_from_1m_ohlc_entry_to_exit_inclusive"
+    ],
+    "mae_mfe_resolution": [
+      "1m_ohlc_bar_extrema"
+    ],
     "point_scale_is_independent_from_expectancy": true
   },
   {
@@ -119,7 +165,30 @@
       "p95": 109.2887283195887,
       "p99": 200.0
     },
-    "mae_mfe_status": "columns_present_null_missing_source_not_imputed",
+    "mae_pts_quantiles": {
+      "p10": 2.1675650473180212,
+      "p25": 5.9098646196032405,
+      "p50": 15.486367521563807,
+      "p75": 39.42658645995016,
+      "p90": 74.4651456584028,
+      "p95": 100.88353645487221,
+      "p99": 161.95592773750556
+    },
+    "mfe_pts_quantiles": {
+      "p10": 3.8570511975703994,
+      "p25": 8.428895017123068,
+      "p50": 20.802283531584635,
+      "p75": 51.8283829023153,
+      "p90": 103.53637312024314,
+      "p95": 147.81002907905957,
+      "p99": 252.76265401743848
+    },
+    "mae_mfe_status": [
+      "computed_from_1m_ohlc_entry_to_exit_inclusive"
+    ],
+    "mae_mfe_resolution": [
+      "1m_ohlc_bar_extrema"
+    ],
     "point_scale_is_independent_from_expectancy": true
   }
 ]

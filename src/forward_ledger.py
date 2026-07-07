@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import json
 import math
+import os
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -22,6 +23,10 @@ ROLLING_PF_WINDOW = 100
 ROLLING_PF_THRESHOLD = 1.10
 PF_TARGETS = (1.35, 1.50, 1.65)
 SCENARIO_FAMILIES = ("stable", "gradual_degradation", "favourable_persistence", "abrupt_tail")
+EXTERNAL_2013_2015_BARS = "data/external_2013_2015/raw/glbx-mdp3-20130101-20151231.ohlcv-1m.csv.zst"
+DEFAULT_CONTINUOUS_2018_2026_BARS = "data/nq_1m/nq_continuous_2018_2026_1m.csv"
+CONTINUOUS_BARS_ENV = "NQ_1M_2018_2026_CSV"
+STANDARD_CONTRACT_RE = r"^NQ[HMUZ]\d$"
 CONFIGS = {
     "operational_100r": {
         "pool_id": "1rr",
@@ -76,6 +81,15 @@ POOL_REQUIRED_COLUMNS = {
     "mfe_pts",
     "is_flat",
 }
+EXCURSION_REQUIRED_COLUMNS = {
+    "entry_time",
+    "exit_time",
+    "entry_price",
+    "side",
+    "source",
+    "exit_reason",
+    "cap",
+}
 
 
 @dataclass(frozen=True)
@@ -92,6 +106,14 @@ class MetricSummary:
             "net_pts": self.net_pts,
             "points_pf": self.points_pf,
         }
+
+
+@dataclass(frozen=True)
+class ExcursionContext:
+    bars_2013_2015: pd.DataFrame
+    bars_2018_2026: pd.DataFrame
+    bars_2013_2015_path: str
+    bars_2018_2026_path: str
 
 
 def require_columns(df: pd.DataFrame, required: set[str], source_name: str) -> None:
@@ -141,9 +163,120 @@ def _read_trades(repo_root: Path, config: str) -> pd.DataFrame:
     return merged.drop(columns=["entry_time_utc"])
 
 
-def build_normalized_pool(repo_root: Path, config: str) -> pd.DataFrame:
+def _resolve_2018_2026_bars_path(repo_root: Path, explicit_path: str | Path | None = None) -> Path:
+    raw = explicit_path or os.environ.get(CONTINUOUS_BARS_ENV) or DEFAULT_CONTINUOUS_2018_2026_BARS
+    path = Path(raw)
+    if not path.is_absolute():
+        path = repo_root / path
+    return path
+
+
+def _load_bars(path: Path, timestamp_col: str) -> pd.DataFrame:
+    if not path.exists():
+        raise FileNotFoundError(f"required 1-minute OHLC file not found: {path}")
+    bars = pd.read_csv(path, usecols=[timestamp_col, "open", "high", "low", "close"])
+    bars[timestamp_col] = pd.to_datetime(bars[timestamp_col], utc=True)
+    bars = bars.rename(columns={timestamp_col: "timestamp"}).set_index("timestamp").sort_index()
+    if bars.index.has_duplicates:
+        bars = bars.groupby(level=0, sort=True)[["open", "high", "low", "close"]].last()
+    return bars[["open", "high", "low", "close"]].astype(float)
+
+
+def _load_external_continuous_bars(path: Path) -> pd.DataFrame:
+    if not path.exists():
+        raise FileNotFoundError(f"required 2013-2015 raw OHLC file not found: {path}")
+    raw = pd.read_csv(path, usecols=["ts_event", "open", "high", "low", "close", "volume", "symbol"])
+    raw["ts_event"] = pd.to_datetime(raw["ts_event"], utc=True)
+    raw["date"] = raw["ts_event"].dt.date
+    standard = raw[raw["symbol"].str.match(STANDARD_CONTRACT_RE)].copy()
+    if standard.empty:
+        raise ValueError(f"{path} contained no standard NQ quarterly contract bars")
+    daily_volume = standard.groupby(["date", "symbol"])["volume"].sum().reset_index()
+    winner = daily_volume.loc[daily_volume.groupby("date")["volume"].idxmax(), ["date", "symbol"]].rename(
+        columns={"symbol": "winner"}
+    )
+    kept = standard.merge(winner, on="date")
+    kept = kept[kept["symbol"] == kept["winner"]].sort_values("ts_event")
+    kept = kept.rename(columns={"ts_event": "timestamp"}).set_index("timestamp")
+    if kept.index.has_duplicates:
+        kept = kept.groupby(level=0, sort=True)[["open", "high", "low", "close"]].last()
+    return kept[["open", "high", "low", "close"]].astype(float)
+
+
+def load_excursion_context(repo_root: Path, continuous_2018_2026_path: str | Path | None = None) -> ExcursionContext:
+    """Load the raw 1-minute bars needed to compute actual trade excursions.
+
+    The 2013-2015 external bars are committed. The 2018-2026 continuous file is
+    intentionally large and is normally supplied as ignored local data or via
+    NQ_1M_2018_2026_CSV.
+    """
+    external_path = repo_root / EXTERNAL_2013_2015_BARS
+    continuous_path = _resolve_2018_2026_bars_path(repo_root, continuous_2018_2026_path)
+    return ExcursionContext(
+        bars_2013_2015=_load_external_continuous_bars(external_path),
+        bars_2018_2026=_load_bars(continuous_path, "timestamp"),
+        bars_2013_2015_path=str(external_path),
+        bars_2018_2026_path=str(continuous_path),
+    )
+
+
+def _bars_for_trade(ctx: ExcursionContext, source: str) -> pd.DataFrame:
+    if source == "external_2013_2015":
+        return ctx.bars_2013_2015
+    if source in {"build_years", "validation"}:
+        return ctx.bars_2018_2026
+    raise ValueError(f"unknown trade source for excursion scan: {source}")
+
+
+def compute_trade_excursions(trades: pd.DataFrame, ctx: ExcursionContext) -> pd.DataFrame:
+    require_columns(trades, EXCURSION_REQUIRED_COLUMNS, "trade excursion source")
+    rows = []
+    missing = []
+    for idx, row in trades.reset_index(drop=True).iterrows():
+        source = str(row["source"])
+        bars = _bars_for_trade(ctx, source)
+        entry_ts = pd.to_datetime(row["entry_time"], utc=True)
+        exit_ts = pd.to_datetime(row["exit_time"], utc=True)
+        path = bars.loc[entry_ts:exit_ts]
+        if path.empty:
+            missing.append((idx, source, str(row["entry_time"]), str(row["exit_time"])))
+            rows.append((np.nan, np.nan, 0, "missing_bar_path"))
+            continue
+
+        sign = 1.0 if str(row["side"]) == "lower" else -1.0
+        entry = float(row["entry_price"])
+        fav_high = sign * (path["high"].to_numpy(float) - entry)
+        fav_low = sign * (path["low"].to_numpy(float) - entry)
+        bar_fav = np.maximum(fav_high, fav_low)
+        bar_adv = np.minimum(fav_high, fav_low)
+        mfe = max(0.0, float(np.nanmax(bar_fav)))
+        mae = max(0.0, -float(np.nanmin(bar_adv)))
+        rows.append((mae, mfe, int(len(path)), "computed_from_1m_ohlc_entry_to_exit_inclusive"))
+
+    if missing:
+        sample = missing[:5]
+        raise ValueError(
+            "could not compute MAE/MFE because raw 1-minute bars are missing for "
+            f"{len(missing)} trades; first missing paths: {sample}"
+        )
+    return pd.DataFrame(rows, columns=["mae_pts", "mfe_pts", "intratrade_bar_count", "mae_mfe_status"])
+
+
+def build_normalized_pool(repo_root: Path, config: str, excursion_context: ExcursionContext | None = None) -> pd.DataFrame:
     info = CONFIGS[config]
     trades = _read_trades(repo_root, config)
+    if excursion_context is not None:
+        excursions = compute_trade_excursions(trades, excursion_context)
+    else:
+        excursions = pd.DataFrame(
+            {
+                "mae_pts": np.nan,
+                "mfe_pts": np.nan,
+                "intratrade_bar_count": 0,
+                "mae_mfe_status": "missing_source_not_loaded",
+            },
+            index=trades.index,
+        )
     out = pd.DataFrame(
         {
             "pool_id": info["pool_id"],
@@ -166,9 +299,11 @@ def build_normalized_pool(repo_root: Path, config: str) -> pd.DataFrame:
             "target_pts": trades["cap"].astype(float) * float(info["rr"]),
             "pnl_pts_baseline": trades["pnl"].astype(float),
             "pnl_pts_effective": np.where(trades["is_flat"].to_numpy(), 0.0, trades["pnl"].astype(float)),
-            "mae_pts": np.nan,
-            "mfe_pts": np.nan,
-            "mae_mfe_status": "missing_source_not_imputed",
+            "mae_pts": excursions["mae_pts"].to_numpy(float),
+            "mfe_pts": excursions["mfe_pts"].to_numpy(float),
+            "intratrade_bar_count": excursions["intratrade_bar_count"].to_numpy(int),
+            "mae_mfe_status": excursions["mae_mfe_status"].astype(str).to_numpy(),
+            "mae_mfe_resolution": "1m_ohlc_bar_extrema",
             "exit_reason": trades["exit_reason"].astype(str),
             "effective_exit_reason": np.where(trades["is_flat"].to_numpy(), "FLAT", trades["exit_reason"].astype(str)),
             "gap_through": trades["gap_through"].astype(bool),
@@ -180,6 +315,8 @@ def build_normalized_pool(repo_root: Path, config: str) -> pd.DataFrame:
     )
     out["r_multiple_baseline"] = out["pnl_pts_baseline"] / out["effective_stop_pts"]
     out["r_multiple_effective"] = out["pnl_pts_effective"] / out["effective_stop_pts"]
+    out["mae_r"] = out["mae_pts"] / out["effective_stop_pts"]
+    out["mfe_r"] = out["mfe_pts"] / out["effective_stop_pts"]
     require_columns(out, POOL_REQUIRED_COLUMNS, f"normalized {config} pool")
     return out
 
@@ -303,6 +440,8 @@ def build_point_scale_scenarios(source_pool: pd.DataFrame) -> list[dict]:
         stops = g["effective_stop_pts"].astype(float)
         targets = g["target_pts"].astype(float)
         pnl = g["pnl_pts_effective"].astype(float)
+        mae = g["mae_pts"].astype(float)
+        mfe = g["mfe_pts"].astype(float)
         scenarios.append(
             {
                 "point_scale_id": f"{pool_id}_observed_geometry",
@@ -311,7 +450,10 @@ def build_point_scale_scenarios(source_pool: pd.DataFrame) -> list[dict]:
                 "stop_pts_quantiles": _quantiles(stops),
                 "target_pts_quantiles": _quantiles(targets),
                 "abs_pnl_pts_quantiles": _quantiles(pnl.abs()),
-                "mae_mfe_status": "columns_present_null_missing_source_not_imputed",
+                "mae_pts_quantiles": _quantiles(mae),
+                "mfe_pts_quantiles": _quantiles(mfe),
+                "mae_mfe_status": sorted(g["mae_mfe_status"].dropna().unique().tolist()),
+                "mae_mfe_resolution": sorted(g["mae_mfe_resolution"].dropna().unique().tolist()),
                 "point_scale_is_independent_from_expectancy": True,
             }
         )
@@ -324,7 +466,10 @@ def build_point_scale_scenarios(source_pool: pd.DataFrame) -> list[dict]:
             "stop_pts_quantiles": _quantiles(combined["effective_stop_pts"].astype(float)),
             "target_pts_quantiles": _quantiles(combined["target_pts"].astype(float)),
             "abs_pnl_pts_quantiles": _quantiles(combined["pnl_pts_effective"].abs()),
-            "mae_mfe_status": "columns_present_null_missing_source_not_imputed",
+            "mae_pts_quantiles": _quantiles(combined["mae_pts"].astype(float)),
+            "mfe_pts_quantiles": _quantiles(combined["mfe_pts"].astype(float)),
+            "mae_mfe_status": sorted(combined["mae_mfe_status"].dropna().unique().tolist()),
+            "mae_mfe_resolution": sorted(combined["mae_mfe_resolution"].dropna().unique().tolist()),
             "point_scale_is_independent_from_expectancy": True,
         }
     )
@@ -403,4 +548,3 @@ def write_json(path: Path, obj) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with open(path, "w") as f:
         json.dump(obj, f, indent=2, allow_nan=False)
-

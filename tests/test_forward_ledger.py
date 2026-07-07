@@ -1,4 +1,5 @@
 import math
+import os
 from pathlib import Path
 
 import pandas as pd
@@ -12,12 +13,16 @@ from src.forward_ledger import (
     build_normalized_pool,
     build_scenarios,
     gross_point_metrics,
+    load_excursion_context,
     require_columns,
     summarize_pool,
 )
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
+CONTINUOUS_BARS = Path(
+    os.environ.get("NQ_1M_2018_2026_CSV", REPO_ROOT / "data/nq_1m/nq_continuous_2018_2026_1m.csv")
+)
 
 
 def test_gross_profit_loss_net_pf_invariants():
@@ -80,12 +85,28 @@ def test_normalized_pools_are_separate_and_keep_geometry():
     assert one_five_rr["effective_stop_pts"].max() >= 200.0
 
 
-def test_missing_mae_mfe_is_explicit_not_imputed():
-    pool = build_normalized_pool(REPO_ROOT, "primary_150r")
+@pytest.fixture(scope="session")
+def excursion_context():
+    if not CONTINUOUS_BARS.exists():
+        pytest.skip(f"continuous 2018-2026 1m bars not available at {CONTINUOUS_BARS}")
+    return load_excursion_context(REPO_ROOT, CONTINUOUS_BARS)
+
+
+def test_actual_intratrade_mae_mfe_are_computed_from_1m_bars(excursion_context):
+    pool = build_normalized_pool(REPO_ROOT, "primary_150r", excursion_context)
     assert "mae_pts" in pool.columns and "mfe_pts" in pool.columns
-    assert pool["mae_pts"].isna().all()
-    assert pool["mfe_pts"].isna().all()
-    assert set(pool["mae_mfe_status"]) == {"missing_source_not_imputed"}
+    assert pool["mae_pts"].notna().all()
+    assert pool["mfe_pts"].notna().all()
+    assert (pool["mae_pts"] >= 0.0).all()
+    assert (pool["mfe_pts"] >= 0.0).all()
+    assert set(pool["mae_mfe_status"]) == {"computed_from_1m_ohlc_entry_to_exit_inclusive"}
+    assert set(pool["mae_mfe_resolution"]) == {"1m_ohlc_bar_extrema"}
+    assert (pool["intratrade_bar_count"] >= 1).all()
+
+    tp = pool[pool["exit_reason"] == "TP"]
+    sl = pool[pool["exit_reason"] == "SL"]
+    assert (tp["mfe_pts"] + 1e-9 >= tp["target_pts"]).all()
+    assert (sl["mae_pts"] + 1e-9 >= sl["effective_stop_pts"]).all()
 
 
 def test_selected_switch_effective_metrics_recompute_from_trade_pool():

@@ -36,6 +36,14 @@ historical trade packets are active/flat and the outcome mixture/chronology.
   full chronological 1.5R source ledger.
 - `outputs/og_regime_killswitch/operational_100r_full_chronological_trades.csv`:
   full chronological 1RR source ledger.
+- `data/external_2013_2015/raw/glbx-mdp3-20130101-20151231.ohlcv-1m.csv.zst`:
+  committed raw Databento 2013-2015 1-minute OHLC source. It contains
+  outright contracts and calendar spreads, so excursion code must rebuild the
+  canonical continuous series by keeping only standard quarterly NQ contracts
+  and selecting the highest-volume contract per UTC date.
+- `data/nq_1m/nq_continuous_2018_2026_1m.csv`: required local ignored
+  2018-2026 continuous 1-minute OHLC source, or equivalent path supplied via
+  `NQ_1M_2018_2026_CSV` / `--continuous-2018-2026-bars`.
 - `configs/OG_PRIMARY_150R.yaml`: locked 1.5R config.
 - `configs/OG_OPERATIONAL_100R.yaml`: locked 1RR config.
 - `docs/OG_REGIME_KILLSWITCH_MECHANISMS.md`: mechanism definitions.
@@ -108,21 +116,29 @@ Selected rows to verify:
 - `operational_100r`, `rolling_pf`,
   `window=100,threshold=1.1,reentry=symmetric`
 
-## Missing Required Fields
+## Missing/Derived Required Fields
 
 - `mae_pts` and `mfe_pts` do not exist in the full chronological OG ledgers
   or selected trigger logs.
-- The 2013-2015 external source period has no committed raw minute-bar file
-  in this branch, so MAE/MFE cannot be reconstructed for the complete
-  chronological source pool without additional data.
+- They are computed, not estimated, from raw 1-minute OHLC bars by scanning
+  each trade's recorded `entry_time` through recorded `exit_time`, inclusive,
+  using `side` to convert high/low movement into favorable and adverse
+  point excursion.
+- The 2013-2015 raw file is committed but multi-symbol; it must be normalized
+  with the same continuous-contract rule documented in `scripts/build_nq_continuous.py`.
+- The 2018-2026 continuous bar file is not committed because of size, so
+  artifact regeneration requires local data or an explicit path. If that
+  source is absent, the builder fails instead of substituting estimates.
 - The OG ledgers expose `cap`, not explicit `raw_stop_pts` or
   `effective_stop_pts`; forward artifacts will map both stop fields to `cap`
   and document that there is no separate raw/effective stop distinction in
   these locked OG trade CSVs.
 
-The missing MAE/MFE fields are not imputed. Forward artifacts will include
-the columns with null values and a `mae_mfe_status` flag so downstream code
-can reject, enrich, or ignore them explicitly.
+The MAE/MFE limitation is bar resolution, not estimation: 1-minute OHLC does
+not contain tick ordering within the entry or exit minute. The fields are
+therefore actual 1-minute bar-extrema excursions, with
+`mae_mfe_status=computed_from_1m_ohlc_entry_to_exit_inclusive` and
+`mae_mfe_resolution=1m_ohlc_bar_extrema`.
 
 ## Existing Reusable Modules
 
@@ -131,6 +147,8 @@ can reject, enrich, or ignore them explicitly.
 - `src.og_regime_killswitch.summarize`
 - `src.metrics.profit_factor`
 - `src.metrics.max_drawdown`
+- `scripts/build_nq_continuous.py`: canonical daily-volume continuous-contract
+  rule for multi-contract Databento raw files.
 
 ## Proposed Architecture
 
@@ -139,14 +157,17 @@ Add:
 - `src/forward_ledger.py`
   - schema validation;
   - gross profit/gross loss/net/PF invariant helpers;
+  - raw 1-minute OHLC loaders;
+  - canonical 2013-2015 continuous-bar reconstruction;
+  - actual per-trade MAE/MFE computation;
   - selected trigger-log merge;
   - normalized 1RR and 1.5R trade-packet builders;
   - complete block-weight and scenario-manifest builders.
 - `scripts/build_forward_ledger_artifacts.py`
-  - reads only committed historical outputs;
+  - reads committed historical outputs plus required raw/local 1-minute bars;
   - writes `artifacts/forward_ledger/`;
   - fails on missing required source columns;
-  - records missing MAE/MFE honestly instead of inventing values.
+  - fails on missing required bar paths instead of inventing MAE/MFE values.
 - `tests/test_forward_ledger.py`
   - metrics/PF invariants;
   - selected rolling-PF numbers;
@@ -178,6 +199,8 @@ Under `artifacts/forward_ledger/`:
     `1.568369`.
 - Tests that 1RR and 1.5R pools are separate and retain current point
   geometry.
+- Tests that actual MAE/MFE are finite, non-negative, bar-count-backed, and
+  internally consistent with TP/SL trades.
 - Tests that point-scale scenarios and expectancy scenarios are separate.
 - Tests that all PF 1.35, 1.50, and 1.65 scenario manifests have complete
   block weights.
@@ -185,11 +208,11 @@ Under `artifacts/forward_ledger/`:
 
 ## Blockers
 
-- Complete MAE/MFE for all chronological trades cannot be produced from the
-  committed branch data because the source ledgers do not contain those
-  fields and 2013-2015 raw bars are absent.
-- This is not a blocker for source-pool and manifest generation, provided
-  the missing fields are explicit and non-imputed.
+- The 2018-2026 continuous 1-minute bar file is not committed. This is a
+  blocker for regenerating MAE/MFE unless `data/nq_1m/nq_continuous_2018_2026_1m.csv`
+  exists locally or an equivalent path is supplied.
+- Tick-level entry/exit-minute ordering is unavailable. This is a precision
+  limitation of the source data, not a blocker for 1-minute actual MAE/MFE.
 
 ## Pre-Change Reproduction
 

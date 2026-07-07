@@ -27,6 +27,7 @@ from src.forward_ledger import (  # noqa: E402
     build_normalized_pool,
     build_point_scale_scenarios,
     build_scenarios,
+    load_excursion_context,
     summarize_pool,
     write_json,
 )
@@ -40,6 +41,14 @@ def sha256_file(path: Path) -> str:
         for chunk in iter(lambda: f.read(1 << 20), b""):
             h.update(chunk)
     return h.hexdigest()
+
+
+def source_path_label(path: str) -> str:
+    p = Path(path)
+    try:
+        return str(p.relative_to(REPO_ROOT))
+    except ValueError:
+        return f"external:{p.name}"
 
 
 def selected_summary_rows() -> dict:
@@ -78,10 +87,18 @@ separate source pools. Point scale fields (`raw_stop_pts`,
 kept separate from expectancy fields (`exit_reason`, `effective_exit_reason`,
 `is_flat`, scenario block weights).
 
-MAE/MFE are intentionally null because the OG chronological source ledgers and
-2013-2015 external source data do not contain enough committed information to
-compute them for the complete pool. The columns are present with
-`mae_mfe_status=missing_source_not_imputed`.
+MAE/MFE are recomputed from raw 1-minute OHLC bars for every historical trade:
+
+- 2013-2015 uses committed external compressed bars under
+  `data/external_2013_2015/raw/`.
+- 2018-2026 uses the continuous NQ 1-minute file supplied locally as
+  `data/nq_1m/nq_continuous_2018_2026_1m.csv` or through
+  `NQ_1M_2018_2026_CSV`.
+
+The excursion scan is actual 1-minute bar-extrema from recorded entry time
+through recorded exit time, inclusive. It is not an estimate. The limitation is
+bar resolution: the source does not provide tick ordering inside the entry or
+exit minute, so intrabar sequence within those minutes cannot be resolved.
 
 Downstream Monte Carlo should use `forward_source_pool.csv` as reusable packets
 and `scenario_manifests.json` plus `scenario_block_weights.csv` as explicit
@@ -94,12 +111,18 @@ p10/p50/p90 example path.
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--out-dir", default="artifacts/forward_ledger")
+    parser.add_argument(
+        "--continuous-2018-2026-bars",
+        default=None,
+        help="Path to NQ continuous 2018-2026 1-minute OHLC CSV. Defaults to data/nq_1m/... or NQ_1M_2018_2026_CSV.",
+    )
     args = parser.parse_args()
 
     out_dir = REPO_ROOT / args.out_dir
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    pools = {config: build_normalized_pool(REPO_ROOT, config) for config in CONFIGS}
+    excursion_context = load_excursion_context(REPO_ROOT, args.continuous_2018_2026_bars)
+    pools = {config: build_normalized_pool(REPO_ROOT, config, excursion_context) for config in CONFIGS}
     for pool in pools.values():
         assert_pf_invariants(pool["pnl_pts_effective"])
         assert_pf_invariants(pool["pnl_pts_baseline"])
@@ -127,12 +150,16 @@ def main() -> None:
         }
         for config, pool in pools.items()
     }
-    missing_mae_mfe = {
+    mae_mfe = {
         config: {
             "mae_pts_missing": int(pool["mae_pts"].isna().sum()),
             "mfe_pts_missing": int(pool["mfe_pts"].isna().sum()),
             "rows": int(len(pool)),
-            "reason": "OG chronological source ledgers do not include MAE/MFE; 2013-2015 raw bars absent.",
+            "status": sorted(pool["mae_mfe_status"].unique().tolist()),
+            "resolution": sorted(pool["mae_mfe_resolution"].unique().tolist()),
+            "intratrade_bar_count_min": int(pool["intratrade_bar_count"].min()),
+            "intratrade_bar_count_median": float(pool["intratrade_bar_count"].median()),
+            "intratrade_bar_count_max": int(pool["intratrade_bar_count"].max()),
         }
         for config, pool in pools.items()
     }
@@ -148,9 +175,17 @@ def main() -> None:
             "reentry": "symmetric",
         },
         "configs": CONFIGS,
+        "excursion_sources": {
+            "bars_2013_2015": source_path_label(excursion_context.bars_2013_2015_path),
+            "bars_2018_2026": source_path_label(excursion_context.bars_2018_2026_path),
+            "bars_2018_2026_default": "data/nq_1m/nq_continuous_2018_2026_1m.csv",
+            "bars_2018_2026_env": "NQ_1M_2018_2026_CSV",
+            "method": "actual_1m_ohlc_bar_extrema_from_recorded_entry_to_exit_inclusive",
+            "limitation": "1-minute OHLC does not contain tick ordering inside the entry or exit minute.",
+        },
         "selected_summary_rows": selected_summary_rows(),
         "pool_summaries": pool_summaries,
-        "missing_mae_mfe": missing_mae_mfe,
+        "mae_mfe": mae_mfe,
         "scenario_counts": {
             "point_scale_scenarios": len(point_scale_scenarios),
             "expectancy_scenarios": len(expectancy_scenarios),

@@ -25,6 +25,14 @@
       "trigger_file": "outputs/og_regime_killswitch/primary_150r_trigger_log_rolling_pf_w100_t1.1_symmetric.csv"
     }
   },
+  "excursion_sources": {
+    "bars_2013_2015": "data/external_2013_2015/raw/glbx-mdp3-20130101-20151231.ohlcv-1m.csv.zst",
+    "bars_2018_2026": "external:nq_continuous_2018_2026_1m.csv",
+    "bars_2018_2026_default": "data/nq_1m/nq_continuous_2018_2026_1m.csv",
+    "bars_2018_2026_env": "NQ_1M_2018_2026_CSV",
+    "method": "actual_1m_ohlc_bar_extrema_from_recorded_entry_to_exit_inclusive",
+    "limitation": "1-minute OHLC does not contain tick ordering inside the entry or exit minute."
+  },
   "selected_summary_rows": {
     "operational_100r": {
       "baseline": {
@@ -177,18 +185,34 @@
       }
     }
   },
-  "missing_mae_mfe": {
+  "mae_mfe": {
     "operational_100r": {
-      "mae_pts_missing": 1355,
-      "mfe_pts_missing": 1355,
+      "mae_pts_missing": 0,
+      "mfe_pts_missing": 0,
       "rows": 1355,
-      "reason": "OG chronological source ledgers do not include MAE/MFE; 2013-2015 raw bars absent."
+      "status": [
+        "computed_from_1m_ohlc_entry_to_exit_inclusive"
+      ],
+      "resolution": [
+        "1m_ohlc_bar_extrema"
+      ],
+      "intratrade_bar_count_min": 1,
+      "intratrade_bar_count_median": 62.0,
+      "intratrade_bar_count_max": 1151
     },
     "primary_150r": {
-      "mae_pts_missing": 1349,
-      "mfe_pts_missing": 1349,
+      "mae_pts_missing": 0,
+      "mfe_pts_missing": 0,
       "rows": 1349,
-      "reason": "OG chronological source ledgers do not include MAE/MFE; 2013-2015 raw bars absent."
+      "status": [
+        "computed_from_1m_ohlc_entry_to_exit_inclusive"
+      ],
+      "resolution": [
+        "1m_ohlc_bar_extrema"
+      ],
+      "intratrade_bar_count_min": 1,
+      "intratrade_bar_count_median": 74.0,
+      "intratrade_bar_count_max": 1191
     }
   },
   "scenario_counts": {
@@ -209,12 +233,12 @@
     ]
   },
   "artifacts": {
-    "README.md": "6d67f58f09f9c21c77e497e2a248232eae5efc5af50eb53063162bb1b241cd3c",
+    "README.md": "09cb27370e5cc551efa9aad1792128cce3eaff270fe05c94af9f6eb7de93eb27",
     "expectancy_scenarios.json": "e9555d936cb2ddbf54cb18f036ea350b096b02fae2afa7df1da30cef32757f88",
-    "forward_source_pool.csv": "cfcb088584154a38287ac836ba80349215a2b5c7d07ee8775f30d5154c552a40",
-    "historical_trade_pool_1_5rr.csv": "d6e2397fcf2c846dd0954943c866883d505afd2dd62be8710a258a7974832e73",
-    "historical_trade_pool_1rr.csv": "8fc2366fb129aa8b017910a1e451522ec30cfb3acab2ce7190ecca0fcfc0162c",
-    "point_scale_scenarios.json": "bf8af750d215d91762fd353a288f25ac43989ba7e19398cb2a1514cfe27855ec",
+    "forward_source_pool.csv": "046f5640105ce6e3db5f1a0d8d3f97223393db326f50d9ef36017181ea2aece7",
+    "historical_trade_pool_1_5rr.csv": "6ff7a1d28e43caaf35d4a657ae1f4640fdb6399c2cb3afb5fc06201c5c8b0563",
+    "historical_trade_pool_1rr.csv": "3374a4372aa004b3769529da5fe01863f08d2051f714cabee2ec935e11f8d068",
+    "point_scale_scenarios.json": "a5f0dfed0883e66c14d58f704c7e54fcf82a4e66d2aad89d8af2cdaa07ab5c4f",
     "scenario_block_weights.csv": "462fb588d9f05df25daa020ae39246d3d8d90377ba8e7da3ce8540fe987f2544",
     "scenario_manifests.json": "d7b7fc78dc0a3a7a2cdf401676354fba3acfc7133aa6eec07759224dd8fbd43a"
   }
