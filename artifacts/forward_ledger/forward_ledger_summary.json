@@ -1,0 +1,221 @@
+{
+  "status": "forward_ledger_artifacts_built",
+  "source_data_commit": "12a0f779e953d99a7576d4ecec9909f69dfc4159",
+  "source_branch": "research/og-regime-killswitch",
+  "selected_regime": {
+    "mechanism": "rolling_pf",
+    "params": "window=100,threshold=1.1,reentry=symmetric",
+    "rolling_window_completed_trades": 100,
+    "threshold_points_pf": 1.1,
+    "reentry": "symmetric"
+  },
+  "configs": {
+    "operational_100r": {
+      "pool_id": "1rr",
+      "rr": 1.0,
+      "label": "OG_OPERATIONAL_100R",
+      "trade_file": "outputs/og_regime_killswitch/operational_100r_full_chronological_trades.csv",
+      "trigger_file": "outputs/og_regime_killswitch/operational_100r_trigger_log_rolling_pf_w100_t1.1_symmetric.csv"
+    },
+    "primary_150r": {
+      "pool_id": "1_5rr",
+      "rr": 1.5,
+      "label": "OG_PRIMARY_150R",
+      "trade_file": "outputs/og_regime_killswitch/primary_150r_full_chronological_trades.csv",
+      "trigger_file": "outputs/og_regime_killswitch/primary_150r_trigger_log_rolling_pf_w100_t1.1_symmetric.csv"
+    }
+  },
+  "selected_summary_rows": {
+    "operational_100r": {
+      "baseline": {
+        "n_trades": 1355,
+        "net_pts": 6244.433235539356,
+        "total_R": 11.313789085870985,
+        "PF_pts": 1.298998596872805,
+        "PF_R": 1.0231108277534768,
+        "avg_R_per_trade": 0.0083496598419712,
+        "max_dd_pts": -1209.3561932505727,
+        "max_dd_R": -45.91056857008689,
+        "n_flat_trades": 0,
+        "mechanism": "baseline_always_on",
+        "params": "none",
+        "config": "operational_100r",
+        "flat_n_flat_runs": 0,
+        "flat_n_trades_flat": 0,
+        "flat_flat_span_days": 0.0
+      },
+      "selected_rolling_pf_w100_t1_1_symmetric": {
+        "n_trades": 1355,
+        "net_pts": 6738.191261951535,
+        "total_R": 62.23893112230081,
+        "PF_pts": 1.568369164695021,
+        "PF_R": 1.2491153590474051,
+        "avg_R_per_trade": 0.0459327904961629,
+        "max_dd_pts": -721.5375269051292,
+        "max_dd_R": -10.96913872102261,
+        "n_flat_trades": 575,
+        "mechanism": "rolling_pf",
+        "params": "window=100,threshold=1.1,reentry=symmetric",
+        "config": "operational_100r",
+        "flat_n_flat_runs": 20,
+        "flat_n_trades_flat": 575,
+        "flat_flat_span_days": 4288.1
+      }
+    },
+    "primary_150r": {
+      "baseline": {
+        "n_trades": 1349,
+        "net_pts": 6270.870005239877,
+        "total_R": 39.64949012249151,
+        "PF_pts": 1.2781647580792608,
+        "PF_R": 1.0764739550930975,
+        "avg_R_per_trade": 0.0293917643606312,
+        "max_dd_pts": -1194.146093844105,
+        "max_dd_R": -28.897271217728026,
+        "n_flat_trades": 0,
+        "mechanism": "baseline_always_on",
+        "params": "none",
+        "config": "primary_150r",
+        "flat_n_flat_runs": 0,
+        "flat_n_trades_flat": 0,
+        "flat_flat_span_days": 0.0
+      },
+      "selected_rolling_pf_w100_t1_1_symmetric": {
+        "n_trades": 1349,
+        "net_pts": 6004.893375402722,
+        "total_R": 69.62559491846545,
+        "PF_pts": 1.44833308257292,
+        "PF_R": 1.234475099113488,
+        "avg_R_per_trade": 0.0516127464184325,
+        "max_dd_pts": -713.25,
+        "max_dd_R": -14.531184481261048,
+        "n_flat_trades": 512,
+        "mechanism": "rolling_pf",
+        "params": "window=100,threshold=1.1,reentry=symmetric",
+        "config": "primary_150r",
+        "flat_n_flat_runs": 8,
+        "flat_n_trades_flat": 512,
+        "flat_flat_span_days": 4298.0
+      }
+    }
+  },
+  "pool_summaries": {
+    "operational_100r": {
+      "baseline": {
+        "gross_profit_pts": 27128.92333298204,
+        "gross_loss_pts": 20884.490097442686,
+        "net_pts": 6244.433235539356,
+        "points_pf": 1.298998596872805,
+        "n_trades": 1355,
+        "n_active_trades": 1355,
+        "n_flat_trades": 0,
+        "PF_R": 1.0231108277534768,
+        "avg_R_per_trade": 0.008349659841971205,
+        "max_dd_pts": -1209.3561932505727,
+        "max_dd_R": -45.91056857008689,
+        "TP": 493,
+        "SL": 477,
+        "BE": 331,
+        "cutoff": 54,
+        "FLAT": 0
+      },
+      "selected_switch_effective": {
+        "gross_profit_pts": 18593.498834041864,
+        "gross_loss_pts": 11855.307572090327,
+        "net_pts": 6738.191261951535,
+        "points_pf": 1.568369164695021,
+        "n_trades": 1355,
+        "n_active_trades": 780,
+        "n_flat_trades": 575,
+        "PF_R": 1.2491153590474053,
+        "avg_R_per_trade": 0.04593279049616296,
+        "max_dd_pts": -721.5375269051292,
+        "max_dd_R": -10.96913872102261,
+        "TP": 308,
+        "SL": 243,
+        "BE": 202,
+        "cutoff": 27,
+        "FLAT": 575
+      }
+    },
+    "primary_150r": {
+      "baseline": {
+        "gross_profit_pts": 28814.5957041404,
+        "gross_loss_pts": 22543.725698900522,
+        "net_pts": 6270.870005239877,
+        "points_pf": 1.2781647580792608,
+        "n_trades": 1349,
+        "n_active_trades": 1349,
+        "n_flat_trades": 0,
+        "PF_R": 1.0764739550930977,
+        "avg_R_per_trade": 0.029391764360631213,
+        "max_dd_pts": -1194.146093844105,
+        "max_dd_R": -28.897271217728022,
+        "TP": 355,
+        "SL": 505,
+        "BE": 407,
+        "cutoff": 82,
+        "FLAT": 0
+      },
+      "selected_switch_effective": {
+        "gross_profit_pts": 19398.715087022785,
+        "gross_loss_pts": 13393.821711620061,
+        "net_pts": 6004.893375402722,
+        "points_pf": 1.44833308257292,
+        "n_trades": 1349,
+        "n_active_trades": 837,
+        "n_flat_trades": 512,
+        "PF_R": 1.234475099113488,
+        "avg_R_per_trade": 0.051612746418432505,
+        "max_dd_pts": -713.25,
+        "max_dd_R": -14.531184481261047,
+        "TP": 234,
+        "SL": 289,
+        "BE": 264,
+        "cutoff": 50,
+        "FLAT": 512
+      }
+    }
+  },
+  "missing_mae_mfe": {
+    "operational_100r": {
+      "mae_pts_missing": 1355,
+      "mfe_pts_missing": 1355,
+      "rows": 1355,
+      "reason": "OG chronological source ledgers do not include MAE/MFE; 2013-2015 raw bars absent."
+    },
+    "primary_150r": {
+      "mae_pts_missing": 1349,
+      "mfe_pts_missing": 1349,
+      "rows": 1349,
+      "reason": "OG chronological source ledgers do not include MAE/MFE; 2013-2015 raw bars absent."
+    }
+  },
+  "scenario_counts": {
+    "point_scale_scenarios": 3,
+    "expectancy_scenarios": 4,
+    "scenario_manifests": 24,
+    "scenario_block_weight_rows": 2568,
+    "pf_targets": [
+      1.35,
+      1.5,
+      1.65
+    ],
+    "families": [
+      "stable",
+      "gradual_degradation",
+      "favourable_persistence",
+      "abrupt_tail"
+    ]
+  },
+  "artifacts": {
+    "README.md": "6d67f58f09f9c21c77e497e2a248232eae5efc5af50eb53063162bb1b241cd3c",
+    "expectancy_scenarios.json": "e9555d936cb2ddbf54cb18f036ea350b096b02fae2afa7df1da30cef32757f88",
+    "forward_source_pool.csv": "cfcb088584154a38287ac836ba80349215a2b5c7d07ee8775f30d5154c552a40",
+    "historical_trade_pool_1_5rr.csv": "d6e2397fcf2c846dd0954943c866883d505afd2dd62be8710a258a7974832e73",
+    "historical_trade_pool_1rr.csv": "8fc2366fb129aa8b017910a1e451522ec30cfb3acab2ce7190ecca0fcfc0162c",
+    "point_scale_scenarios.json": "bf8af750d215d91762fd353a288f25ac43989ba7e19398cb2a1514cfe27855ec",
+    "scenario_block_weights.csv": "462fb588d9f05df25daa020ae39246d3d8d90377ba8e7da3ce8540fe987f2544",
+    "scenario_manifests.json": "d7b7fc78dc0a3a7a2cdf401676354fba3acfc7133aa6eec07759224dd8fbd43a"
+  }
+}

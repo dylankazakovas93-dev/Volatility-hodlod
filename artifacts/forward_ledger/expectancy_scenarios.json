@@ -1,0 +1,106 @@
+[
+  {
+    "expectancy_family": "stable",
+    "description": "Preserve baseline block mix, then tilt only enough to reach target PF.",
+    "target_points_pf_values": [
+      1.35,
+      1.5,
+      1.65
+    ],
+    "controls": [
+      "TP",
+      "SL",
+      "BE",
+      "cutoff",
+      "FLAT",
+      "chronology_block_weights"
+    ],
+    "does_not_control_point_scale": true,
+    "manifest_ids": [
+      "operational_100r__pf_1.35__stable",
+      "operational_100r__pf_1.50__stable",
+      "operational_100r__pf_1.65__stable",
+      "primary_150r__pf_1.35__stable",
+      "primary_150r__pf_1.50__stable",
+      "primary_150r__pf_1.65__stable"
+    ]
+  },
+  {
+    "expectancy_family": "gradual_degradation",
+    "description": "Increase later-year loss and flat-state weights before target-PF tilt.",
+    "target_points_pf_values": [
+      1.35,
+      1.5,
+      1.65
+    ],
+    "controls": [
+      "TP",
+      "SL",
+      "BE",
+      "cutoff",
+      "FLAT",
+      "chronology_block_weights"
+    ],
+    "does_not_control_point_scale": true,
+    "manifest_ids": [
+      "operational_100r__pf_1.35__gradual_degradation",
+      "operational_100r__pf_1.50__gradual_degradation",
+      "operational_100r__pf_1.65__gradual_degradation",
+      "primary_150r__pf_1.35__gradual_degradation",
+      "primary_150r__pf_1.50__gradual_degradation",
+      "primary_150r__pf_1.65__gradual_degradation"
+    ]
+  },
+  {
+    "expectancy_family": "favourable_persistence",
+    "description": "Increase profitable good-period weights and reduce flat-state weights before target-PF tilt.",
+    "target_points_pf_values": [
+      1.35,
+      1.5,
+      1.65
+    ],
+    "controls": [
+      "TP",
+      "SL",
+      "BE",
+      "cutoff",
+      "FLAT",
+      "chronology_block_weights"
+    ],
+    "does_not_control_point_scale": true,
+    "manifest_ids": [
+      "operational_100r__pf_1.35__favourable_persistence",
+      "operational_100r__pf_1.50__favourable_persistence",
+      "operational_100r__pf_1.65__favourable_persistence",
+      "primary_150r__pf_1.35__favourable_persistence",
+      "primary_150r__pf_1.50__favourable_persistence",
+      "primary_150r__pf_1.65__favourable_persistence"
+    ]
+  },
+  {
+    "expectancy_family": "abrupt_tail",
+    "description": "Increase known bad-period loss and flat-state weights before target-PF tilt.",
+    "target_points_pf_values": [
+      1.35,
+      1.5,
+      1.65
+    ],
+    "controls": [
+      "TP",
+      "SL",
+      "BE",
+      "cutoff",
+      "FLAT",
+      "chronology_block_weights"
+    ],
+    "does_not_control_point_scale": true,
+    "manifest_ids": [
+      "operational_100r__pf_1.35__abrupt_tail",
+      "operational_100r__pf_1.50__abrupt_tail",
+      "operational_100r__pf_1.65__abrupt_tail",
+      "primary_150r__pf_1.35__abrupt_tail",
+      "primary_150r__pf_1.50__abrupt_tail",
+      "primary_150r__pf_1.65__abrupt_tail"
+    ]
+  }
+]

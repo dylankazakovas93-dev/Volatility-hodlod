@@ -1,0 +1,482 @@
+[
+  {
+    "scenario_id": "operational_100r__pf_1.35__stable",
+    "config": "operational_100r",
+    "pool_id": "1rr",
+    "point_scale_id": "1rr_observed_geometry",
+    "expectancy_id": "stable_pf_1.35",
+    "scenario_family": "stable",
+    "target_points_pf": 1.35,
+    "achieved_points_pf": 1.35,
+    "base_selected_switch_points_pf": 1.568369164695021,
+    "rolling_pf_mechanism": {
+      "window_trades": 100,
+      "threshold": 1.1,
+      "reentry": "symmetric"
+    },
+    "complete_block_weighting": true,
+    "block_count": 101,
+    "weight_sum": 1.0,
+    "point_scale_expectancy_separate": true
+  },
+  {
+    "scenario_id": "operational_100r__pf_1.50__stable",
+    "config": "operational_100r",
+    "pool_id": "1rr",
+    "point_scale_id": "1rr_observed_geometry",
+    "expectancy_id": "stable_pf_1.50",
+    "scenario_family": "stable",
+    "target_points_pf": 1.5,
+    "achieved_points_pf": 1.4999999999999998,
+    "base_selected_switch_points_pf": 1.568369164695021,
+    "rolling_pf_mechanism": {
+      "window_trades": 100,
+      "threshold": 1.1,
+      "reentry": "symmetric"
+    },
+    "complete_block_weighting": true,
+    "block_count": 101,
+    "weight_sum": 1.0,
+    "point_scale_expectancy_separate": true
+  },
+  {
+    "scenario_id": "operational_100r__pf_1.65__stable",
+    "config": "operational_100r",
+    "pool_id": "1rr",
+    "point_scale_id": "1rr_observed_geometry",
+    "expectancy_id": "stable_pf_1.65",
+    "scenario_family": "stable",
+    "target_points_pf": 1.65,
+    "achieved_points_pf": 1.6499999999999997,
+    "base_selected_switch_points_pf": 1.568369164695021,
+    "rolling_pf_mechanism": {
+      "window_trades": 100,
+      "threshold": 1.1,
+      "reentry": "symmetric"
+    },
+    "complete_block_weighting": true,
+    "block_count": 101,
+    "weight_sum": 1.0000000000000002,
+    "point_scale_expectancy_separate": true
+  },
+  {
+    "scenario_id": "operational_100r__pf_1.35__gradual_degradation",
+    "config": "operational_100r",
+    "pool_id": "1rr",
+    "point_scale_id": "1rr_observed_geometry",
+    "expectancy_id": "gradual_degradation_pf_1.35",
+    "scenario_family": "gradual_degradation",
+    "target_points_pf": 1.35,
+    "achieved_points_pf": 1.3499999999999999,
+    "base_selected_switch_points_pf": 1.568369164695021,
+    "rolling_pf_mechanism": {
+      "window_trades": 100,
+      "threshold": 1.1,
+      "reentry": "symmetric"
+    },
+    "complete_block_weighting": true,
+    "block_count": 101,
+    "weight_sum": 0.9999999999999999,
+    "point_scale_expectancy_separate": true
+  },
+  {
+    "scenario_id": "operational_100r__pf_1.50__gradual_degradation",
+    "config": "operational_100r",
+    "pool_id": "1rr",
+    "point_scale_id": "1rr_observed_geometry",
+    "expectancy_id": "gradual_degradation_pf_1.50",
+    "scenario_family": "gradual_degradation",
+    "target_points_pf": 1.5,
+    "achieved_points_pf": 1.5,
+    "base_selected_switch_points_pf": 1.568369164695021,
+    "rolling_pf_mechanism": {
+      "window_trades": 100,
+      "threshold": 1.1,
+      "reentry": "symmetric"
+    },
+    "complete_block_weighting": true,
+    "block_count": 101,
+    "weight_sum": 0.9999999999999997,
+    "point_scale_expectancy_separate": true
+  },
+  {
+    "scenario_id": "operational_100r__pf_1.65__gradual_degradation",
+    "config": "operational_100r",
+    "pool_id": "1rr",
+    "point_scale_id": "1rr_observed_geometry",
+    "expectancy_id": "gradual_degradation_pf_1.65",
+    "scenario_family": "gradual_degradation",
+    "target_points_pf": 1.65,
+    "achieved_points_pf": 1.6499999999999997,
+    "base_selected_switch_points_pf": 1.568369164695021,
+    "rolling_pf_mechanism": {
+      "window_trades": 100,
+      "threshold": 1.1,
+      "reentry": "symmetric"
+    },
+    "complete_block_weighting": true,
+    "block_count": 101,
+    "weight_sum": 1.0,
+    "point_scale_expectancy_separate": true
+  },
+  {
+    "scenario_id": "operational_100r__pf_1.35__favourable_persistence",
+    "config": "operational_100r",
+    "pool_id": "1rr",
+    "point_scale_id": "1rr_observed_geometry",
+    "expectancy_id": "favourable_persistence_pf_1.35",
+    "scenario_family": "favourable_persistence",
+    "target_points_pf": 1.35,
+    "achieved_points_pf": 1.3499999999999999,
+    "base_selected_switch_points_pf": 1.568369164695021,
+    "rolling_pf_mechanism": {
+      "window_trades": 100,
+      "threshold": 1.1,
+      "reentry": "symmetric"
+    },
+    "complete_block_weighting": true,
+    "block_count": 101,
+    "weight_sum": 1.0,
+    "point_scale_expectancy_separate": true
+  },
+  {
+    "scenario_id": "operational_100r__pf_1.50__favourable_persistence",
+    "config": "operational_100r",
+    "pool_id": "1rr",
+    "point_scale_id": "1rr_observed_geometry",
+    "expectancy_id": "favourable_persistence_pf_1.50",
+    "scenario_family": "favourable_persistence",
+    "target_points_pf": 1.5,
+    "achieved_points_pf": 1.4999999999999998,
+    "base_selected_switch_points_pf": 1.568369164695021,
+    "rolling_pf_mechanism": {
+      "window_trades": 100,
+      "threshold": 1.1,
+      "reentry": "symmetric"
+    },
+    "complete_block_weighting": true,
+    "block_count": 101,
+    "weight_sum": 1.0000000000000002,
+    "point_scale_expectancy_separate": true
+  },
+  {
+    "scenario_id": "operational_100r__pf_1.65__favourable_persistence",
+    "config": "operational_100r",
+    "pool_id": "1rr",
+    "point_scale_id": "1rr_observed_geometry",
+    "expectancy_id": "favourable_persistence_pf_1.65",
+    "scenario_family": "favourable_persistence",
+    "target_points_pf": 1.65,
+    "achieved_points_pf": 1.6500000000000004,
+    "base_selected_switch_points_pf": 1.568369164695021,
+    "rolling_pf_mechanism": {
+      "window_trades": 100,
+      "threshold": 1.1,
+      "reentry": "symmetric"
+    },
+    "complete_block_weighting": true,
+    "block_count": 101,
+    "weight_sum": 1.0,
+    "point_scale_expectancy_separate": true
+  },
+  {
+    "scenario_id": "operational_100r__pf_1.35__abrupt_tail",
+    "config": "operational_100r",
+    "pool_id": "1rr",
+    "point_scale_id": "1rr_observed_geometry",
+    "expectancy_id": "abrupt_tail_pf_1.35",
+    "scenario_family": "abrupt_tail",
+    "target_points_pf": 1.35,
+    "achieved_points_pf": 1.35,
+    "base_selected_switch_points_pf": 1.568369164695021,
+    "rolling_pf_mechanism": {
+      "window_trades": 100,
+      "threshold": 1.1,
+      "reentry": "symmetric"
+    },
+    "complete_block_weighting": true,
+    "block_count": 101,
+    "weight_sum": 0.9999999999999999,
+    "point_scale_expectancy_separate": true
+  },
+  {
+    "scenario_id": "operational_100r__pf_1.50__abrupt_tail",
+    "config": "operational_100r",
+    "pool_id": "1rr",
+    "point_scale_id": "1rr_observed_geometry",
+    "expectancy_id": "abrupt_tail_pf_1.50",
+    "scenario_family": "abrupt_tail",
+    "target_points_pf": 1.5,
+    "achieved_points_pf": 1.5,
+    "base_selected_switch_points_pf": 1.568369164695021,
+    "rolling_pf_mechanism": {
+      "window_trades": 100,
+      "threshold": 1.1,
+      "reentry": "symmetric"
+    },
+    "complete_block_weighting": true,
+    "block_count": 101,
+    "weight_sum": 1.0000000000000002,
+    "point_scale_expectancy_separate": true
+  },
+  {
+    "scenario_id": "operational_100r__pf_1.65__abrupt_tail",
+    "config": "operational_100r",
+    "pool_id": "1rr",
+    "point_scale_id": "1rr_observed_geometry",
+    "expectancy_id": "abrupt_tail_pf_1.65",
+    "scenario_family": "abrupt_tail",
+    "target_points_pf": 1.65,
+    "achieved_points_pf": 1.65,
+    "base_selected_switch_points_pf": 1.568369164695021,
+    "rolling_pf_mechanism": {
+      "window_trades": 100,
+      "threshold": 1.1,
+      "reentry": "symmetric"
+    },
+    "complete_block_weighting": true,
+    "block_count": 101,
+    "weight_sum": 0.9999999999999999,
+    "point_scale_expectancy_separate": true
+  },
+  {
+    "scenario_id": "primary_150r__pf_1.35__stable",
+    "config": "primary_150r",
+    "pool_id": "1_5rr",
+    "point_scale_id": "1_5rr_observed_geometry",
+    "expectancy_id": "stable_pf_1.35",
+    "scenario_family": "stable",
+    "target_points_pf": 1.35,
+    "achieved_points_pf": 1.35,
+    "base_selected_switch_points_pf": 1.44833308257292,
+    "rolling_pf_mechanism": {
+      "window_trades": 100,
+      "threshold": 1.1,
+      "reentry": "symmetric"
+    },
+    "complete_block_weighting": true,
+    "block_count": 113,
+    "weight_sum": 0.9999999999999999,
+    "point_scale_expectancy_separate": true
+  },
+  {
+    "scenario_id": "primary_150r__pf_1.50__stable",
+    "config": "primary_150r",
+    "pool_id": "1_5rr",
+    "point_scale_id": "1_5rr_observed_geometry",
+    "expectancy_id": "stable_pf_1.50",
+    "scenario_family": "stable",
+    "target_points_pf": 1.5,
+    "achieved_points_pf": 1.4999999999999996,
+    "base_selected_switch_points_pf": 1.44833308257292,
+    "rolling_pf_mechanism": {
+      "window_trades": 100,
+      "threshold": 1.1,
+      "reentry": "symmetric"
+    },
+    "complete_block_weighting": true,
+    "block_count": 113,
+    "weight_sum": 1.0000000000000002,
+    "point_scale_expectancy_separate": true
+  },
+  {
+    "scenario_id": "primary_150r__pf_1.65__stable",
+    "config": "primary_150r",
+    "pool_id": "1_5rr",
+    "point_scale_id": "1_5rr_observed_geometry",
+    "expectancy_id": "stable_pf_1.65",
+    "scenario_family": "stable",
+    "target_points_pf": 1.65,
+    "achieved_points_pf": 1.6500000000000001,
+    "base_selected_switch_points_pf": 1.44833308257292,
+    "rolling_pf_mechanism": {
+      "window_trades": 100,
+      "threshold": 1.1,
+      "reentry": "symmetric"
+    },
+    "complete_block_weighting": true,
+    "block_count": 113,
+    "weight_sum": 1.0,
+    "point_scale_expectancy_separate": true
+  },
+  {
+    "scenario_id": "primary_150r__pf_1.35__gradual_degradation",
+    "config": "primary_150r",
+    "pool_id": "1_5rr",
+    "point_scale_id": "1_5rr_observed_geometry",
+    "expectancy_id": "gradual_degradation_pf_1.35",
+    "scenario_family": "gradual_degradation",
+    "target_points_pf": 1.35,
+    "achieved_points_pf": 1.3500000000000003,
+    "base_selected_switch_points_pf": 1.44833308257292,
+    "rolling_pf_mechanism": {
+      "window_trades": 100,
+      "threshold": 1.1,
+      "reentry": "symmetric"
+    },
+    "complete_block_weighting": true,
+    "block_count": 113,
+    "weight_sum": 0.9999999999999999,
+    "point_scale_expectancy_separate": true
+  },
+  {
+    "scenario_id": "primary_150r__pf_1.50__gradual_degradation",
+    "config": "primary_150r",
+    "pool_id": "1_5rr",
+    "point_scale_id": "1_5rr_observed_geometry",
+    "expectancy_id": "gradual_degradation_pf_1.50",
+    "scenario_family": "gradual_degradation",
+    "target_points_pf": 1.5,
+    "achieved_points_pf": 1.4999999999999998,
+    "base_selected_switch_points_pf": 1.44833308257292,
+    "rolling_pf_mechanism": {
+      "window_trades": 100,
+      "threshold": 1.1,
+      "reentry": "symmetric"
+    },
+    "complete_block_weighting": true,
+    "block_count": 113,
+    "weight_sum": 1.0,
+    "point_scale_expectancy_separate": true
+  },
+  {
+    "scenario_id": "primary_150r__pf_1.65__gradual_degradation",
+    "config": "primary_150r",
+    "pool_id": "1_5rr",
+    "point_scale_id": "1_5rr_observed_geometry",
+    "expectancy_id": "gradual_degradation_pf_1.65",
+    "scenario_family": "gradual_degradation",
+    "target_points_pf": 1.65,
+    "achieved_points_pf": 1.65,
+    "base_selected_switch_points_pf": 1.44833308257292,
+    "rolling_pf_mechanism": {
+      "window_trades": 100,
+      "threshold": 1.1,
+      "reentry": "symmetric"
+    },
+    "complete_block_weighting": true,
+    "block_count": 113,
+    "weight_sum": 1.0,
+    "point_scale_expectancy_separate": true
+  },
+  {
+    "scenario_id": "primary_150r__pf_1.35__favourable_persistence",
+    "config": "primary_150r",
+    "pool_id": "1_5rr",
+    "point_scale_id": "1_5rr_observed_geometry",
+    "expectancy_id": "favourable_persistence_pf_1.35",
+    "scenario_family": "favourable_persistence",
+    "target_points_pf": 1.35,
+    "achieved_points_pf": 1.35,
+    "base_selected_switch_points_pf": 1.44833308257292,
+    "rolling_pf_mechanism": {
+      "window_trades": 100,
+      "threshold": 1.1,
+      "reentry": "symmetric"
+    },
+    "complete_block_weighting": true,
+    "block_count": 113,
+    "weight_sum": 0.9999999999999999,
+    "point_scale_expectancy_separate": true
+  },
+  {
+    "scenario_id": "primary_150r__pf_1.50__favourable_persistence",
+    "config": "primary_150r",
+    "pool_id": "1_5rr",
+    "point_scale_id": "1_5rr_observed_geometry",
+    "expectancy_id": "favourable_persistence_pf_1.50",
+    "scenario_family": "favourable_persistence",
+    "target_points_pf": 1.5,
+    "achieved_points_pf": 1.5,
+    "base_selected_switch_points_pf": 1.44833308257292,
+    "rolling_pf_mechanism": {
+      "window_trades": 100,
+      "threshold": 1.1,
+      "reentry": "symmetric"
+    },
+    "complete_block_weighting": true,
+    "block_count": 113,
+    "weight_sum": 0.9999999999999999,
+    "point_scale_expectancy_separate": true
+  },
+  {
+    "scenario_id": "primary_150r__pf_1.65__favourable_persistence",
+    "config": "primary_150r",
+    "pool_id": "1_5rr",
+    "point_scale_id": "1_5rr_observed_geometry",
+    "expectancy_id": "favourable_persistence_pf_1.65",
+    "scenario_family": "favourable_persistence",
+    "target_points_pf": 1.65,
+    "achieved_points_pf": 1.65,
+    "base_selected_switch_points_pf": 1.44833308257292,
+    "rolling_pf_mechanism": {
+      "window_trades": 100,
+      "threshold": 1.1,
+      "reentry": "symmetric"
+    },
+    "complete_block_weighting": true,
+    "block_count": 113,
+    "weight_sum": 1.0,
+    "point_scale_expectancy_separate": true
+  },
+  {
+    "scenario_id": "primary_150r__pf_1.35__abrupt_tail",
+    "config": "primary_150r",
+    "pool_id": "1_5rr",
+    "point_scale_id": "1_5rr_observed_geometry",
+    "expectancy_id": "abrupt_tail_pf_1.35",
+    "scenario_family": "abrupt_tail",
+    "target_points_pf": 1.35,
+    "achieved_points_pf": 1.3499999999999999,
+    "base_selected_switch_points_pf": 1.44833308257292,
+    "rolling_pf_mechanism": {
+      "window_trades": 100,
+      "threshold": 1.1,
+      "reentry": "symmetric"
+    },
+    "complete_block_weighting": true,
+    "block_count": 113,
+    "weight_sum": 1.0,
+    "point_scale_expectancy_separate": true
+  },
+  {
+    "scenario_id": "primary_150r__pf_1.50__abrupt_tail",
+    "config": "primary_150r",
+    "pool_id": "1_5rr",
+    "point_scale_id": "1_5rr_observed_geometry",
+    "expectancy_id": "abrupt_tail_pf_1.50",
+    "scenario_family": "abrupt_tail",
+    "target_points_pf": 1.5,
+    "achieved_points_pf": 1.4999999999999996,
+    "base_selected_switch_points_pf": 1.44833308257292,
+    "rolling_pf_mechanism": {
+      "window_trades": 100,
+      "threshold": 1.1,
+      "reentry": "symmetric"
+    },
+    "complete_block_weighting": true,
+    "block_count": 113,
+    "weight_sum": 0.9999999999999999,
+    "point_scale_expectancy_separate": true
+  },
+  {
+    "scenario_id": "primary_150r__pf_1.65__abrupt_tail",
+    "config": "primary_150r",
+    "pool_id": "1_5rr",
+    "point_scale_id": "1_5rr_observed_geometry",
+    "expectancy_id": "abrupt_tail_pf_1.65",
+    "scenario_family": "abrupt_tail",
+    "target_points_pf": 1.65,
+    "achieved_points_pf": 1.6499999999999995,
+    "base_selected_switch_points_pf": 1.44833308257292,
+    "rolling_pf_mechanism": {
+      "window_trades": 100,
+      "threshold": 1.1,
+      "reentry": "symmetric"
+    },
+    "complete_block_weighting": true,
+    "block_count": 113,
+    "weight_sum": 0.9999999999999998,
+    "point_scale_expectancy_separate": true
+  }
+]

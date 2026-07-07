@@ -1,0 +1,125 @@
+[
+  {
+    "point_scale_id": "1_5rr_observed_geometry",
+    "pool_id": "1_5rr",
+    "controls": [
+      "raw_stop_pts",
+      "effective_stop_pts",
+      "target_pts",
+      "pnl_pts",
+      "mae_pts",
+      "mfe_pts"
+    ],
+    "stop_pts_quantiles": {
+      "p10": 7.5,
+      "p25": 16.5,
+      "p50": 39.375,
+      "p75": 68.25,
+      "p90": 118.125,
+      "p95": 161.69999999999993,
+      "p99": 200.0
+    },
+    "target_pts_quantiles": {
+      "p10": 11.25,
+      "p25": 24.75,
+      "p50": 59.0625,
+      "p75": 102.375,
+      "p90": 177.1875,
+      "p95": 242.5499999999999,
+      "p99": 300.0
+    },
+    "abs_pnl_pts_quantiles": {
+      "p10": 0.0,
+      "p25": 0.0,
+      "p50": 0.0,
+      "p75": 34.3125,
+      "p90": 74.36250000000003,
+      "p95": 113.51249999999985,
+      "p99": 222.16499999999976
+    },
+    "mae_mfe_status": "columns_present_null_missing_source_not_imputed",
+    "point_scale_is_independent_from_expectancy": true
+  },
+  {
+    "point_scale_id": "1rr_observed_geometry",
+    "pool_id": "1rr",
+    "controls": [
+      "raw_stop_pts",
+      "effective_stop_pts",
+      "target_pts",
+      "pnl_pts",
+      "mae_pts",
+      "mfe_pts"
+    ],
+    "stop_pts_quantiles": {
+      "p10": 7.5,
+      "p25": 16.5,
+      "p50": 39.375,
+      "p75": 68.4375,
+      "p90": 118.125,
+      "p95": 162.0,
+      "p99": 200.0
+    },
+    "target_pts_quantiles": {
+      "p10": 7.5,
+      "p25": 16.5,
+      "p50": 39.375,
+      "p75": 68.4375,
+      "p90": 118.125,
+      "p95": 162.0,
+      "p99": 200.0
+    },
+    "abs_pnl_pts_quantiles": {
+      "p10": 0.0,
+      "p25": 0.0,
+      "p50": 0.0,
+      "p75": 33.9375,
+      "p90": 69.0,
+      "p95": 106.61249999999998,
+      "p99": 196.08500000000026
+    },
+    "mae_mfe_status": "columns_present_null_missing_source_not_imputed",
+    "point_scale_is_independent_from_expectancy": true
+  },
+  {
+    "point_scale_id": "combined_current_100_200pt_capable_geometry",
+    "pool_id": "combined",
+    "controls": [
+      "raw_stop_pts",
+      "effective_stop_pts",
+      "target_pts",
+      "pnl_pts",
+      "mae_pts",
+      "mfe_pts"
+    ],
+    "stop_pts_quantiles": {
+      "p10": 7.5,
+      "p25": 16.5,
+      "p50": 39.375,
+      "p75": 68.34375,
+      "p90": 118.125,
+      "p95": 162.0,
+      "p99": 200.0
+    },
+    "target_pts_quantiles": {
+      "p10": 9.375,
+      "p25": 20.53125,
+      "p50": 46.6875,
+      "p75": 85.5,
+      "p90": 146.25,
+      "p95": 200.0,
+      "p99": 300.0
+    },
+    "abs_pnl_pts_quantiles": {
+      "p10": 0.0,
+      "p25": 0.0,
+      "p50": 0.0,
+      "p75": 34.171875,
+      "p90": 72.9000000000002,
+      "p95": 109.2887283195887,
+      "p99": 200.0
+    },
+    "mae_mfe_status": "columns_present_null_missing_source_not_imputed",
+    "point_scale_is_independent_from_expectancy": true
+  }
+]
