@@ -26,7 +26,10 @@ from src.forward_ledger import (  # noqa: E402
     build_expectancy_scenarios,
     build_normalized_pool,
     build_point_scale_scenarios,
+    build_rr_config_manifest,
     build_scenarios,
+    build_two_month_forward_horizon,
+    build_two_month_windows,
     load_excursion_context,
     summarize_pool,
     write_json,
@@ -82,7 +85,17 @@ outputs. They use the selected rolling-PF kill switch:
 - symmetric re-entry
 
 `historical_trade_pool_1rr.csv` and `historical_trade_pool_1_5rr.csv` are
-separate source pools. Point scale fields (`raw_stop_pts`,
+historical source libraries, not the two-month forward ledger. They exist so
+Prop Lab can sample historically backed trade packets. Use
+`rr_config_manifest.json` to switch between RR configurations:
+
+- `rr_config_id=1rr` -> `historical_trade_pool_1rr.csv`
+- `rr_config_id=1_5rr` -> `historical_trade_pool_1_5rr.csv`
+
+Use `two_month_forward_horizon.json` and `two_month_historical_windows.csv`
+for the requested two-calendar-month forward horizon.
+
+Point scale fields (`raw_stop_pts`,
 `effective_stop_pts`, `target_pts`, `pnl_pts_*`, `mae_pts`, `mfe_pts`) are
 kept separate from expectancy fields (`exit_reason`, `effective_exit_reason`,
 `is_flat`, scenario block weights).
@@ -102,8 +115,9 @@ exit minute, so intrabar sequence within those minutes cannot be resolved.
 
 Downstream Monte Carlo should use `forward_source_pool.csv` as reusable packets
 and `scenario_manifests.json` plus `scenario_block_weights.csv` as explicit
-scenario metadata. No file here is a single seeded 15-trade ledger or a
-p10/p50/p90 example path.
+scenario metadata. It should select `rr_config_id` first, then a two-month
+horizon, then scenario weights. No file here is a single seeded 15-trade ledger
+or a p10/p50/p90 example path.
 """
     (out_dir / "README.md").write_text(text)
 
@@ -136,11 +150,17 @@ def main() -> None:
     point_scale_scenarios = build_point_scale_scenarios(source_pool)
     manifests, block_weights = build_scenarios(source_pool)
     expectancy_scenarios = build_expectancy_scenarios(manifests)
+    rr_config_manifest = build_rr_config_manifest(pools)
+    two_month_windows = build_two_month_windows(source_pool)
+    two_month_horizon = build_two_month_forward_horizon(two_month_windows, manifests)
 
     write_json(out_dir / "point_scale_scenarios.json", point_scale_scenarios)
     write_json(out_dir / "expectancy_scenarios.json", expectancy_scenarios)
+    write_json(out_dir / "rr_config_manifest.json", rr_config_manifest)
+    write_json(out_dir / "two_month_forward_horizon.json", two_month_horizon)
     write_json(out_dir / "scenario_manifests.json", manifests)
     block_weights.to_csv(out_dir / "scenario_block_weights.csv", index=False)
+    two_month_windows.to_csv(out_dir / "two_month_historical_windows.csv", index=False)
     write_readme(out_dir)
 
     pool_summaries = {
@@ -191,6 +211,8 @@ def main() -> None:
             "expectancy_scenarios": len(expectancy_scenarios),
             "scenario_manifests": len(manifests),
             "scenario_block_weight_rows": int(len(block_weights)),
+            "rr_configs": len(rr_config_manifest),
+            "two_month_historical_windows": int(len(two_month_windows)),
             "pf_targets": list(PF_TARGETS),
             "families": list(SCENARIO_FAMILIES),
         },

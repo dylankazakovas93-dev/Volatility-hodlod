@@ -1,0 +1,174 @@
+{
+  "forward_horizon_id": "two_calendar_months",
+  "horizon_months": 2,
+  "purpose": "Use this to size and describe two-month forward simulations. Do not treat the full historical source library as the two-month ledger.",
+  "rr_switch_field": "rr_config_id",
+  "rr_config_manifest": "rr_config_manifest.json",
+  "historical_window_file": "two_month_historical_windows.csv",
+  "configs": {
+    "operational_100r": {
+      "rr_config_id": "1rr",
+      "target_r": 1.0,
+      "historical_two_month_windows": 136,
+      "n_trades_quantiles": {
+        "p10": 14.0,
+        "p25": 17.0,
+        "p50": 20.0,
+        "p75": 23.0,
+        "p90": 25.0,
+        "p95": 26.0,
+        "p99": 27.0
+      },
+      "n_active_trades_quantiles": {
+        "p10": 0.0,
+        "p25": 0.0,
+        "p50": 13.0,
+        "p75": 20.0,
+        "p90": 24.0,
+        "p95": 25.0,
+        "p99": 26.650000000000006
+      },
+      "points_pf_quantiles": {
+        "p10": 0.4697354497354498,
+        "p25": 0.7944078947368421,
+        "p50": 1.2632737338934559,
+        "p75": 2.123131046613896,
+        "p90": 3.9574245115452933,
+        "p95": 5.605748348200033,
+        "p99": 10.189625546922585
+      },
+      "net_pts_quantiles": {
+        "p10": -63.1875,
+        "p25": 0.0,
+        "p50": 0.0,
+        "p75": 115.72006398773829,
+        "p90": 329.0845837573688,
+        "p95": 597.6535814581584,
+        "p99": 1391.0560924418494
+      },
+      "median_stop_pts_quantiles": {
+        "p10": 7.5,
+        "p25": 15.046875,
+        "p50": 44.25,
+        "p75": 58.875,
+        "p90": 79.03125,
+        "p95": 89.625,
+        "p99": 124.26562500000004
+      },
+      "median_mae_pts_quantiles": {
+        "p10": 4.7760867810897025,
+        "p25": 8.011609878644208,
+        "p50": 19.241156316636534,
+        "p75": 27.409508070431457,
+        "p90": 40.27311224077994,
+        "p95": 46.03576142902966,
+        "p99": 52.40494334649905
+      },
+      "median_mfe_pts_quantiles": {
+        "p10": 5.151621550350569,
+        "p25": 10.057003779901152,
+        "p50": 24.236407177148067,
+        "p75": 39.3606882040458,
+        "p90": 56.06924837262477,
+        "p95": 63.74270951501785,
+        "p99": 93.99340040509043
+      },
+      "scenario_ids": [
+        "operational_100r__pf_1.35__stable",
+        "operational_100r__pf_1.50__stable",
+        "operational_100r__pf_1.65__stable",
+        "operational_100r__pf_1.35__gradual_degradation",
+        "operational_100r__pf_1.50__gradual_degradation",
+        "operational_100r__pf_1.65__gradual_degradation",
+        "operational_100r__pf_1.35__favourable_persistence",
+        "operational_100r__pf_1.50__favourable_persistence",
+        "operational_100r__pf_1.65__favourable_persistence",
+        "operational_100r__pf_1.35__abrupt_tail",
+        "operational_100r__pf_1.50__abrupt_tail",
+        "operational_100r__pf_1.65__abrupt_tail"
+      ]
+    },
+    "primary_150r": {
+      "rr_config_id": "1_5rr",
+      "target_r": 1.5,
+      "historical_two_month_windows": 136,
+      "n_trades_quantiles": {
+        "p10": 14.0,
+        "p25": 17.0,
+        "p50": 20.0,
+        "p75": 23.0,
+        "p90": 25.0,
+        "p95": 26.0,
+        "p99": 27.0
+      },
+      "n_active_trades_quantiles": {
+        "p10": 0.0,
+        "p25": 0.0,
+        "p50": 16.0,
+        "p75": 20.25,
+        "p90": 23.5,
+        "p95": 24.25,
+        "p99": 26.0
+      },
+      "points_pf_quantiles": {
+        "p10": 0.5088061482178643,
+        "p25": 0.8830479223369141,
+        "p50": 1.3351752921700426,
+        "p75": 2.153620115414965,
+        "p90": 3.4466545152201213,
+        "p95": 4.182948316879752,
+        "p99": 8.030804591576532
+      },
+      "net_pts_quantiles": {
+        "p10": -43.875,
+        "p25": 0.0,
+        "p50": 0.0,
+        "p75": 122.15625,
+        "p90": 361.3155493372051,
+        "p95": 511.431935931495,
+        "p99": 908.7829797298685
+      },
+      "median_stop_pts_quantiles": {
+        "p10": 7.5,
+        "p25": 15.046875,
+        "p50": 44.34375,
+        "p75": 58.875,
+        "p90": 79.125,
+        "p95": 89.625,
+        "p99": 124.63125000000004
+      },
+      "median_mae_pts_quantiles": {
+        "p10": 4.868000863676116,
+        "p25": 8.298424882820882,
+        "p50": 19.741092034230405,
+        "p75": 29.636080628074524,
+        "p90": 43.24964010906933,
+        "p95": 47.85422551767533,
+        "p99": 53.15831909578339
+      },
+      "median_mfe_pts_quantiles": {
+        "p10": 5.16862477375912,
+        "p25": 10.509392180853865,
+        "p50": 24.82767976022933,
+        "p75": 44.99387592943367,
+        "p90": 60.39269728558975,
+        "p95": 78.96501306065511,
+        "p99": 131.50937987141816
+      },
+      "scenario_ids": [
+        "primary_150r__pf_1.35__stable",
+        "primary_150r__pf_1.50__stable",
+        "primary_150r__pf_1.65__stable",
+        "primary_150r__pf_1.35__gradual_degradation",
+        "primary_150r__pf_1.50__gradual_degradation",
+        "primary_150r__pf_1.65__gradual_degradation",
+        "primary_150r__pf_1.35__favourable_persistence",
+        "primary_150r__pf_1.50__favourable_persistence",
+        "primary_150r__pf_1.65__favourable_persistence",
+        "primary_150r__pf_1.35__abrupt_tail",
+        "primary_150r__pf_1.50__abrupt_tail",
+        "primary_150r__pf_1.65__abrupt_tail"
+      ]
+    }
+  }
+}

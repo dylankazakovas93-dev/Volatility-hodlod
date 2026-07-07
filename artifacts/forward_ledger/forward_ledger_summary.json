@@ -220,6 +220,8 @@
     "expectancy_scenarios": 4,
     "scenario_manifests": 24,
     "scenario_block_weight_rows": 2568,
+    "rr_configs": 2,
+    "two_month_historical_windows": 272,
     "pf_targets": [
       1.35,
       1.5,
@@ -233,13 +235,16 @@
     ]
   },
   "artifacts": {
-    "README.md": "09cb27370e5cc551efa9aad1792128cce3eaff270fe05c94af9f6eb7de93eb27",
+    "README.md": "a58434a966bebcf3f18f75e1289d82531fde6bd65211e70d9051c240bf29e5d0",
     "expectancy_scenarios.json": "e9555d936cb2ddbf54cb18f036ea350b096b02fae2afa7df1da30cef32757f88",
     "forward_source_pool.csv": "046f5640105ce6e3db5f1a0d8d3f97223393db326f50d9ef36017181ea2aece7",
     "historical_trade_pool_1_5rr.csv": "6ff7a1d28e43caaf35d4a657ae1f4640fdb6399c2cb3afb5fc06201c5c8b0563",
     "historical_trade_pool_1rr.csv": "3374a4372aa004b3769529da5fe01863f08d2051f714cabee2ec935e11f8d068",
     "point_scale_scenarios.json": "a5f0dfed0883e66c14d58f704c7e54fcf82a4e66d2aad89d8af2cdaa07ab5c4f",
+    "rr_config_manifest.json": "46d595c1eeee678db8989c91dd4360fadd6f6ea60cb483186072114e7dff17da",
     "scenario_block_weights.csv": "462fb588d9f05df25daa020ae39246d3d8d90377ba8e7da3ce8540fe987f2544",
-    "scenario_manifests.json": "d7b7fc78dc0a3a7a2cdf401676354fba3acfc7133aa6eec07759224dd8fbd43a"
+    "scenario_manifests.json": "556d09a426964b7d972cbf8a6f232ff525566c9aaa11a465a7c51d153e4c2111",
+    "two_month_forward_horizon.json": "d97f0650b9a0cb64b5e62a46f083e0274cd51f0f9799c2ec917fd39a1ca1edfb",
+    "two_month_historical_windows.csv": "a7cf6166f7a8e1ca4e4a98bb74f2c0a2ec698d211b8b61017e10b93889dd1880"
   }
 }

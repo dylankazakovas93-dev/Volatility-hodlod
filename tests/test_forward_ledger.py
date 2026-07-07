@@ -11,7 +11,10 @@ from src.forward_ledger import (
     SCENARIO_FAMILIES,
     SELECTED_PARAMS,
     build_normalized_pool,
+    build_rr_config_manifest,
     build_scenarios,
+    build_two_month_forward_horizon,
+    build_two_month_windows,
     gross_point_metrics,
     load_excursion_context,
     require_columns,
@@ -137,6 +140,29 @@ def test_scenario_manifests_have_complete_block_weights():
             for config in CONFIGS:
                 sid = f"{config}__pf_{target:.2f}__{family}"
                 assert sid in manifest_ids
+
+
+def test_rr_switch_and_two_month_horizon_are_explicit(excursion_context):
+    pools = {config: build_normalized_pool(REPO_ROOT, config, excursion_context) for config in CONFIGS}
+    rr_manifest = build_rr_config_manifest(pools)
+    assert {row["rr_config_id"] for row in rr_manifest} == {"1rr", "1_5rr"}
+    assert {row["target_r"] for row in rr_manifest} == {1.0, 1.5}
+    assert all(row["forward_horizon_months"] == 2 for row in rr_manifest)
+
+    source_pool = pd.concat(pools.values(), ignore_index=True)
+    windows = build_two_month_windows(source_pool)
+    assert not windows.empty
+    assert set(windows["rr_config_id"]) == {"1rr", "1_5rr"}
+    assert set(windows["horizon_months"]) == {2}
+    assert (windows["n_trades"] < len(source_pool)).all()
+    assert windows["median_mae_pts"].notna().all()
+    assert windows["median_mfe_pts"].notna().all()
+
+    manifests, _ = build_scenarios(source_pool)
+    horizon = build_two_month_forward_horizon(windows, manifests)
+    assert horizon["forward_horizon_id"] == "two_calendar_months"
+    assert horizon["rr_switch_field"] == "rr_config_id"
+    assert set(horizon["configs"]) == set(CONFIGS)
 
 
 def test_required_column_failure_is_honest():

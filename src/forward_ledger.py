@@ -23,6 +23,7 @@ ROLLING_PF_WINDOW = 100
 ROLLING_PF_THRESHOLD = 1.10
 PF_TARGETS = (1.35, 1.50, 1.65)
 SCENARIO_FAMILIES = ("stable", "gradual_degradation", "favourable_persistence", "abrupt_tail")
+FORWARD_HORIZON_MONTHS = 2
 EXTERNAL_2013_2015_BARS = "data/external_2013_2015/raw/glbx-mdp3-20130101-20151231.ohlcv-1m.csv.zst"
 DEFAULT_CONTINUOUS_2018_2026_BARS = "data/nq_1m/nq_continuous_2018_2026_1m.csv"
 CONTINUOUS_BARS_ENV = "NQ_1M_2018_2026_CSV"
@@ -502,9 +503,12 @@ def build_scenarios(source_pool: pd.DataFrame) -> tuple[list[dict], pd.DataFrame
                     {
                         "scenario_id": manifest_id,
                         "config": config,
+                        "rr_config_id": CONFIGS[config]["pool_id"],
+                        "target_r": CONFIGS[config]["rr"],
                         "pool_id": CONFIGS[config]["pool_id"],
                         "point_scale_id": f"{CONFIGS[config]['pool_id']}_observed_geometry",
                         "expectancy_id": f"{family}_pf_{target_pf:.2f}",
+                        "forward_horizon_months": FORWARD_HORIZON_MONTHS,
                         "scenario_family": family,
                         "target_points_pf": target_pf,
                         "achieved_points_pf": achieved_pf,
@@ -521,6 +525,122 @@ def build_scenarios(source_pool: pd.DataFrame) -> tuple[list[dict], pd.DataFrame
                     }
                 )
     return manifests, pd.concat(block_frames, ignore_index=True)
+
+
+def build_rr_config_manifest(pools: dict[str, pd.DataFrame]) -> list[dict]:
+    out = []
+    for config, info in CONFIGS.items():
+        pool = pools[config]
+        summary = summarize_pool(pool)
+        pool_file = {
+            "1rr": "historical_trade_pool_1rr.csv",
+            "1_5rr": "historical_trade_pool_1_5rr.csv",
+        }[info["pool_id"]]
+        out.append(
+            {
+                "rr_config_id": info["pool_id"],
+                "config": config,
+                "config_label": info["label"],
+                "target_r": info["rr"],
+                "source_library_file": pool_file,
+                "source_library_rows": int(len(pool)),
+                "forward_horizon_months": FORWARD_HORIZON_MONTHS,
+                "scenario_filter": {
+                    "scenario_manifests.config": config,
+                    "scenario_block_weights.config": config,
+                    "forward_source_pool.pool_id": info["pool_id"],
+                },
+                "selected_switch_points_pf": summary["points_pf"],
+                "selected_switch_pf_r": summary["PF_R"],
+                "note": (
+                    "This selects the RR geometry and scenario family. The source library "
+                    "is historical calibration/input, not a single 2-month forward ledger."
+                ),
+            }
+        )
+    return out
+
+
+def build_two_month_windows(source_pool: pd.DataFrame) -> pd.DataFrame:
+    require_columns(source_pool, POOL_REQUIRED_COLUMNS, "forward source pool")
+    df = source_pool.copy()
+    df["session_month"] = pd.to_datetime(df["session_date"]).dt.to_period("M")
+    rows = []
+    for config, cfg_pool in df.groupby("config", sort=True):
+        cfg_months = sorted(cfg_pool["session_month"].unique())
+        month_set = set(cfg_months)
+        for start in cfg_months:
+            end = start + (FORWARD_HORIZON_MONTHS - 1)
+            if end not in month_set:
+                continue
+            mask = (cfg_pool["session_month"] >= start) & (cfg_pool["session_month"] <= end)
+            window = cfg_pool.loc[mask].copy()
+            if window.empty:
+                continue
+            summary = summarize_pool(window)
+            rows.append(
+                {
+                    "rr_config_id": CONFIGS[config]["pool_id"],
+                    "config": config,
+                    "target_r": CONFIGS[config]["rr"],
+                    "window_start_month": str(start),
+                    "window_end_month": str(end),
+                    "horizon_months": FORWARD_HORIZON_MONTHS,
+                    "n_trades": summary["n_trades"],
+                    "n_active_trades": summary["n_active_trades"],
+                    "n_flat_trades": summary["n_flat_trades"],
+                    "gross_profit_pts": summary["gross_profit_pts"],
+                    "gross_loss_pts": summary["gross_loss_pts"],
+                    "net_pts": summary["net_pts"],
+                    "points_pf": summary["points_pf"],
+                    "PF_R": summary["PF_R"],
+                    "avg_R_per_trade": summary["avg_R_per_trade"],
+                    "max_dd_pts": summary["max_dd_pts"],
+                    "max_dd_R": summary["max_dd_R"],
+                    "TP": summary["TP"],
+                    "SL": summary["SL"],
+                    "BE": summary["BE"],
+                    "cutoff": summary["cutoff"],
+                    "FLAT": summary["FLAT"],
+                    "median_stop_pts": float(window["effective_stop_pts"].median()),
+                    "median_target_pts": float(window["target_pts"].median()),
+                    "median_mae_pts": float(window["mae_pts"].median()),
+                    "median_mfe_pts": float(window["mfe_pts"].median()),
+                }
+            )
+    return pd.DataFrame(rows)
+
+
+def build_two_month_forward_horizon(windows: pd.DataFrame, manifests: list[dict]) -> dict:
+    if windows.empty:
+        raise ValueError("two-month horizon windows are empty")
+    configs = {}
+    for config, g in windows.groupby("config", sort=True):
+        configs[config] = {
+            "rr_config_id": CONFIGS[config]["pool_id"],
+            "target_r": CONFIGS[config]["rr"],
+            "historical_two_month_windows": int(len(g)),
+            "n_trades_quantiles": _quantiles(g["n_trades"].astype(float)),
+            "n_active_trades_quantiles": _quantiles(g["n_active_trades"].astype(float)),
+            "points_pf_quantiles": _quantiles(g["points_pf"].replace([np.inf, -np.inf], np.nan).dropna().astype(float)),
+            "net_pts_quantiles": _quantiles(g["net_pts"].astype(float)),
+            "median_stop_pts_quantiles": _quantiles(g["median_stop_pts"].astype(float)),
+            "median_mae_pts_quantiles": _quantiles(g["median_mae_pts"].astype(float)),
+            "median_mfe_pts_quantiles": _quantiles(g["median_mfe_pts"].astype(float)),
+            "scenario_ids": [m["scenario_id"] for m in manifests if m["config"] == config],
+        }
+    return {
+        "forward_horizon_id": "two_calendar_months",
+        "horizon_months": FORWARD_HORIZON_MONTHS,
+        "purpose": (
+            "Use this to size and describe two-month forward simulations. "
+            "Do not treat the full historical source library as the two-month ledger."
+        ),
+        "rr_switch_field": "rr_config_id",
+        "rr_config_manifest": "rr_config_manifest.json",
+        "historical_window_file": "two_month_historical_windows.csv",
+        "configs": configs,
+    }
 
 
 def build_expectancy_scenarios(manifests: list[dict]) -> list[dict]:

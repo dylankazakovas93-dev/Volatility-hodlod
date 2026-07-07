@@ -1,0 +1,36 @@
+[
+  {
+    "rr_config_id": "1rr",
+    "config": "operational_100r",
+    "config_label": "OG_OPERATIONAL_100R",
+    "target_r": 1.0,
+    "source_library_file": "historical_trade_pool_1rr.csv",
+    "source_library_rows": 1355,
+    "forward_horizon_months": 2,
+    "scenario_filter": {
+      "scenario_manifests.config": "operational_100r",
+      "scenario_block_weights.config": "operational_100r",
+      "forward_source_pool.pool_id": "1rr"
+    },
+    "selected_switch_points_pf": 1.568369164695021,
+    "selected_switch_pf_r": 1.2491153590474053,
+    "note": "This selects the RR geometry and scenario family. The source library is historical calibration/input, not a single 2-month forward ledger."
+  },
+  {
+    "rr_config_id": "1_5rr",
+    "config": "primary_150r",
+    "config_label": "OG_PRIMARY_150R",
+    "target_r": 1.5,
+    "source_library_file": "historical_trade_pool_1_5rr.csv",
+    "source_library_rows": 1349,
+    "forward_horizon_months": 2,
+    "scenario_filter": {
+      "scenario_manifests.config": "primary_150r",
+      "scenario_block_weights.config": "primary_150r",
+      "forward_source_pool.pool_id": "1_5rr"
+    },
+    "selected_switch_points_pf": 1.44833308257292,
+    "selected_switch_pf_r": 1.234475099113488,
+    "note": "This selects the RR geometry and scenario family. The source library is historical calibration/input, not a single 2-month forward ledger."
+  }
+]

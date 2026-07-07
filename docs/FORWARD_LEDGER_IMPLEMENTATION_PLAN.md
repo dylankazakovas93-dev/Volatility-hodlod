@@ -180,6 +180,9 @@ Under `artifacts/forward_ledger/`:
 - `historical_trade_pool_1rr.csv`
 - `historical_trade_pool_1_5rr.csv`
 - `forward_source_pool.csv`
+- `rr_config_manifest.json`
+- `two_month_forward_horizon.json`
+- `two_month_historical_windows.csv`
 - `point_scale_scenarios.json`
 - `expectancy_scenarios.json`
 - `scenario_manifests.json`
@@ -201,6 +204,8 @@ Under `artifacts/forward_ledger/`:
   geometry.
 - Tests that actual MAE/MFE are finite, non-negative, bar-count-backed, and
   internally consistent with TP/SL trades.
+- Tests that the RR switch is explicit (`rr_config_id=1rr` or `1_5rr`) and
+  two-month horizon artifacts are separate from the historical source library.
 - Tests that point-scale scenarios and expectancy scenarios are separate.
 - Tests that all PF 1.35, 1.50, and 1.65 scenario manifests have complete
   block weights.
