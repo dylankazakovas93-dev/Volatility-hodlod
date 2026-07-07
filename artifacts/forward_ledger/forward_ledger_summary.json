@@ -242,7 +242,7 @@
     "calendar_block_rows": 276,
     "scenario_count": 24,
     "point_scale_scenarios": 14,
-    "realized_anchor_rows": 1
+    "realized_anchor_rows": 2
   },
   "artifacts": {
     "README.md": "a58434a966bebcf3f18f75e1289d82531fde6bd65211e70d9051c240bf29e5d0",
@@ -258,13 +258,13 @@
     "two_month_historical_windows.csv": "a7cf6166f7a8e1ca4e4a98bb74f2c0a2ec698d211b8b61017e10b93889dd1880"
   },
   "final_artifacts": {
-    "README.md": "1fd9d8ee83678b2ccc419b0d42b724b632374efdd72e2475d1a12907b0a6e775",
+    "README.md": "6759711ade39dd70bd1d1a8590f47adc23c19d83a6d95ae4e665f41bf551de99",
     "calendar_blocks.csv": "6c80e2f41a3d47c992377095db1602d43e96e26fb7e0594eb306a010327ecb22",
     "forward_1_5rr.csv": "198b74f0079cf4f6c5507bdeaf569fad21642736eb43e9696cd82c3054517725",
     "forward_1rr.csv": "07bdcbc173b0ff9957d49d28d8483130b0a2ca0fab163875b9a99effe9b5dbbd",
     "forward_scenario_manifest.json": "e512554d013524c53d4e64c9b6130e99f1b54d06fcdbcccd3c99f777f6b6cc0f",
     "point_scale_scenarios.json": "d6fee8630c383ea9462be97d403b3edc64efa53bbcc857ae23aa0f062ba80fa1",
-    "realized_anchor.csv": "9fcc492ffe7df58427d63d5f6d20496de535f33a8851c811c4aaa49ed37d4d39",
-    "schema.json": "9d44173f01d879f6b71253fa9365ecee93eb66bf3084af17e6c8fcfa3554773a"
+    "realized_anchor.csv": "41941b4f7e09cd25eb0dcd68c553daa945d0fe150c95c95bc56bea7b17f38197",
+    "schema.json": "e0bca84b6b30994c5fa0d9ccac6c3b0e92025023c09f234af37181e2dd2e1528"
   }
 }

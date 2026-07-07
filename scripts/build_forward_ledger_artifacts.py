@@ -151,9 +151,9 @@ columns are provided so Prop Lab can coherently translate the same packet into
 the selected July/August point-scale environment.
 
 `realized_anchor.csv` contains the July 7, 2026 +150 point realized result
-exactly once with `rr_config_id=UNKNOWN`. It is not blended into either source
-library because the request did not provide evidence of which RR configuration
-was actually traded.
+once for `rr_config_id=1rr` and once for `rr_config_id=1_5rr`, based on the
+user-confirmed statement that both configurations hit +150. It is not blended
+into either historical source library.
 
 These are synthetic internal risk scenarios, not actual future trades,
 guaranteed performance or a historical track record.
@@ -214,16 +214,27 @@ def write_realized_anchor(final_dir: Path) -> pd.DataFrame:
     realized = pd.DataFrame(
         [
             {
-                "anchor_id": "REALIZED_2026-07-07_PLUS_150_POINTS",
+                "anchor_id": "REALIZED_2026-07-07_1RR_PLUS_150_POINTS",
                 "date": "2026-07-07",
                 "status": "REALIZED",
                 "realized_pnl_points": 150.0,
-                "rr_config_id": "UNKNOWN",
-                "config": "UNKNOWN",
+                "rr_config_id": "1rr",
+                "config": "operational_100r",
                 "included_exactly_once": True,
                 "included_in_forecast": False,
-                "note": "Configuration was not provided; not duplicated across 1RR and 1.5RR.",
-            }
+                "note": "User confirmed the July 7 +150 realized result hit this RR configuration.",
+            },
+            {
+                "anchor_id": "REALIZED_2026-07-07_1_5RR_PLUS_150_POINTS",
+                "date": "2026-07-07",
+                "status": "REALIZED",
+                "realized_pnl_points": 150.0,
+                "rr_config_id": "1_5rr",
+                "config": "primary_150r",
+                "included_exactly_once": True,
+                "included_in_forecast": False,
+                "note": "User confirmed the July 7 +150 realized result hit this RR configuration.",
+            },
         ]
     )
     realized.to_csv(final_dir / "realized_anchor.csv", index=False)
@@ -353,7 +364,7 @@ def main() -> None:
             "calendar_block_rows": int(len(final_calendar_blocks)),
             "scenario_count": int(len(final_scenario_manifest["scenarios"])),
             "point_scale_scenarios": int(len(final_point_scale_scenarios)),
-            "realized_anchor_rows": 1,
+            "realized_anchor_rows": int(len(realized_anchor)),
         },
         "artifacts": {
             p.name: sha256_file(p)

@@ -22,9 +22,9 @@ columns are provided so Prop Lab can coherently translate the same packet into
 the selected July/August point-scale environment.
 
 `realized_anchor.csv` contains the July 7, 2026 +150 point realized result
-exactly once with `rr_config_id=UNKNOWN`. It is not blended into either source
-library because the request did not provide evidence of which RR configuration
-was actually traded.
+once for `rr_config_id=1rr` and once for `rr_config_id=1_5rr`, based on the
+user-confirmed statement that both configurations hit +150. It is not blended
+into either historical source library.
 
 These are synthetic internal risk scenarios, not actual future trades,
 guaranteed performance or a historical track record.

@@ -246,10 +246,13 @@ def test_final_calendar_blocks_use_july_august_weights_and_anchor_once():
     assert blocks["negative_block"].any()
 
     anchor = pd.read_csv(REPO_ROOT / "artifacts/forward_ledger/final/realized_anchor.csv")
-    assert len(anchor) == 1
-    assert anchor["date"].iloc[0] == "2026-07-07"
-    assert anchor["realized_pnl_points"].iloc[0] == pytest.approx(150.0)
-    assert anchor["status"].iloc[0] == "REALIZED"
+    assert len(anchor) == 2
+    assert set(anchor["rr_config_id"]) == {"1rr", "1_5rr"}
+    assert set(anchor["config"]) == {"operational_100r", "primary_150r"}
+    assert set(anchor["date"]) == {"2026-07-07"}
+    assert (anchor["realized_pnl_points"] - 150.0).abs().max() < 1e-12
+    assert set(anchor["status"]) == {"REALIZED"}
+    assert anchor.groupby("rr_config_id").size().eq(1).all()
 
 
 def test_required_column_failure_is_honest():

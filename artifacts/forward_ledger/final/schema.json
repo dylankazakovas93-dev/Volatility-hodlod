@@ -141,7 +141,7 @@
       }
     },
     "realized_anchor.csv": {
-      "rows": 1,
+      "rows": 2,
       "columns": {
         "anchor_id": "str",
         "date": "str",
