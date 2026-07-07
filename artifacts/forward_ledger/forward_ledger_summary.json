@@ -234,6 +234,16 @@
       "abrupt_tail"
     ]
   },
+  "final_bundle": {
+    "forecast_start_date": "2026-07-08",
+    "forecast_end_date": "2026-08-31",
+    "forward_1rr_rows": 1355,
+    "forward_1_5rr_rows": 1349,
+    "calendar_block_rows": 276,
+    "scenario_count": 24,
+    "point_scale_scenarios": 14,
+    "realized_anchor_rows": 1
+  },
   "artifacts": {
     "README.md": "a58434a966bebcf3f18f75e1289d82531fde6bd65211e70d9051c240bf29e5d0",
     "expectancy_scenarios.json": "e9555d936cb2ddbf54cb18f036ea350b096b02fae2afa7df1da30cef32757f88",
@@ -246,5 +256,15 @@
     "scenario_manifests.json": "556d09a426964b7d972cbf8a6f232ff525566c9aaa11a465a7c51d153e4c2111",
     "two_month_forward_horizon.json": "d97f0650b9a0cb64b5e62a46f083e0274cd51f0f9799c2ec917fd39a1ca1edfb",
     "two_month_historical_windows.csv": "a7cf6166f7a8e1ca4e4a98bb74f2c0a2ec698d211b8b61017e10b93889dd1880"
+  },
+  "final_artifacts": {
+    "README.md": "1fd9d8ee83678b2ccc419b0d42b724b632374efdd72e2475d1a12907b0a6e775",
+    "calendar_blocks.csv": "6c80e2f41a3d47c992377095db1602d43e96e26fb7e0594eb306a010327ecb22",
+    "forward_1_5rr.csv": "198b74f0079cf4f6c5507bdeaf569fad21642736eb43e9696cd82c3054517725",
+    "forward_1rr.csv": "07bdcbc173b0ff9957d49d28d8483130b0a2ca0fab163875b9a99effe9b5dbbd",
+    "forward_scenario_manifest.json": "e512554d013524c53d4e64c9b6130e99f1b54d06fcdbcccd3c99f777f6b6cc0f",
+    "point_scale_scenarios.json": "d6fee8630c383ea9462be97d403b3edc64efa53bbcc857ae23aa0f062ba80fa1",
+    "realized_anchor.csv": "9fcc492ffe7df58427d63d5f6d20496de535f33a8851c811c4aaa49ed37d4d39",
+    "schema.json": "9d44173f01d879f6b71253fa9365ecee93eb66bf3084af17e6c8fcfa3554773a"
   }
 }

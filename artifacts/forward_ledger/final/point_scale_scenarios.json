@@ -1,0 +1,940 @@
+[
+  {
+    "point_scale_scenario_id": "scale_central",
+    "rr_config_id": "1rr",
+    "scale_multiplier": 1.0,
+    "scale_field": "raw_stop_points",
+    "strategy_scale_trace": "cap = min(1.5 * anchor, SL_CAP=200); target = target_R * cap",
+    "central_raw_stop_points": 46.875,
+    "raw_stop_points_quantiles": {
+      "p10": 9.787500000000003,
+      "p25": 22.5,
+      "p50": 46.875,
+      "p75": 79.78125,
+      "p90": 146.25,
+      "p95": 185.7187499999999,
+      "p99": 200.0
+    },
+    "effective_stop_points_quantiles": {
+      "p10": 9.787500000000003,
+      "p25": 22.5,
+      "p50": 46.875,
+      "p75": 79.78125,
+      "p90": 146.25,
+      "p95": 185.7187499999999,
+      "p99": 200.0
+    },
+    "target_points_quantiles": {
+      "p10": 9.787500000000003,
+      "p25": 22.5,
+      "p50": 46.875,
+      "p75": 79.78125,
+      "p90": 146.25,
+      "p95": 185.7187499999999,
+      "p99": 200.0
+    },
+    "mae_points_quantiles": {
+      "p10": 2.4255192274313693,
+      "p25": 6.30447194349108,
+      "p50": 18.191501289460803,
+      "p75": 46.825051306632304,
+      "p90": 81.25395912124094,
+      "p95": 111.61064822896421,
+      "p99": 170.1730564894398
+    },
+    "mfe_points_quantiles": {
+      "p10": 4.573468671803403,
+      "p25": 9.896447282575537,
+      "p50": 26.354554898656716,
+      "p75": 58.78547564218388,
+      "p90": 109.30080056138466,
+      "p95": 147.665241835361,
+      "p99": 205.82435939995506
+    },
+    "evidence_blend": {
+      "recent_2025_2026": 0.5,
+      "historical_july_august": 0.35,
+      "summer_neighbors_june_september": 0.15
+    },
+    "coherent_rescale_formula": {
+      "forward_raw_stop": "selected_scale",
+      "forward_pnl": "pnl_R * selected_scale",
+      "forward_effective_stop": "effective_stop_R * selected_scale",
+      "forward_target": "target_R * selected_scale",
+      "forward_mae": "mae_R * selected_scale",
+      "forward_mfe": "mfe_R * selected_scale"
+    },
+    "point_scale_independent_from_pf": true
+  },
+  {
+    "point_scale_scenario_id": "scale_minus_10",
+    "rr_config_id": "1rr",
+    "scale_multiplier": 0.9,
+    "scale_field": "raw_stop_points",
+    "strategy_scale_trace": "cap = min(1.5 * anchor, SL_CAP=200); target = target_R * cap",
+    "central_raw_stop_points": 46.875,
+    "raw_stop_points_quantiles": {
+      "p10": 8.808750000000003,
+      "p25": 20.25,
+      "p50": 42.1875,
+      "p75": 71.803125,
+      "p90": 131.625,
+      "p95": 167.1468749999999,
+      "p99": 180.0
+    },
+    "effective_stop_points_quantiles": {
+      "p10": 8.808750000000003,
+      "p25": 20.25,
+      "p50": 42.1875,
+      "p75": 71.803125,
+      "p90": 131.625,
+      "p95": 167.1468749999999,
+      "p99": 180.0
+    },
+    "target_points_quantiles": {
+      "p10": 8.808750000000003,
+      "p25": 20.25,
+      "p50": 42.1875,
+      "p75": 71.803125,
+      "p90": 131.625,
+      "p95": 167.1468749999999,
+      "p99": 180.0
+    },
+    "mae_points_quantiles": {
+      "p10": 2.1829673046882325,
+      "p25": 5.674024749141973,
+      "p50": 16.372351160514725,
+      "p75": 42.14254617596908,
+      "p90": 73.12856320911685,
+      "p95": 100.44958340606779,
+      "p99": 153.1557508404958
+    },
+    "mfe_points_quantiles": {
+      "p10": 4.116121804623063,
+      "p25": 8.906802554317983,
+      "p50": 23.719099408791045,
+      "p75": 52.906928077965496,
+      "p90": 98.37072050524621,
+      "p95": 132.8987176518249,
+      "p99": 185.24192345995957
+    },
+    "evidence_blend": {
+      "recent_2025_2026": 0.5,
+      "historical_july_august": 0.35,
+      "summer_neighbors_june_september": 0.15
+    },
+    "coherent_rescale_formula": {
+      "forward_raw_stop": "selected_scale",
+      "forward_pnl": "pnl_R * selected_scale",
+      "forward_effective_stop": "effective_stop_R * selected_scale",
+      "forward_target": "target_R * selected_scale",
+      "forward_mae": "mae_R * selected_scale",
+      "forward_mfe": "mfe_R * selected_scale"
+    },
+    "point_scale_independent_from_pf": true
+  },
+  {
+    "point_scale_scenario_id": "scale_plus_10",
+    "rr_config_id": "1rr",
+    "scale_multiplier": 1.1,
+    "scale_field": "raw_stop_points",
+    "strategy_scale_trace": "cap = min(1.5 * anchor, SL_CAP=200); target = target_R * cap",
+    "central_raw_stop_points": 46.875,
+    "raw_stop_points_quantiles": {
+      "p10": 10.766250000000005,
+      "p25": 24.750000000000004,
+      "p50": 51.56250000000001,
+      "p75": 87.759375,
+      "p90": 160.875,
+      "p95": 204.29062499999986,
+      "p99": 220.00000000000003
+    },
+    "effective_stop_points_quantiles": {
+      "p10": 10.766250000000005,
+      "p25": 24.750000000000004,
+      "p50": 51.56250000000001,
+      "p75": 87.759375,
+      "p90": 160.875,
+      "p95": 204.29062499999986,
+      "p99": 220.00000000000003
+    },
+    "target_points_quantiles": {
+      "p10": 10.766250000000005,
+      "p25": 24.750000000000004,
+      "p50": 51.56250000000001,
+      "p75": 87.759375,
+      "p90": 160.875,
+      "p95": 204.29062499999986,
+      "p99": 220.00000000000003
+    },
+    "mae_points_quantiles": {
+      "p10": 2.6680711501745065,
+      "p25": 6.934919137840189,
+      "p50": 20.010651418406887,
+      "p75": 51.50755643729554,
+      "p90": 89.37935503336504,
+      "p95": 122.77171305186063,
+      "p99": 187.1903621383838
+    },
+    "mfe_points_quantiles": {
+      "p10": 5.030815538983744,
+      "p25": 10.88609201083309,
+      "p50": 28.990010388522386,
+      "p75": 64.66402320640228,
+      "p90": 120.23088061752314,
+      "p95": 162.43176601889712,
+      "p99": 226.4067953399506
+    },
+    "evidence_blend": {
+      "recent_2025_2026": 0.5,
+      "historical_july_august": 0.35,
+      "summer_neighbors_june_september": 0.15
+    },
+    "coherent_rescale_formula": {
+      "forward_raw_stop": "selected_scale",
+      "forward_pnl": "pnl_R * selected_scale",
+      "forward_effective_stop": "effective_stop_R * selected_scale",
+      "forward_target": "target_R * selected_scale",
+      "forward_mae": "mae_R * selected_scale",
+      "forward_mfe": "mfe_R * selected_scale"
+    },
+    "point_scale_independent_from_pf": true
+  },
+  {
+    "point_scale_scenario_id": "scale_minus_15",
+    "rr_config_id": "1rr",
+    "scale_multiplier": 0.85,
+    "scale_field": "raw_stop_points",
+    "strategy_scale_trace": "cap = min(1.5 * anchor, SL_CAP=200); target = target_R * cap",
+    "central_raw_stop_points": 46.875,
+    "raw_stop_points_quantiles": {
+      "p10": 8.319375000000003,
+      "p25": 19.125,
+      "p50": 39.84375,
+      "p75": 67.8140625,
+      "p90": 124.3125,
+      "p95": 157.86093749999986,
+      "p99": 170.0
+    },
+    "effective_stop_points_quantiles": {
+      "p10": 8.319375000000003,
+      "p25": 19.125,
+      "p50": 39.84375,
+      "p75": 67.8140625,
+      "p90": 124.3125,
+      "p95": 157.86093749999986,
+      "p99": 170.0
+    },
+    "target_points_quantiles": {
+      "p10": 8.319375000000003,
+      "p25": 19.125,
+      "p50": 39.84375,
+      "p75": 67.8140625,
+      "p90": 124.3125,
+      "p95": 157.86093749999986,
+      "p99": 170.0
+    },
+    "mae_points_quantiles": {
+      "p10": 2.061691343316664,
+      "p25": 5.358801151967418,
+      "p50": 15.462776096041681,
+      "p75": 39.80129361063746,
+      "p90": 69.0658652530548,
+      "p95": 94.86905099461957,
+      "p99": 144.64709801602382
+    },
+    "mfe_points_quantiles": {
+      "p10": 3.887448371032893,
+      "p25": 8.411980190189205,
+      "p50": 22.401371663858207,
+      "p75": 49.9676542958563,
+      "p90": 92.90568047717694,
+      "p95": 125.51545556005685,
+      "p99": 174.9507054899618
+    },
+    "evidence_blend": {
+      "recent_2025_2026": 0.5,
+      "historical_july_august": 0.35,
+      "summer_neighbors_june_september": 0.15
+    },
+    "coherent_rescale_formula": {
+      "forward_raw_stop": "selected_scale",
+      "forward_pnl": "pnl_R * selected_scale",
+      "forward_effective_stop": "effective_stop_R * selected_scale",
+      "forward_target": "target_R * selected_scale",
+      "forward_mae": "mae_R * selected_scale",
+      "forward_mfe": "mfe_R * selected_scale"
+    },
+    "point_scale_independent_from_pf": true
+  },
+  {
+    "point_scale_scenario_id": "scale_plus_15",
+    "rr_config_id": "1rr",
+    "scale_multiplier": 1.15,
+    "scale_field": "raw_stop_points",
+    "strategy_scale_trace": "cap = min(1.5 * anchor, SL_CAP=200); target = target_R * cap",
+    "central_raw_stop_points": 46.875,
+    "raw_stop_points_quantiles": {
+      "p10": 11.255625000000002,
+      "p25": 25.874999999999996,
+      "p50": 53.90624999999999,
+      "p75": 91.7484375,
+      "p90": 168.1875,
+      "p95": 213.57656249999985,
+      "p99": 229.99999999999997
+    },
+    "effective_stop_points_quantiles": {
+      "p10": 11.255625000000002,
+      "p25": 25.874999999999996,
+      "p50": 53.90624999999999,
+      "p75": 91.7484375,
+      "p90": 168.1875,
+      "p95": 213.57656249999985,
+      "p99": 229.99999999999997
+    },
+    "target_points_quantiles": {
+      "p10": 11.255625000000002,
+      "p25": 25.874999999999996,
+      "p50": 53.90624999999999,
+      "p75": 91.7484375,
+      "p90": 168.1875,
+      "p95": 213.57656249999985,
+      "p99": 229.99999999999997
+    },
+    "mae_points_quantiles": {
+      "p10": 2.789347111546075,
+      "p25": 7.250142735014743,
+      "p50": 20.92022648287992,
+      "p75": 53.84880900262715,
+      "p90": 93.44205298942707,
+      "p95": 128.35224546330883,
+      "p99": 195.69901496285573
+    },
+    "mfe_points_quantiles": {
+      "p10": 5.259488972573914,
+      "p25": 11.380914374961867,
+      "p50": 30.307738133455224,
+      "p75": 67.60329698851146,
+      "p90": 125.69592064559237,
+      "p95": 169.81502811066514,
+      "p99": 236.6980133099483
+    },
+    "evidence_blend": {
+      "recent_2025_2026": 0.5,
+      "historical_july_august": 0.35,
+      "summer_neighbors_june_september": 0.15
+    },
+    "coherent_rescale_formula": {
+      "forward_raw_stop": "selected_scale",
+      "forward_pnl": "pnl_R * selected_scale",
+      "forward_effective_stop": "effective_stop_R * selected_scale",
+      "forward_target": "target_R * selected_scale",
+      "forward_mae": "mae_R * selected_scale",
+      "forward_mfe": "mfe_R * selected_scale"
+    },
+    "point_scale_independent_from_pf": true
+  },
+  {
+    "point_scale_scenario_id": "scale_minus_20",
+    "rr_config_id": "1rr",
+    "scale_multiplier": 0.8,
+    "scale_field": "raw_stop_points",
+    "strategy_scale_trace": "cap = min(1.5 * anchor, SL_CAP=200); target = target_R * cap",
+    "central_raw_stop_points": 46.875,
+    "raw_stop_points_quantiles": {
+      "p10": 7.830000000000003,
+      "p25": 18.0,
+      "p50": 37.5,
+      "p75": 63.825,
+      "p90": 117.0,
+      "p95": 148.5749999999999,
+      "p99": 160.0
+    },
+    "effective_stop_points_quantiles": {
+      "p10": 7.830000000000003,
+      "p25": 18.0,
+      "p50": 37.5,
+      "p75": 63.825,
+      "p90": 117.0,
+      "p95": 148.5749999999999,
+      "p99": 160.0
+    },
+    "target_points_quantiles": {
+      "p10": 7.830000000000003,
+      "p25": 18.0,
+      "p50": 37.5,
+      "p75": 63.825,
+      "p90": 117.0,
+      "p95": 148.5749999999999,
+      "p99": 160.0
+    },
+    "mae_points_quantiles": {
+      "p10": 1.9404153819450958,
+      "p25": 5.043577554792865,
+      "p50": 14.553201031568644,
+      "p75": 37.46004104530584,
+      "p90": 65.00316729699274,
+      "p95": 89.28851858317137,
+      "p99": 136.13844519155182
+    },
+    "mfe_points_quantiles": {
+      "p10": 3.658774937442723,
+      "p25": 7.9171578260604285,
+      "p50": 21.083643918925375,
+      "p75": 47.02838051374711,
+      "p90": 87.44064044910773,
+      "p95": 118.13219346828882,
+      "p99": 164.65948751996405
+    },
+    "evidence_blend": {
+      "recent_2025_2026": 0.5,
+      "historical_july_august": 0.35,
+      "summer_neighbors_june_september": 0.15
+    },
+    "coherent_rescale_formula": {
+      "forward_raw_stop": "selected_scale",
+      "forward_pnl": "pnl_R * selected_scale",
+      "forward_effective_stop": "effective_stop_R * selected_scale",
+      "forward_target": "target_R * selected_scale",
+      "forward_mae": "mae_R * selected_scale",
+      "forward_mfe": "mfe_R * selected_scale"
+    },
+    "point_scale_independent_from_pf": true
+  },
+  {
+    "point_scale_scenario_id": "scale_plus_20",
+    "rr_config_id": "1rr",
+    "scale_multiplier": 1.2,
+    "scale_field": "raw_stop_points",
+    "strategy_scale_trace": "cap = min(1.5 * anchor, SL_CAP=200); target = target_R * cap",
+    "central_raw_stop_points": 46.875,
+    "raw_stop_points_quantiles": {
+      "p10": 11.745000000000003,
+      "p25": 27.0,
+      "p50": 56.25,
+      "p75": 95.7375,
+      "p90": 175.5,
+      "p95": 222.86249999999984,
+      "p99": 240.0
+    },
+    "effective_stop_points_quantiles": {
+      "p10": 11.745000000000003,
+      "p25": 27.0,
+      "p50": 56.25,
+      "p75": 95.7375,
+      "p90": 175.5,
+      "p95": 222.86249999999984,
+      "p99": 240.0
+    },
+    "target_points_quantiles": {
+      "p10": 11.745000000000003,
+      "p25": 27.0,
+      "p50": 56.25,
+      "p75": 95.7375,
+      "p90": 175.5,
+      "p95": 222.86249999999984,
+      "p99": 240.0
+    },
+    "mae_points_quantiles": {
+      "p10": 2.910623072917643,
+      "p25": 7.565366332189296,
+      "p50": 21.82980154735296,
+      "p75": 56.190061567958764,
+      "p90": 97.50475094548912,
+      "p95": 133.93277787475705,
+      "p99": 204.20766778732775
+    },
+    "mfe_points_quantiles": {
+      "p10": 5.488162406164084,
+      "p25": 11.875736739090643,
+      "p50": 31.625465878388056,
+      "p75": 70.54257077062066,
+      "p90": 131.16096067366158,
+      "p95": 177.1982902024332,
+      "p99": 246.98923127994607
+    },
+    "evidence_blend": {
+      "recent_2025_2026": 0.5,
+      "historical_july_august": 0.35,
+      "summer_neighbors_june_september": 0.15
+    },
+    "coherent_rescale_formula": {
+      "forward_raw_stop": "selected_scale",
+      "forward_pnl": "pnl_R * selected_scale",
+      "forward_effective_stop": "effective_stop_R * selected_scale",
+      "forward_target": "target_R * selected_scale",
+      "forward_mae": "mae_R * selected_scale",
+      "forward_mfe": "mfe_R * selected_scale"
+    },
+    "point_scale_independent_from_pf": true
+  },
+  {
+    "point_scale_scenario_id": "scale_central",
+    "rr_config_id": "1_5rr",
+    "scale_multiplier": 1.0,
+    "scale_field": "raw_stop_points",
+    "strategy_scale_trace": "cap = min(1.5 * anchor, SL_CAP=200); target = target_R * cap",
+    "central_raw_stop_points": 46.5,
+    "raw_stop_points_quantiles": {
+      "p10": 9.75,
+      "p25": 22.5,
+      "p50": 46.5,
+      "p75": 79.5,
+      "p90": 146.25,
+      "p95": 186.00000000000006,
+      "p99": 200.0
+    },
+    "effective_stop_points_quantiles": {
+      "p10": 9.75,
+      "p25": 22.5,
+      "p50": 46.5,
+      "p75": 79.5,
+      "p90": 146.25,
+      "p95": 186.00000000000006,
+      "p99": 200.0
+    },
+    "target_points_quantiles": {
+      "p10": 14.625,
+      "p25": 33.75,
+      "p50": 69.75,
+      "p75": 119.25,
+      "p90": 219.375,
+      "p95": 279.00000000000006,
+      "p99": 300.0
+    },
+    "mae_points_quantiles": {
+      "p10": 2.814915848590317,
+      "p25": 6.949659476093075,
+      "p50": 18.967990386844576,
+      "p75": 49.43673161331935,
+      "p90": 87.07050811221781,
+      "p95": 115.13981917849969,
+      "p99": 173.81780733720697
+    },
+    "mfe_points_quantiles": {
+      "p10": 4.858055878546656,
+      "p25": 10.438165927180307,
+      "p50": 28.569572783555486,
+      "p75": 70.64849673071149,
+      "p90": 133.49634962189157,
+      "p95": 177.5892715946975,
+      "p99": 307.9961512688669
+    },
+    "evidence_blend": {
+      "recent_2025_2026": 0.5,
+      "historical_july_august": 0.35,
+      "summer_neighbors_june_september": 0.15
+    },
+    "coherent_rescale_formula": {
+      "forward_raw_stop": "selected_scale",
+      "forward_pnl": "pnl_R * selected_scale",
+      "forward_effective_stop": "effective_stop_R * selected_scale",
+      "forward_target": "target_R * selected_scale",
+      "forward_mae": "mae_R * selected_scale",
+      "forward_mfe": "mfe_R * selected_scale"
+    },
+    "point_scale_independent_from_pf": true
+  },
+  {
+    "point_scale_scenario_id": "scale_minus_10",
+    "rr_config_id": "1_5rr",
+    "scale_multiplier": 0.9,
+    "scale_field": "raw_stop_points",
+    "strategy_scale_trace": "cap = min(1.5 * anchor, SL_CAP=200); target = target_R * cap",
+    "central_raw_stop_points": 46.5,
+    "raw_stop_points_quantiles": {
+      "p10": 8.775,
+      "p25": 20.25,
+      "p50": 41.85,
+      "p75": 71.55,
+      "p90": 131.625,
+      "p95": 167.40000000000006,
+      "p99": 180.0
+    },
+    "effective_stop_points_quantiles": {
+      "p10": 8.775,
+      "p25": 20.25,
+      "p50": 41.85,
+      "p75": 71.55,
+      "p90": 131.625,
+      "p95": 167.40000000000006,
+      "p99": 180.0
+    },
+    "target_points_quantiles": {
+      "p10": 13.162500000000001,
+      "p25": 30.375,
+      "p50": 62.775000000000006,
+      "p75": 107.32499999999999,
+      "p90": 197.4375,
+      "p95": 251.10000000000008,
+      "p99": 270.0
+    },
+    "mae_points_quantiles": {
+      "p10": 2.5334242637312854,
+      "p25": 6.2546935284837675,
+      "p50": 17.071191348160117,
+      "p75": 44.49305845198742,
+      "p90": 78.36345730099603,
+      "p95": 103.62583726064973,
+      "p99": 156.43602660348628
+    },
+    "mfe_points_quantiles": {
+      "p10": 4.37225029069199,
+      "p25": 9.394349334462277,
+      "p50": 25.71261550519994,
+      "p75": 63.58364705764034,
+      "p90": 120.14671465970243,
+      "p95": 159.83034443522777,
+      "p99": 277.19653614198023
+    },
+    "evidence_blend": {
+      "recent_2025_2026": 0.5,
+      "historical_july_august": 0.35,
+      "summer_neighbors_june_september": 0.15
+    },
+    "coherent_rescale_formula": {
+      "forward_raw_stop": "selected_scale",
+      "forward_pnl": "pnl_R * selected_scale",
+      "forward_effective_stop": "effective_stop_R * selected_scale",
+      "forward_target": "target_R * selected_scale",
+      "forward_mae": "mae_R * selected_scale",
+      "forward_mfe": "mfe_R * selected_scale"
+    },
+    "point_scale_independent_from_pf": true
+  },
+  {
+    "point_scale_scenario_id": "scale_plus_10",
+    "rr_config_id": "1_5rr",
+    "scale_multiplier": 1.1,
+    "scale_field": "raw_stop_points",
+    "strategy_scale_trace": "cap = min(1.5 * anchor, SL_CAP=200); target = target_R * cap",
+    "central_raw_stop_points": 46.5,
+    "raw_stop_points_quantiles": {
+      "p10": 10.725000000000001,
+      "p25": 24.750000000000004,
+      "p50": 51.150000000000006,
+      "p75": 87.45,
+      "p90": 160.875,
+      "p95": 204.60000000000005,
+      "p99": 220.00000000000003
+    },
+    "effective_stop_points_quantiles": {
+      "p10": 10.725000000000001,
+      "p25": 24.750000000000004,
+      "p50": 51.150000000000006,
+      "p75": 87.45,
+      "p90": 160.875,
+      "p95": 204.60000000000005,
+      "p99": 220.00000000000003
+    },
+    "target_points_quantiles": {
+      "p10": 16.087500000000002,
+      "p25": 37.12500000000001,
+      "p50": 76.72500000000001,
+      "p75": 131.175,
+      "p90": 241.3125,
+      "p95": 306.9000000000001,
+      "p99": 330.00000000000006
+    },
+    "mae_points_quantiles": {
+      "p10": 3.0964074334493494,
+      "p25": 7.644625423702383,
+      "p50": 20.864789425529032,
+      "p75": 54.380404774651296,
+      "p90": 95.7775589234396,
+      "p95": 126.65380109634967,
+      "p99": 191.1995880709277
+    },
+    "mfe_points_quantiles": {
+      "p10": 5.3438614664013215,
+      "p25": 11.48198251989834,
+      "p50": 31.426530061911038,
+      "p75": 77.71334640378265,
+      "p90": 146.84598458408072,
+      "p95": 195.34819875416724,
+      "p99": 338.7957663957537
+    },
+    "evidence_blend": {
+      "recent_2025_2026": 0.5,
+      "historical_july_august": 0.35,
+      "summer_neighbors_june_september": 0.15
+    },
+    "coherent_rescale_formula": {
+      "forward_raw_stop": "selected_scale",
+      "forward_pnl": "pnl_R * selected_scale",
+      "forward_effective_stop": "effective_stop_R * selected_scale",
+      "forward_target": "target_R * selected_scale",
+      "forward_mae": "mae_R * selected_scale",
+      "forward_mfe": "mfe_R * selected_scale"
+    },
+    "point_scale_independent_from_pf": true
+  },
+  {
+    "point_scale_scenario_id": "scale_minus_15",
+    "rr_config_id": "1_5rr",
+    "scale_multiplier": 0.85,
+    "scale_field": "raw_stop_points",
+    "strategy_scale_trace": "cap = min(1.5 * anchor, SL_CAP=200); target = target_R * cap",
+    "central_raw_stop_points": 46.5,
+    "raw_stop_points_quantiles": {
+      "p10": 8.2875,
+      "p25": 19.125,
+      "p50": 39.525,
+      "p75": 67.575,
+      "p90": 124.3125,
+      "p95": 158.10000000000002,
+      "p99": 170.0
+    },
+    "effective_stop_points_quantiles": {
+      "p10": 8.2875,
+      "p25": 19.125,
+      "p50": 39.525,
+      "p75": 67.575,
+      "p90": 124.3125,
+      "p95": 158.10000000000002,
+      "p99": 170.0
+    },
+    "target_points_quantiles": {
+      "p10": 12.431249999999999,
+      "p25": 28.6875,
+      "p50": 59.287499999999994,
+      "p75": 101.36250000000001,
+      "p90": 186.46875,
+      "p95": 237.15000000000003,
+      "p99": 255.0
+    },
+    "mae_points_quantiles": {
+      "p10": 2.3926784713017697,
+      "p25": 5.907210554679113,
+      "p50": 16.12279182881789,
+      "p75": 42.02122187132145,
+      "p90": 74.00993189538514,
+      "p95": 97.86884630172473,
+      "p99": 147.74513623662594
+    },
+    "mfe_points_quantiles": {
+      "p10": 4.129347496764656,
+      "p25": 8.872441038103261,
+      "p50": 24.284136866022163,
+      "p75": 60.051222221104766,
+      "p90": 113.47189717860782,
+      "p95": 150.95088085549287,
+      "p99": 261.7967285785369
+    },
+    "evidence_blend": {
+      "recent_2025_2026": 0.5,
+      "historical_july_august": 0.35,
+      "summer_neighbors_june_september": 0.15
+    },
+    "coherent_rescale_formula": {
+      "forward_raw_stop": "selected_scale",
+      "forward_pnl": "pnl_R * selected_scale",
+      "forward_effective_stop": "effective_stop_R * selected_scale",
+      "forward_target": "target_R * selected_scale",
+      "forward_mae": "mae_R * selected_scale",
+      "forward_mfe": "mfe_R * selected_scale"
+    },
+    "point_scale_independent_from_pf": true
+  },
+  {
+    "point_scale_scenario_id": "scale_plus_15",
+    "rr_config_id": "1_5rr",
+    "scale_multiplier": 1.15,
+    "scale_field": "raw_stop_points",
+    "strategy_scale_trace": "cap = min(1.5 * anchor, SL_CAP=200); target = target_R * cap",
+    "central_raw_stop_points": 46.5,
+    "raw_stop_points_quantiles": {
+      "p10": 11.212499999999999,
+      "p25": 25.874999999999996,
+      "p50": 53.474999999999994,
+      "p75": 91.425,
+      "p90": 168.1875,
+      "p95": 213.90000000000003,
+      "p99": 229.99999999999997
+    },
+    "effective_stop_points_quantiles": {
+      "p10": 11.212499999999999,
+      "p25": 25.874999999999996,
+      "p50": 53.474999999999994,
+      "p75": 91.425,
+      "p90": 168.1875,
+      "p95": 213.90000000000003,
+      "p99": 229.99999999999997
+    },
+    "target_points_quantiles": {
+      "p10": 16.818749999999998,
+      "p25": 38.81249999999999,
+      "p50": 80.21249999999999,
+      "p75": 137.1375,
+      "p90": 252.28125,
+      "p95": 320.85,
+      "p99": 344.99999999999994
+    },
+    "mae_points_quantiles": {
+      "p10": 3.2371532258788647,
+      "p25": 7.992108397507035,
+      "p50": 21.81318894487126,
+      "p75": 56.852241355317254,
+      "p90": 100.13108432905048,
+      "p95": 132.41079205527464,
+      "p99": 199.89047843778798
+    },
+    "mfe_points_quantiles": {
+      "p10": 5.586764260328654,
+      "p25": 12.003890816257352,
+      "p50": 32.855008701088806,
+      "p75": 81.2457712403182,
+      "p90": 153.5208020651753,
+      "p95": 204.22766233390215,
+      "p99": 354.1955739591969
+    },
+    "evidence_blend": {
+      "recent_2025_2026": 0.5,
+      "historical_july_august": 0.35,
+      "summer_neighbors_june_september": 0.15
+    },
+    "coherent_rescale_formula": {
+      "forward_raw_stop": "selected_scale",
+      "forward_pnl": "pnl_R * selected_scale",
+      "forward_effective_stop": "effective_stop_R * selected_scale",
+      "forward_target": "target_R * selected_scale",
+      "forward_mae": "mae_R * selected_scale",
+      "forward_mfe": "mfe_R * selected_scale"
+    },
+    "point_scale_independent_from_pf": true
+  },
+  {
+    "point_scale_scenario_id": "scale_minus_20",
+    "rr_config_id": "1_5rr",
+    "scale_multiplier": 0.8,
+    "scale_field": "raw_stop_points",
+    "strategy_scale_trace": "cap = min(1.5 * anchor, SL_CAP=200); target = target_R * cap",
+    "central_raw_stop_points": 46.5,
+    "raw_stop_points_quantiles": {
+      "p10": 7.800000000000001,
+      "p25": 18.0,
+      "p50": 37.2,
+      "p75": 63.6,
+      "p90": 117.0,
+      "p95": 148.80000000000004,
+      "p99": 160.0
+    },
+    "effective_stop_points_quantiles": {
+      "p10": 7.800000000000001,
+      "p25": 18.0,
+      "p50": 37.2,
+      "p75": 63.6,
+      "p90": 117.0,
+      "p95": 148.80000000000004,
+      "p99": 160.0
+    },
+    "target_points_quantiles": {
+      "p10": 11.700000000000001,
+      "p25": 27.0,
+      "p50": 55.800000000000004,
+      "p75": 95.4,
+      "p90": 175.5,
+      "p95": 223.20000000000007,
+      "p99": 240.0
+    },
+    "mae_points_quantiles": {
+      "p10": 2.251932678872254,
+      "p25": 5.559727580874459,
+      "p50": 15.17439230947566,
+      "p75": 39.549385290655486,
+      "p90": 69.65640648977426,
+      "p95": 92.11185534279977,
+      "p99": 139.05424586976557
+    },
+    "mfe_points_quantiles": {
+      "p10": 3.886444702837325,
+      "p25": 8.350532741744246,
+      "p50": 22.85565822684439,
+      "p75": 56.51879738456919,
+      "p90": 106.79707969751327,
+      "p95": 142.071417275758,
+      "p99": 246.39692101509357
+    },
+    "evidence_blend": {
+      "recent_2025_2026": 0.5,
+      "historical_july_august": 0.35,
+      "summer_neighbors_june_september": 0.15
+    },
+    "coherent_rescale_formula": {
+      "forward_raw_stop": "selected_scale",
+      "forward_pnl": "pnl_R * selected_scale",
+      "forward_effective_stop": "effective_stop_R * selected_scale",
+      "forward_target": "target_R * selected_scale",
+      "forward_mae": "mae_R * selected_scale",
+      "forward_mfe": "mfe_R * selected_scale"
+    },
+    "point_scale_independent_from_pf": true
+  },
+  {
+    "point_scale_scenario_id": "scale_plus_20",
+    "rr_config_id": "1_5rr",
+    "scale_multiplier": 1.2,
+    "scale_field": "raw_stop_points",
+    "strategy_scale_trace": "cap = min(1.5 * anchor, SL_CAP=200); target = target_R * cap",
+    "central_raw_stop_points": 46.5,
+    "raw_stop_points_quantiles": {
+      "p10": 11.7,
+      "p25": 27.0,
+      "p50": 55.8,
+      "p75": 95.39999999999999,
+      "p90": 175.5,
+      "p95": 223.20000000000005,
+      "p99": 240.0
+    },
+    "effective_stop_points_quantiles": {
+      "p10": 11.7,
+      "p25": 27.0,
+      "p50": 55.8,
+      "p75": 95.39999999999999,
+      "p90": 175.5,
+      "p95": 223.20000000000005,
+      "p99": 240.0
+    },
+    "target_points_quantiles": {
+      "p10": 17.549999999999997,
+      "p25": 40.5,
+      "p50": 83.69999999999999,
+      "p75": 143.1,
+      "p90": 263.25,
+      "p95": 334.80000000000007,
+      "p99": 360.0
+    },
+    "mae_points_quantiles": {
+      "p10": 3.377899018308381,
+      "p25": 8.33959137131169,
+      "p50": 22.76158846421349,
+      "p75": 59.324077935983226,
+      "p90": 104.48460973466138,
+      "p95": 138.1677830141996,
+      "p99": 208.58136880464835
+    },
+    "mfe_points_quantiles": {
+      "p10": 5.829667054255987,
+      "p25": 12.525799112616369,
+      "p50": 34.28348734026658,
+      "p75": 84.77819607685379,
+      "p90": 160.19561954626988,
+      "p95": 213.107125913637,
+      "p99": 369.59538152264037
+    },
+    "evidence_blend": {
+      "recent_2025_2026": 0.5,
+      "historical_july_august": 0.35,
+      "summer_neighbors_june_september": 0.15
+    },
+    "coherent_rescale_formula": {
+      "forward_raw_stop": "selected_scale",
+      "forward_pnl": "pnl_R * selected_scale",
+      "forward_effective_stop": "effective_stop_R * selected_scale",
+      "forward_target": "target_R * selected_scale",
+      "forward_mae": "mae_R * selected_scale",
+      "forward_mfe": "mfe_R * selected_scale"
+    },
+    "point_scale_independent_from_pf": true
+  }
+]

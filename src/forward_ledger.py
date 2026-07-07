@@ -24,6 +24,26 @@ ROLLING_PF_THRESHOLD = 1.10
 PF_TARGETS = (1.35, 1.50, 1.65)
 SCENARIO_FAMILIES = ("stable", "gradual_degradation", "favourable_persistence", "abrupt_tail")
 FORWARD_HORIZON_MONTHS = 2
+FINAL_FORECAST_START = "2026-07-08"
+FINAL_FORECAST_END = "2026-08-31"
+FINAL_POINT_SCALE_IDS = (
+    "scale_central",
+    "scale_minus_10",
+    "scale_plus_10",
+    "scale_minus_15",
+    "scale_plus_15",
+    "scale_minus_20",
+    "scale_plus_20",
+)
+FINAL_SCALE_MULTIPLIERS = {
+    "scale_central": 1.00,
+    "scale_minus_10": 0.90,
+    "scale_plus_10": 1.10,
+    "scale_minus_15": 0.85,
+    "scale_plus_15": 1.15,
+    "scale_minus_20": 0.80,
+    "scale_plus_20": 1.20,
+}
 EXTERNAL_2013_2015_BARS = "data/external_2013_2015/raw/glbx-mdp3-20130101-20151231.ohlcv-1m.csv.zst"
 DEFAULT_CONTINUOUS_2018_2026_BARS = "data/nq_1m/nq_continuous_2018_2026_1m.csv"
 CONTINUOUS_BARS_ENV = "NQ_1M_2018_2026_CSV"
@@ -479,6 +499,258 @@ def build_point_scale_scenarios(source_pool: pd.DataFrame) -> list[dict]:
 
 def _quantiles(s: pd.Series) -> dict:
     return {f"p{int(q * 100):02d}": float(s.quantile(q)) for q in [0.10, 0.25, 0.50, 0.75, 0.90, 0.95, 0.99]}
+
+
+def _seasonality_bucket(month: int) -> str:
+    if month in (7, 8):
+        return "july_august"
+    if month in (6, 9):
+        return "summer_neighbor"
+    return "broader_pool"
+
+
+def _safe_ratio(numer: pd.Series, denom: pd.Series, label: str) -> pd.Series:
+    bad = denom.astype(float) <= 0
+    if bad.any():
+        raise ValueError(f"invalid non-positive denominator for {label}: {int(bad.sum())} rows")
+    return numer.astype(float) / denom.astype(float)
+
+
+def build_final_forward_ledger(pool: pd.DataFrame, rr_config_id: str) -> pd.DataFrame:
+    require_columns(pool, POOL_REQUIRED_COLUMNS, f"final {rr_config_id} source pool")
+    if set(pool["pool_id"].unique()) != {rr_config_id}:
+        raise ValueError(f"final ledger {rr_config_id} received mixed pool ids: {sorted(pool['pool_id'].unique())}")
+
+    out = pd.DataFrame()
+    out["rr_config_id"] = pool["pool_id"].astype(str)
+    out["config"] = pool["config"].astype(str)
+    out["config_label"] = pool["config_label"].astype(str)
+    out["trade_packet_id"] = (
+        out["rr_config_id"]
+        + "|"
+        + pool["source"].astype(str)
+        + "|"
+        + pool["level_id"].astype(str)
+        + "|"
+        + pool["entry_time"].astype(str)
+    )
+    out["source_year"] = pool["year"].astype(int)
+    out["source_month"] = pd.to_datetime(pool["session_date"]).dt.month.astype(int)
+    out["source_session_date"] = pool["session_date"].astype(str)
+    out["source_ledger_id"] = pool["source"].astype(str)
+    out["source_block_id"] = (
+        out["rr_config_id"]
+        + "|"
+        + out["source_ledger_id"]
+        + "|"
+        + out["source_year"].astype(str)
+        + "-"
+        + out["source_month"].astype(str).str.zfill(2)
+    )
+    out["chronological_block_id"] = out["source_block_id"]
+    out["entry_time"] = pool["entry_time"].astype(str)
+    out["exit_time"] = pool["exit_time"].astype(str)
+    entry = pd.to_datetime(pool["entry_time"], utc=True)
+    exit_ = pd.to_datetime(pool["exit_time"], utc=True)
+    out["holding_duration"] = (exit_ - entry).dt.total_seconds() / 60.0
+    out["direction"] = pool["side"].map({"lower": "long", "upper": "short"}).fillna(pool["side"]).astype(str)
+    out["exit_reason"] = pool["exit_reason"].astype(str)
+    out["effective_exit_reason"] = pool["effective_exit_reason"].astype(str)
+    out["pnl_points"] = pool["pnl_pts_effective"].astype(float)
+    out["historical_unfiltered_pnl_points"] = pool["pnl_pts_baseline"].astype(float)
+    out["raw_stop_points"] = pool["raw_stop_pts"].astype(float)
+    out["effective_stop_points"] = pool["effective_stop_pts"].astype(float)
+    out["target_points"] = pool["target_pts"].astype(float)
+    out["mae_points"] = pool["mae_pts"].astype(float)
+    out["mfe_points"] = pool["mfe_pts"].astype(float)
+    out["pnl_R"] = _safe_ratio(out["pnl_points"], out["raw_stop_points"], "pnl_R")
+    out["historical_unfiltered_pnl_R"] = _safe_ratio(
+        out["historical_unfiltered_pnl_points"], out["raw_stop_points"], "historical_unfiltered_pnl_R"
+    )
+    out["effective_stop_R"] = _safe_ratio(out["effective_stop_points"], out["raw_stop_points"], "effective_stop_R")
+    out["target_R"] = _safe_ratio(out["target_points"], out["raw_stop_points"], "target_R")
+    out["mae_R"] = _safe_ratio(out["mae_points"], out["raw_stop_points"], "mae_R")
+    out["mfe_R"] = _safe_ratio(out["mfe_points"], out["raw_stop_points"], "mfe_R")
+    out["rolling_pf_window_trades"] = pool["rolling_pf_window_trades"].astype(int)
+    out["rolling_pf_threshold"] = pool["rolling_pf_threshold"].astype(float)
+    out["rolling_pf_reentry"] = pool["rolling_pf_reentry"].astype(str)
+    out["rolling_pf_is_flat"] = pool["is_flat"].astype(bool)
+    out["rolling_pf_switch_state"] = np.where(out["rolling_pf_is_flat"], "FLAT", "ON")
+    out["rolling_pf_switch_mechanism"] = "rolling_points_pf_w100_threshold_1_10_symmetric"
+    out["volatility_proxy_anchor_points"] = pool["anchor"].astype(float)
+    out["volatility_proxy_raw_stop_points"] = out["raw_stop_points"]
+    out["strategy_scale_field"] = "raw_stop_points_cap_min_1_5x_anchor_200"
+    pct = out["raw_stop_points"].rank(pct=True, method="average")
+    out["raw_stop_percentile_rank"] = pct.astype(float)
+    out["volatility_regime_by_stop"] = pd.cut(
+        pct,
+        bins=[0.0, 0.25, 0.50, 0.75, 1.0],
+        labels=["low_stop_scale", "mid_low_stop_scale", "mid_high_stop_scale", "high_stop_scale"],
+        include_lowest=True,
+    ).astype(str)
+    out["seasonality_month"] = out["source_month"]
+    out["seasonality_bucket"] = out["source_month"].map(_seasonality_bucket)
+    out["is_july_august_evidence"] = out["source_month"].isin([7, 8])
+    out["forecast_start_date"] = FINAL_FORECAST_START
+    out["forecast_end_date"] = FINAL_FORECAST_END
+    out["mae_mfe_status"] = pool["mae_mfe_status"].astype(str)
+    out["mae_mfe_resolution"] = pool["mae_mfe_resolution"].astype(str)
+    out["intratrade_bar_count"] = pool["intratrade_bar_count"].astype(int)
+    out["gap_through"] = pool["gap_through"].astype(bool)
+
+    if not out["trade_packet_id"].is_unique:
+        raise ValueError(f"duplicate trade_packet_id in final {rr_config_id} ledger")
+    return out
+
+
+def build_final_calendar_blocks(final_ledgers: dict[str, pd.DataFrame]) -> pd.DataFrame:
+    rows = []
+    for rr_config_id, ledger in final_ledgers.items():
+        for key, g in ledger.groupby(["rr_config_id", "config", "source_year", "source_month"], sort=True):
+            _, config, year, month = key
+            metrics = gross_point_metrics(g["pnl_points"])
+            rows.append(
+                {
+                    "rr_config_id": rr_config_id,
+                    "config": config,
+                    "source_year": int(year),
+                    "source_month": int(month),
+                    "calendar_block_id": f"{rr_config_id}|{int(year)}-{int(month):02d}",
+                    "seasonality_bucket": _seasonality_bucket(int(month)),
+                    "july_august_blend_weight": {7: 1.0, 8: 1.0, 6: 0.35, 9: 0.35}.get(int(month), 0.10),
+                    "n_trades": int(len(g)),
+                    "n_active_trades": int((~g["rolling_pf_is_flat"]).sum()),
+                    "n_flat_trades": int(g["rolling_pf_is_flat"].sum()),
+                    **metrics.as_dict(),
+                    "TP": int((g["effective_exit_reason"] == "TP").sum()),
+                    "SL": int((g["effective_exit_reason"] == "SL").sum()),
+                    "BE": int((g["effective_exit_reason"] == "BE").sum()),
+                    "cutoff": int((g["effective_exit_reason"] == "cutoff").sum()),
+                    "FLAT": int((g["effective_exit_reason"] == "FLAT").sum()),
+                    "median_raw_stop_points": float(g["raw_stop_points"].median()),
+                    "median_mae_points": float(g["mae_points"].median()),
+                    "median_mfe_points": float(g["mfe_points"].median()),
+                    "switch_flat_rate": float(g["rolling_pf_is_flat"].mean()),
+                    "negative_block": bool(metrics.net_pts < 0),
+                }
+            )
+    return pd.DataFrame(rows)
+
+
+def build_final_point_scale_scenarios(final_ledgers: dict[str, pd.DataFrame]) -> list[dict]:
+    scenarios = []
+    for rr_config_id, ledger in final_ledgers.items():
+        evidence = {
+            "recent_2025_2026": ledger[ledger["source_year"].isin([2025, 2026])],
+            "historical_july_august": ledger[ledger["source_month"].isin([7, 8])],
+            "summer_neighbors": ledger[ledger["source_month"].isin([6, 9])],
+        }
+        base = pd.concat(
+            [
+                evidence["recent_2025_2026"].assign(_weight=0.50),
+                evidence["historical_july_august"].assign(_weight=0.35),
+                evidence["summer_neighbors"].assign(_weight=0.15),
+            ],
+            ignore_index=True,
+        )
+        if base.empty:
+            raise ValueError(f"no point-scale evidence for {rr_config_id}")
+        central = float(base["raw_stop_points"].median())
+        for scale_id, mult in FINAL_SCALE_MULTIPLIERS.items():
+            raw_stop = base["raw_stop_points"].astype(float) * mult
+            scenarios.append(
+                {
+                    "point_scale_scenario_id": scale_id,
+                    "rr_config_id": rr_config_id,
+                    "scale_multiplier": mult,
+                    "scale_field": "raw_stop_points",
+                    "strategy_scale_trace": "cap = min(1.5 * anchor, SL_CAP=200); target = target_R * cap",
+                    "central_raw_stop_points": central,
+                    "raw_stop_points_quantiles": _quantiles(raw_stop),
+                    "effective_stop_points_quantiles": _quantiles(base["effective_stop_R"].astype(float) * raw_stop),
+                    "target_points_quantiles": _quantiles(base["target_R"].astype(float) * raw_stop),
+                    "mae_points_quantiles": _quantiles(base["mae_R"].astype(float) * raw_stop),
+                    "mfe_points_quantiles": _quantiles(base["mfe_R"].astype(float) * raw_stop),
+                    "evidence_blend": {
+                        "recent_2025_2026": 0.50,
+                        "historical_july_august": 0.35,
+                        "summer_neighbors_june_september": 0.15,
+                    },
+                    "coherent_rescale_formula": {
+                        "forward_raw_stop": "selected_scale",
+                        "forward_pnl": "pnl_R * selected_scale",
+                        "forward_effective_stop": "effective_stop_R * selected_scale",
+                        "forward_target": "target_R * selected_scale",
+                        "forward_mae": "mae_R * selected_scale",
+                        "forward_mfe": "mfe_R * selected_scale",
+                    },
+                    "point_scale_independent_from_pf": True,
+                }
+            )
+    return scenarios
+
+
+def build_final_scenario_manifest(final_ledgers: dict[str, pd.DataFrame], calendar_blocks: pd.DataFrame) -> dict:
+    scenarios = []
+    for rr_config_id, ledger in final_ledgers.items():
+        blocks = calendar_blocks[calendar_blocks["rr_config_id"] == rr_config_id].copy().reset_index(drop=True)
+        blocks["base_weight"] = blocks["july_august_blend_weight"] / blocks["july_august_blend_weight"].sum()
+        blocks["year"] = blocks["source_year"]
+        blocks["pnl_class"] = np.select(
+            [blocks["net_pts"] > 0, blocks["net_pts"] < 0],
+            ["profit", "loss"],
+            default="scratch_or_flat",
+        )
+        blocks["effective_exit_reason"] = "CALENDAR_BLOCK"
+        for family in SCENARIO_FAMILIES:
+            for target_pf in PF_TARGETS:
+                pf_label = f"{target_pf:.2f}".replace(".", "_")
+                weights = solve_pf_weights(blocks, target_pf, family)
+                achieved_pf = _pf_for_weights(blocks, weights)
+                band = (target_pf - 0.05, target_pf + 0.05)
+                block_weights = []
+                for i, row in blocks.iterrows():
+                    block_pf = float(row["points_pf"])
+                    block_weights.append(
+                        {
+                            "calendar_block_id": row["calendar_block_id"],
+                            "source_year": int(row["source_year"]),
+                            "source_month": int(row["source_month"]),
+                            "seasonality_bucket": row["seasonality_bucket"],
+                            "scenario_weight": float(weights[i]),
+                            "n_trades": int(row["n_trades"]),
+                            "net_pts": float(row["net_pts"]),
+                            "points_pf": block_pf if math.isfinite(block_pf) else None,
+                            "negative_block": bool(row["negative_block"]),
+                        }
+                    )
+                scenarios.append(
+                    {
+                        "scenario_id": f"{rr_config_id}__FORWARD_PF_ASSUMPTION_{pf_label}__{family}",
+                        "rr_config_id": rr_config_id,
+                        "config": ledger["config"].iloc[0],
+                        "pf_assumption_id": f"FORWARD_PF_ASSUMPTION_{pf_label}",
+                        "target_points_pf": target_pf,
+                        "achieved_aggregate_points_pf": achieved_pf,
+                        "target_band": {"min": band[0], "max": band[1]},
+                        "within_calibration_band": bool(band[0] <= achieved_pf <= band[1]),
+                        "regime_path": family,
+                        "forecast_start_date": FINAL_FORECAST_START,
+                        "forecast_end_date": FINAL_FORECAST_END,
+                        "point_scale_options": list(FINAL_POINT_SCALE_IDS),
+                        "pf_calibration_method": "transparent_complete_calendar_block_weighting",
+                        "negative_blocks_remain_eligible": bool(any(b["negative_block"] for b in block_weights)),
+                        "block_weights": block_weights,
+                        "point_scale_independent_from_pf": True,
+                        "does_not_modify_trade_packets": True,
+                    }
+                )
+    return {
+        "forecast_start_date": FINAL_FORECAST_START,
+        "forecast_end_date": FINAL_FORECAST_END,
+        "pf_assumptions_are_synthetic_internal_risk_scenarios": True,
+        "scenarios": scenarios,
+    }
 
 
 def build_scenarios(source_pool: pd.DataFrame) -> tuple[list[dict], pd.DataFrame]:

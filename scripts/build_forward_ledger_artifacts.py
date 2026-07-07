@@ -24,6 +24,10 @@ from src.forward_ledger import (  # noqa: E402
     SELECTED_PARAMS,
     assert_pf_invariants,
     build_expectancy_scenarios,
+    build_final_calendar_blocks,
+    build_final_forward_ledger,
+    build_final_point_scale_scenarios,
+    build_final_scenario_manifest,
     build_normalized_pool,
     build_point_scale_scenarios,
     build_rr_config_manifest,
@@ -122,6 +126,110 @@ or a p10/p50/p90 example path.
     (out_dir / "README.md").write_text(text)
 
 
+def write_final_readme(final_dir: Path) -> None:
+    text = """# Final Prop Lab Forward-Ledger Bundle
+
+Forecast window: July 8, 2026 through August 31, 2026.
+
+Use `forward_1rr.csv` and `forward_1_5rr.csv` as physically separate source
+libraries. Do not sample `../forward_source_pool.csv` directly for Prop Lab
+without first selecting one RR configuration.
+
+Selection order:
+
+1. RR configuration: `1rr` or `1_5rr`.
+2. PF assumption: `FORWARD_PF_ASSUMPTION_1_35`, `1_50`, or `1_65`.
+3. Regime path: `stable`, `gradual_degradation`, `favourable_persistence`, or
+   `abrupt_tail`.
+4. Point-scale scenario: `scale_central`, `scale_minus_10`, `scale_plus_10`,
+   `scale_minus_15`, `scale_plus_15`, `scale_minus_20`, or `scale_plus_20`.
+5. Forecast dates.
+
+Each row is a complete historical trade packet with P&L, stop, target,
+MAE/MFE, exit reason, duration, and switch state kept together. Normalized R
+columns are provided so Prop Lab can coherently translate the same packet into
+the selected July/August point-scale environment.
+
+`realized_anchor.csv` contains the July 7, 2026 +150 point realized result
+exactly once with `rr_config_id=UNKNOWN`. It is not blended into either source
+library because the request did not provide evidence of which RR configuration
+was actually traded.
+
+These are synthetic internal risk scenarios, not actual future trades,
+guaranteed performance or a historical track record.
+"""
+    (final_dir / "README.md").write_text(text)
+
+
+def build_schema(
+    final_ledgers: dict[str, pd.DataFrame],
+    calendar_blocks: pd.DataFrame,
+    realized_anchor: pd.DataFrame,
+    point_scale_scenarios: list[dict],
+    scenario_manifest: dict,
+) -> dict:
+    files = {
+        "forward_1rr.csv": final_ledgers["1rr"],
+        "forward_1_5rr.csv": final_ledgers["1_5rr"],
+        "calendar_blocks.csv": calendar_blocks,
+        "realized_anchor.csv": realized_anchor,
+    }
+    return {
+        "version": 1,
+        "forecast_start_date": "2026-07-08",
+        "forecast_end_date": "2026-08-31",
+        "files": {
+            name: {
+                "rows": int(len(df)),
+                "columns": {col: str(dtype) for col, dtype in df.dtypes.items()},
+            }
+            for name, df in files.items()
+        },
+        "json_files": {
+            "point_scale_scenarios.json": {
+                "type": "array",
+                "items": len(point_scale_scenarios),
+                "top_level_keys": sorted(point_scale_scenarios[0].keys()) if point_scale_scenarios else [],
+            },
+            "forward_scenario_manifest.json": {
+                "type": "object",
+                "top_level_keys": sorted(scenario_manifest.keys()),
+                "scenario_count": len(scenario_manifest.get("scenarios", [])),
+            },
+        },
+        "required_final_files": [
+            "forward_1rr.csv",
+            "forward_1_5rr.csv",
+            "realized_anchor.csv",
+            "calendar_blocks.csv",
+            "point_scale_scenarios.json",
+            "forward_scenario_manifest.json",
+            "README.md",
+            "schema.json",
+        ],
+    }
+
+
+def write_realized_anchor(final_dir: Path) -> pd.DataFrame:
+    realized = pd.DataFrame(
+        [
+            {
+                "anchor_id": "REALIZED_2026-07-07_PLUS_150_POINTS",
+                "date": "2026-07-07",
+                "status": "REALIZED",
+                "realized_pnl_points": 150.0,
+                "rr_config_id": "UNKNOWN",
+                "config": "UNKNOWN",
+                "included_exactly_once": True,
+                "included_in_forecast": False,
+                "note": "Configuration was not provided; not duplicated across 1RR and 1.5RR.",
+            }
+        ]
+    )
+    realized.to_csv(final_dir / "realized_anchor.csv", index=False)
+    return realized
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--out-dir", default="artifacts/forward_ledger")
@@ -133,7 +241,9 @@ def main() -> None:
     args = parser.parse_args()
 
     out_dir = REPO_ROOT / args.out_dir
+    final_dir = out_dir / "final"
     out_dir.mkdir(parents=True, exist_ok=True)
+    final_dir.mkdir(parents=True, exist_ok=True)
 
     excursion_context = load_excursion_context(REPO_ROOT, args.continuous_2018_2026_bars)
     pools = {config: build_normalized_pool(REPO_ROOT, config, excursion_context) for config in CONFIGS}
@@ -153,6 +263,13 @@ def main() -> None:
     rr_config_manifest = build_rr_config_manifest(pools)
     two_month_windows = build_two_month_windows(source_pool)
     two_month_horizon = build_two_month_forward_horizon(two_month_windows, manifests)
+    final_ledgers = {
+        "1rr": build_final_forward_ledger(pools["operational_100r"], "1rr"),
+        "1_5rr": build_final_forward_ledger(pools["primary_150r"], "1_5rr"),
+    }
+    final_calendar_blocks = build_final_calendar_blocks(final_ledgers)
+    final_point_scale_scenarios = build_final_point_scale_scenarios(final_ledgers)
+    final_scenario_manifest = build_final_scenario_manifest(final_ledgers, final_calendar_blocks)
 
     write_json(out_dir / "point_scale_scenarios.json", point_scale_scenarios)
     write_json(out_dir / "expectancy_scenarios.json", expectancy_scenarios)
@@ -162,6 +279,18 @@ def main() -> None:
     block_weights.to_csv(out_dir / "scenario_block_weights.csv", index=False)
     two_month_windows.to_csv(out_dir / "two_month_historical_windows.csv", index=False)
     write_readme(out_dir)
+
+    final_ledgers["1rr"].to_csv(final_dir / "forward_1rr.csv", index=False)
+    final_ledgers["1_5rr"].to_csv(final_dir / "forward_1_5rr.csv", index=False)
+    realized_anchor = write_realized_anchor(final_dir)
+    final_calendar_blocks.to_csv(final_dir / "calendar_blocks.csv", index=False)
+    write_json(final_dir / "point_scale_scenarios.json", final_point_scale_scenarios)
+    write_json(final_dir / "forward_scenario_manifest.json", final_scenario_manifest)
+    write_json(
+        final_dir / "schema.json",
+        build_schema(final_ledgers, final_calendar_blocks, realized_anchor, final_point_scale_scenarios, final_scenario_manifest),
+    )
+    write_final_readme(final_dir)
 
     pool_summaries = {
         config: {
@@ -216,10 +345,25 @@ def main() -> None:
             "pf_targets": list(PF_TARGETS),
             "families": list(SCENARIO_FAMILIES),
         },
+        "final_bundle": {
+            "forecast_start_date": "2026-07-08",
+            "forecast_end_date": "2026-08-31",
+            "forward_1rr_rows": int(len(final_ledgers["1rr"])),
+            "forward_1_5rr_rows": int(len(final_ledgers["1_5rr"])),
+            "calendar_block_rows": int(len(final_calendar_blocks)),
+            "scenario_count": int(len(final_scenario_manifest["scenarios"])),
+            "point_scale_scenarios": int(len(final_point_scale_scenarios)),
+            "realized_anchor_rows": 1,
+        },
         "artifacts": {
             p.name: sha256_file(p)
             for p in sorted(out_dir.iterdir())
             if p.is_file() and p.name != "forward_ledger_summary.json"
+        },
+        "final_artifacts": {
+            p.name: sha256_file(p)
+            for p in sorted(final_dir.iterdir())
+            if p.is_file()
         },
     }
     write_json(out_dir / "forward_ledger_summary.json", summary)

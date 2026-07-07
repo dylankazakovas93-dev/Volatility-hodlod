@@ -10,6 +10,10 @@ from src.forward_ledger import (
     PF_TARGETS,
     SCENARIO_FAMILIES,
     SELECTED_PARAMS,
+    build_final_calendar_blocks,
+    build_final_forward_ledger,
+    build_final_point_scale_scenarios,
+    build_final_scenario_manifest,
     build_normalized_pool,
     build_rr_config_manifest,
     build_scenarios,
@@ -163,6 +167,89 @@ def test_rr_switch_and_two_month_horizon_are_explicit(excursion_context):
     assert horizon["forward_horizon_id"] == "two_calendar_months"
     assert horizon["rr_switch_field"] == "rr_config_id"
     assert set(horizon["configs"]) == set(CONFIGS)
+
+
+def test_final_prop_lab_ledgers_are_separate_and_not_derived(excursion_context):
+    one_rr_pool = build_normalized_pool(REPO_ROOT, "operational_100r", excursion_context)
+    one_five_pool = build_normalized_pool(REPO_ROOT, "primary_150r", excursion_context)
+    one_rr = build_final_forward_ledger(one_rr_pool, "1rr")
+    one_five = build_final_forward_ledger(one_five_pool, "1_5rr")
+
+    assert set(one_rr["rr_config_id"]) == {"1rr"}
+    assert set(one_five["rr_config_id"]) == {"1_5rr"}
+    assert set(one_rr["config"]) == {"operational_100r"}
+    assert set(one_five["config"]) == {"primary_150r"}
+    assert (one_rr["target_R"] - 1.0).abs().max() < 1e-12
+    assert (one_five["target_R"] - 1.5).abs().max() < 1e-12
+
+    key_cols = ["source_ledger_id", "source_year", "source_month", "source_session_date", "entry_time"]
+    paired = one_rr.merge(one_five, on=key_cols, suffixes=("_1rr", "_1_5rr"))
+    assert not paired.empty
+    differs = (
+        (paired["exit_time_1rr"] != paired["exit_time_1_5rr"])
+        | (paired["exit_reason_1rr"] != paired["exit_reason_1_5rr"])
+        | (paired["holding_duration_1rr"] != paired["holding_duration_1_5rr"])
+    )
+    assert differs.any(), "1.5RR must come from independent replay, not 1RR winner multiplication"
+
+
+def test_final_packet_rescaling_preserves_relationships_and_identity(excursion_context):
+    pool = build_normalized_pool(REPO_ROOT, "primary_150r", excursion_context)
+    ledger = build_final_forward_ledger(pool, "1_5rr")
+    row = ledger[ledger["effective_exit_reason"] != "FLAT"].iloc[0]
+    scale = 125.0
+    assert row["pnl_R"] * scale == pytest.approx(row["pnl_points"] / row["raw_stop_points"] * scale)
+    assert row["target_R"] * scale == pytest.approx(187.5)
+    assert row["mae_R"] * scale == pytest.approx(row["mae_points"] / row["raw_stop_points"] * scale)
+    assert row["mfe_R"] * scale == pytest.approx(row["mfe_points"] / row["raw_stop_points"] * scale)
+    assert row["exit_reason"] in {"TP", "SL", "BE", "cutoff"}
+
+
+def test_final_scenarios_keep_pf_and_point_scale_independent(excursion_context):
+    pools = {
+        "1rr": build_final_forward_ledger(build_normalized_pool(REPO_ROOT, "operational_100r", excursion_context), "1rr"),
+        "1_5rr": build_final_forward_ledger(build_normalized_pool(REPO_ROOT, "primary_150r", excursion_context), "1_5rr"),
+    }
+    blocks = build_final_calendar_blocks(pools)
+    manifest = build_final_scenario_manifest(pools, blocks)
+    scales = build_final_point_scale_scenarios(pools)
+
+    assert len(manifest["scenarios"]) == 2 * len(PF_TARGETS) * len(SCENARIO_FAMILIES)
+    assert {s["pf_assumption_id"] for s in manifest["scenarios"]} == {
+        "FORWARD_PF_ASSUMPTION_1_35",
+        "FORWARD_PF_ASSUMPTION_1_50",
+        "FORWARD_PF_ASSUMPTION_1_65",
+    }
+    for scenario in manifest["scenarios"]:
+        assert scenario["within_calibration_band"]
+        assert scenario["point_scale_independent_from_pf"]
+        assert scenario["negative_blocks_remain_eligible"]
+        assert any(b["negative_block"] for b in scenario["block_weights"])
+    assert {s["point_scale_scenario_id"] for s in scales} == {
+        "scale_central",
+        "scale_minus_10",
+        "scale_plus_10",
+        "scale_minus_15",
+        "scale_plus_15",
+        "scale_minus_20",
+        "scale_plus_20",
+    }
+    assert all(s["scale_field"] == "raw_stop_points" for s in scales)
+
+
+def test_final_calendar_blocks_use_july_august_weights_and_anchor_once():
+    blocks = pd.read_csv(REPO_ROOT / "artifacts/forward_ledger/final/calendar_blocks.csv")
+    assert {7, 8}.issubset(set(blocks["source_month"]))
+    ja = blocks[blocks["source_month"].isin([7, 8])]
+    assert not ja.empty
+    assert (ja["july_august_blend_weight"] == 1.0).all()
+    assert blocks["negative_block"].any()
+
+    anchor = pd.read_csv(REPO_ROOT / "artifacts/forward_ledger/final/realized_anchor.csv")
+    assert len(anchor) == 1
+    assert anchor["date"].iloc[0] == "2026-07-07"
+    assert anchor["realized_pnl_points"].iloc[0] == pytest.approx(150.0)
+    assert anchor["status"].iloc[0] == "REALIZED"
 
 
 def test_required_column_failure_is_honest():

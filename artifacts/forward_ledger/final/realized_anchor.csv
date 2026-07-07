@@ -1,0 +1,2 @@
+anchor_id,date,status,realized_pnl_points,rr_config_id,config,included_exactly_once,included_in_forecast,note
+REALIZED_2026-07-07_PLUS_150_POINTS,2026-07-07,REALIZED,150.0,UNKNOWN,UNKNOWN,True,False,Configuration was not provided; not duplicated across 1RR and 1.5RR.
