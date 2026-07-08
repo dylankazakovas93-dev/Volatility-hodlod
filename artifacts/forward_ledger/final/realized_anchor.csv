@@ -1,3 +1,3 @@
-anchor_id,date,status,realized_pnl_points,rr_config_id,config,included_exactly_once,included_in_forecast,note
-REALIZED_2026-07-07_1RR_PLUS_150_POINTS,2026-07-07,REALIZED,150.0,1rr,operational_100r,True,False,User confirmed the July 7 +150 realized result hit this RR configuration.
-REALIZED_2026-07-07_1_5RR_PLUS_150_POINTS,2026-07-07,REALIZED,150.0,1_5rr,primary_150r,True,False,User confirmed the July 7 +150 realized result hit this RR configuration.
+anchor_id,date,status,realized_pnl_points,rr_config_id,config,comparison_group_id,mutually_exclusive_config_alternative,included_exactly_once,included_in_forecast,note
+REALIZED_2026-07-07_1RR_PLUS_150_POINTS,2026-07-07,REALIZED,150.0,1rr,operational_100r,JULY_7_REALIZED_ALTERNATIVE,True,True,False,User confirmed the July 7 +150 realized result hit this RR configuration.
+REALIZED_2026-07-07_1_5RR_PLUS_150_POINTS,2026-07-07,REALIZED,150.0,1_5rr,primary_150r,JULY_7_REALIZED_ALTERNATIVE,True,True,False,User confirmed the July 7 +150 realized result hit this RR configuration.

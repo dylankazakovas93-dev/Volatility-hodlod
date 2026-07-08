@@ -149,6 +149,8 @@
         "realized_pnl_points": "float64",
         "rr_config_id": "str",
         "config": "str",
+        "comparison_group_id": "str",
+        "mutually_exclusive_config_alternative": "bool",
         "included_exactly_once": "bool",
         "included_in_forecast": "bool",
         "note": "str"

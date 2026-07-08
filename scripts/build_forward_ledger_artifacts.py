@@ -157,6 +157,12 @@ into either historical source library.
 
 These are synthetic internal risk scenarios, not actual future trades,
 guaranteed performance or a historical track record.
+
+Streamlit explorer:
+
+```bash
+python3 -m streamlit run apps/forward_ledger_app.py --server.port 8501
+```
 """
     (final_dir / "README.md").write_text(text)
 
@@ -220,6 +226,8 @@ def write_realized_anchor(final_dir: Path) -> pd.DataFrame:
                 "realized_pnl_points": 150.0,
                 "rr_config_id": "1rr",
                 "config": "operational_100r",
+                "comparison_group_id": "JULY_7_REALIZED_ALTERNATIVE",
+                "mutually_exclusive_config_alternative": True,
                 "included_exactly_once": True,
                 "included_in_forecast": False,
                 "note": "User confirmed the July 7 +150 realized result hit this RR configuration.",
@@ -231,6 +239,8 @@ def write_realized_anchor(final_dir: Path) -> pd.DataFrame:
                 "realized_pnl_points": 150.0,
                 "rr_config_id": "1_5rr",
                 "config": "primary_150r",
+                "comparison_group_id": "JULY_7_REALIZED_ALTERNATIVE",
+                "mutually_exclusive_config_alternative": True,
                 "included_exactly_once": True,
                 "included_in_forecast": False,
                 "note": "User confirmed the July 7 +150 realized result hit this RR configuration.",

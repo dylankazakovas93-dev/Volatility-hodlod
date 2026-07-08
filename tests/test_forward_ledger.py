@@ -253,6 +253,9 @@ def test_final_calendar_blocks_use_july_august_weights_and_anchor_once():
     assert (anchor["realized_pnl_points"] - 150.0).abs().max() < 1e-12
     assert set(anchor["status"]) == {"REALIZED"}
     assert anchor.groupby("rr_config_id").size().eq(1).all()
+    assert set(anchor["comparison_group_id"]) == {"JULY_7_REALIZED_ALTERNATIVE"}
+    assert anchor["mutually_exclusive_config_alternative"].astype(bool).all()
+    assert anchor.groupby("comparison_group_id").size().iloc[0] == 2
 
 
 def test_required_column_failure_is_honest():

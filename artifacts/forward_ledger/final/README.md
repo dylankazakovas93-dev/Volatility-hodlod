@@ -28,3 +28,9 @@ into either historical source library.
 
 These are synthetic internal risk scenarios, not actual future trades,
 guaranteed performance or a historical track record.
+
+Streamlit explorer:
+
+```bash
+python3 -m streamlit run apps/forward_ledger_app.py --server.port 8501
+```
