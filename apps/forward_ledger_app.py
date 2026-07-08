@@ -9,7 +9,8 @@ import pandas as pd
 import streamlit as st
 
 
-REPO_ROOT = Path(__file__).resolve().parents[1]
+APP_PATH = Path(__file__).resolve()
+REPO_ROOT = APP_PATH.parents[1] if APP_PATH.parent.name == "apps" else APP_PATH.parent
 FINAL_DIR = REPO_ROOT / "artifacts/forward_ledger/final"
 
 
