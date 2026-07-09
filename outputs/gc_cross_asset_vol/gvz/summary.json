@@ -1,0 +1,92 @@
+{
+  "vol": "GVZ",
+  "n_levels": 773,
+  "result": {
+    "total_physical_touches": 1294,
+    "executed": 527,
+    "skipped_no_anchor": 67,
+    "skipped_blocked_time": 238,
+    "skipped_no_cutoff": 60,
+    "skipped_SAL": 162,
+    "skipped_position_open": 176,
+    "skipped_same_bar_reentry": 0,
+    "skipped_simultaneous_collision": 64,
+    "simultaneous_groups": 55,
+    "gap_through_count": 12,
+    "gap_through_pnl_delta": 80.406,
+    "TP": 147,
+    "SL": 167,
+    "BE": 144,
+    "cutoff": 69,
+    "net_pts": -215.05,
+    "PF": 0.9242,
+    "win_rate": 0.3472,
+    "twr": 0.4682,
+    "avg_trade": -0.408,
+    "max_drawdown": -797.81,
+    "max_loss_streak": 8,
+    "cost_adjusted": {
+      "cost_0.0": {
+        "net_pts": -215.05,
+        "PF": 0.9242,
+        "max_drawdown": -797.81,
+        "avg_trade": -0.408
+      },
+      "cost_0.5": {
+        "net_pts": -478.55,
+        "PF": 0.841,
+        "max_drawdown": -952.31,
+        "avg_trade": -0.908
+      },
+      "cost_1.0": {
+        "net_pts": -742.05,
+        "PF": 0.7669,
+        "max_drawdown": -1175.86,
+        "avg_trade": -1.408
+      },
+      "cost_2.0": {
+        "net_pts": -1269.05,
+        "PF": 0.6408,
+        "max_drawdown": -1631.86,
+        "avg_trade": -2.408
+      }
+    },
+    "yearly": [
+      {
+        "year": 2023,
+        "n": 98,
+        "net_pts": 5.51,
+        "PF": 1.0294,
+        "max_drawdown": -89.63,
+        "avg_trade": 0.056
+      },
+      {
+        "year": 2024,
+        "n": 177,
+        "net_pts": 0.94,
+        "PF": 1.0017,
+        "max_drawdown": -160.2,
+        "avg_trade": 0.005
+      },
+      {
+        "year": 2025,
+        "n": 185,
+        "net_pts": -494.66,
+        "PF": 0.6261,
+        "max_drawdown": -486.86,
+        "avg_trade": -2.674
+      },
+      {
+        "year": 2026,
+        "n": 67,
+        "net_pts": 273.17,
+        "PF": 1.3543,
+        "max_drawdown": -177.6,
+        "avg_trade": 4.077
+      }
+    ],
+    "negative_years": [
+      2025
+    ]
+  }
+}

@@ -1,0 +1,94 @@
+{
+  "vol": "RVX",
+  "n_levels": 773,
+  "result": {
+    "total_physical_touches": 1225,
+    "executed": 477,
+    "skipped_no_anchor": 75,
+    "skipped_blocked_time": 195,
+    "skipped_no_cutoff": 46,
+    "skipped_SAL": 172,
+    "skipped_position_open": 198,
+    "skipped_same_bar_reentry": 2,
+    "skipped_simultaneous_collision": 60,
+    "simultaneous_groups": 43,
+    "gap_through_count": 6,
+    "gap_through_pnl_delta": 36.0,
+    "TP": 141,
+    "SL": 145,
+    "BE": 117,
+    "cutoff": 74,
+    "net_pts": 51.0,
+    "PF": 1.0201,
+    "win_rate": 0.3711,
+    "twr": 0.493,
+    "avg_trade": 0.107,
+    "max_drawdown": -468.97,
+    "max_loss_streak": 4,
+    "cost_adjusted": {
+      "cost_0.0": {
+        "net_pts": 51.0,
+        "PF": 1.0201,
+        "max_drawdown": -468.97,
+        "avg_trade": 0.107
+      },
+      "cost_0.5": {
+        "net_pts": -187.5,
+        "PF": 0.9303,
+        "max_drawdown": -666.47,
+        "avg_trade": -0.393
+      },
+      "cost_1.0": {
+        "net_pts": -426.0,
+        "PF": 0.8501,
+        "max_drawdown": -864.46,
+        "avg_trade": -0.893
+      },
+      "cost_2.0": {
+        "net_pts": -903.0,
+        "PF": 0.7132,
+        "max_drawdown": -1267.46,
+        "avg_trade": -1.893
+      }
+    },
+    "yearly": [
+      {
+        "year": 2023,
+        "n": 73,
+        "net_pts": -16.48,
+        "PF": 0.8914,
+        "max_drawdown": -59.72,
+        "avg_trade": -0.226
+      },
+      {
+        "year": 2024,
+        "n": 148,
+        "net_pts": -120.89,
+        "PF": 0.7705,
+        "max_drawdown": -172.28,
+        "avg_trade": -0.817
+      },
+      {
+        "year": 2025,
+        "n": 181,
+        "net_pts": -118.43,
+        "PF": 0.8896,
+        "max_drawdown": -279.1,
+        "avg_trade": -0.654
+      },
+      {
+        "year": 2026,
+        "n": 75,
+        "net_pts": 306.8,
+        "PF": 1.3883,
+        "max_drawdown": -190.18,
+        "avg_trade": 4.091
+      }
+    ],
+    "negative_years": [
+      2023,
+      2024,
+      2025
+    ]
+  }
+}
