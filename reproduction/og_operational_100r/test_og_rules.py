@@ -163,8 +163,8 @@ class TestPositionAndTouch:
         """A physical touch is permanently consumed even when entry is blocked.
         A later unblocked bar cannot revive the same touch event."""
         level = 20000.0
-        # Touch occurs at 10:30 ET (inside blocked 10:00-15:00 window)
-        t_touch = _ts_rth(2023, 1, 3, 10, 30)
+        # Touch occurs at 11:30 ET (inside blocked 11:00-15:00 window)
+        t_touch = _ts_rth(2023, 1, 3, 11, 30)
         t_later = _ts_eth(2023, 1, 3, 19, 1)
         bars = make_bars(
             timestamps=[t_touch, t_later],
@@ -379,7 +379,7 @@ class TestEntryBehavior:
         """A touch at a blocked time is consumed and cannot be entered later
         even when the block clears."""
         level = 20000.0
-        t_touch = _ts_rth(2023, 1, 3, 10, 30)  # entry blocked (10:00-15:00)
+        t_touch = _ts_rth(2023, 1, 3, 11, 30)  # entry blocked (11:00-15:00)
         bars = make_bars(
             timestamps=[t_touch],
             opens=[19980.0],
@@ -951,16 +951,16 @@ class TestCutoff:
 # ===================================================================
 
 class TestEntryTime:
-    """Entry-time restrictions: 10:00-15:00 blocked, 16:00-19:00 hard blackout."""
+    """Entry-time restrictions: 11:00-15:00 blocked, 15:00-19:00 no cutoff."""
 
-    def test_entry_blocked_1000_to_1500(self):
-        """Entry is blocked from 10:00 to 15:00 ET."""
-        blocked_ts = _ts_rth(2023, 1, 3, 10, 0)
+    def test_entry_blocked_1100_to_1500(self):
+        """Entry is blocked from 11:00 to 15:00 ET."""
+        blocked_ts = _ts_rth(2023, 1, 3, 11, 0)
         blocked_ts2 = _ts_rth(2023, 1, 3, 14, 59)
-        free_ts = _ts_eth(2023, 1, 3, 9, 59)
-        assert not entry_allowed(blocked_ts), "10:00 should be blocked"
+        free_ts = _ts_eth(2023, 1, 3, 10, 59)
+        assert not entry_allowed(blocked_ts), "11:00 should be blocked"
         assert not entry_allowed(blocked_ts2), "14:59 should be blocked"
-        assert entry_allowed(free_ts), "09:59 should be allowed"
+        assert entry_allowed(free_ts), "10:59 should be allowed"
 
     def test_prop_hard_blackout_1600_to_1900(self):
         """Hard blackout 16:00 inclusive to 19:00 exclusive."""
