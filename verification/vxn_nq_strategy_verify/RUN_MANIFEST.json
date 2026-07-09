@@ -1,0 +1,56 @@
+{
+  "run_id": "og_operational_100r_fidelity_reproduction",
+  "strategy": "OG_OPERATIONAL_100R",
+  "run_timestamp": "2026-07-09T10:42:00Z",
+  "repository": {
+    "url": "dylankazakovas93-dev/Volatility-hodlod",
+    "branch": "fidelity/og-operational-100r-reproduction",
+    "commit": "173d036246c574b762da95ab2cea1dcd1a736837",
+    "verification_package_commit": "edd8123630b3156fb0ad25d4ff1b8fe4bbb0a"
+  },
+  "execution_environment": {
+    "python_version": "3.12.1",
+    "pandas_version": "3.0.3",
+    "numpy_version": "2.5.1",
+    "platform": "linux",
+    "host": "GitHub Codespace"
+  },
+  "execution_inputs": {
+    "nq_bars_path": "data/nq_1m/nq_continuous_2018_2026_1m.csv",
+    "nq_bars_sha256": "9f427eb053b6c63e50f79baf666f239f851558d1558e706fc126cbe69f3a5af4",
+    "nq_bars_rows": 2964655,
+    "vxn_path": "data/vxn_daily_2018_2026.csv",
+    "vxn_sha256": "76cc072c941542183d8c82174fe4f552b0f140f9cb368c302ad51f651992dc4e",
+    "config_path": "configs/OG_OPERATIONAL_100R.yaml",
+    "config_sha256": "ea8be55a8c5f61913a1d1b141c61a3d65d8cdc958070e8415375918e6678743f",
+    "component_ledgers": [
+      {"path": "outputs/og_external_2013_2015/operational_100r_trades.csv", "sha256": "5929f1ec49984661b6cdd41ee60d0e466dc3aa3f615856b7a14d1928a478bce5", "trades": 315},
+      {"path": "outputs/og_build_years/final_buildoff_A_build_years_trades.csv", "sha256": "3546c0768b57d99de92a76f24a84f1c492bb82e92a959ae04ef3ce51a508c168", "trades": 407},
+      {"path": "outputs/og_validation/OG_OPERATIONAL_100R_validation_trades.csv", "sha256": "0ea5c7918802c0ad18e3d98991a7f00c8dedd0f5d157fb944f411ff2339ef52f", "trades": 633}
+    ]
+  },
+  "benchmark_results": {
+    "n_shadow": 1355,
+    "n_active": 780,
+    "n_flat": 575,
+    "n_flat_runs": 20,
+    "net_pts": 6738.191,
+    "points_pf": 1.568369,
+    "total_r": 62.2389,
+    "r_pf": 1.249115,
+    "mdd_pts": -721.5375,
+    "mdd_r": -10.9691
+  },
+  "test_results": {
+    "total_tests": 98,
+    "passed": 98,
+    "failed": 0,
+    "categories": {
+      "test_og_rules.py": 72,
+      "test_level_generation.py": 13,
+      "test_causality.py": 13
+    }
+  },
+  "verdict": "EXACT_REPRODUCTION",
+  "verification_script_exit_code": 0
+}

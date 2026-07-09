@@ -7,8 +7,8 @@ These files must exist in the repository root (`/workspaces/Volatility-hodlod/`)
 ### Market Data (Gitignored — Must Be Provisioned Separately)
 
 | File | Path | Expected SHA-256 | Status in Repo |
-|---|---|---|---|
-| NQ 1-minute continuous bars | `data/nq_1m/nq_continuous_2018_2026_1m.csv` | `9f427eb053b6c63e50f79baf666f239f851558d1558e706fc126cbe69f3a5af4` (reconstructed, harmless) or `3d0228fcc17a40933d4fdc3983a8153e5bb6445ed9e743919b3eb5c516e53880` (manifest) | Gitignored via `.gitignore:1` |
+|---|---|---|---|---|
+| NQ 1-minute continuous bars | `data/nq_1m/nq_continuous_2018_2026_1m.csv` | `9f427eb053b6c63e50f79baf666f239f851558d1558e706fc126cbe69f3a5af4` | Gitignored via `.gitignore:1` |
 
 ### VXN Daily Data (Committed — Always Present)
 
