@@ -1,0 +1,235 @@
+{
+  "manifest_name": "OG_OPERATIONAL_100R_FIDELITY_EVIDENCE_MANIFEST",
+  "stage": "Stage 0 — Evidence Lock",
+  "lock_timestamp": "2026-07-09T09:18:00Z",
+  "repository": {
+    "url": "dylankazakovas93-dev/Volatility-hodlod",
+    "branch": "fidelity/og-operational-100r-reproduction",
+    "starting_commit": "9e6cadcedf01a65d6effb3159f061d9e52952f88",
+    "starting_commit_message": "OG regime killswitch: implement 4 causal monitoring mechanisms + full backtest",
+    "working_tree_clean": true,
+    "evidence_lock_commit": "fe36843b4d77d54a2e8a4bf00346e6bdf0b78b99",
+    "evidence_lock_commit_message": "Lock OG operational 1R fidelity evidence",
+    "evidence_lock_committed_at": "2026-07-09T09:18:00Z"
+  },
+  "frozen_references": [
+    {
+      "commit": "9e6cadcedf01a65d6effb3159f061d9e52952f88",
+      "description": "Regime-killswitch implementation — includes all canonical src, configs, docs, and frozen ledgers",
+      "message": "OG regime killswitch: implement 4 causal monitoring mechanisms + full backtest",
+      "parent": "285734c39c179dc9cdf77557625c708c8d815367"
+    },
+    {
+      "commit": "dad3da69aad401243544f80974f6d7506fefb7e2",
+      "description": "Dual-config lock — OG_PRE_VALIDATION_DUAL_CONFIG_LOCK",
+      "message": "OG_PRE_VALIDATION_DUAL_CONFIG_LOCK: finalize dual-config pre-validation lock",
+      "parent": "ebc98d31ac5dbd4e89f474ebba6d3b03c523254d"
+    },
+    {
+      "commit": "add8f30dccb64e018cc528a4848b60a06264d189",
+      "description": "Validation results — DUAL_CONFIG_FAIL",
+      "message": "OG_VALIDATION_RESULTS_DUAL_CONFIG: locked validation run, DUAL_CONFIG_FAIL",
+      "parent": "7a704ae31ac5dbd4e89f474ebba6d3b03c523254d"
+    },
+    {
+      "commit": "285734c39c179dc9cdf77557625c708c8d815367",
+      "description": "All-history assembly — continuous chronological trade sequences per config",
+      "message": "OG regime killswitch: assemble continuous chronological trade sequences per config",
+      "parent": "12a0f770ac5dbd4e89f474ebba6d3b03c523254d"
+    }
+  ],
+  "canonical_configs": {
+    "og_operational_100r": {
+      "path": "configs/OG_OPERATIONAL_100R.yaml",
+      "sha256": "ea8be55a8c5f61913a1d1b141c61a3d65d8cdc958070e8415375918e6678743f",
+      "machine_readable": "reproduction/og_operational_100r/canonical_config.json"
+    },
+    "og_primary_150r": {
+      "path": "configs/OG_PRIMARY_150R.yaml",
+      "sha256": "13ded8e730ad2b5ac5df58ace89ba2c0c5a6c5ca133629320ca5f3582279fd03"
+    },
+    "phase1_provisional": {
+      "path": "configs/OG_PHASE1_PROVISIONAL.yaml",
+      "sha256": "d069454d87a5d24c2322ca42a52dab83e477ac120326b2d47142e9f3fbc51bb3"
+    },
+    "dual_config_lock": {
+      "path": "docs/OG_PRE_VALIDATION_DUAL_CONFIG_LOCK.json",
+      "sha256": "ee536db2745adc234e53c0567a5de61cc41a4ac7259a94465c2460595abe281b"
+    }
+  },
+  "canonical_source_files": {
+    "src/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/data_loader.py": "d2e3724a2e0ba76e51191fce796dd97cb245f4623d9d1f590b6d888ba31a8528",
+    "src/independent_strict_engine.py": "513b0a06ef6cd1249c8f9664134b044307eff3ac4a016531e4b8ca6643a758a0",
+    "src/level_generation.py": "6e7edf10265c66f0dc41164ad8e1aec5dfa18ece1af663d307bb39365557df9c",
+    "src/metrics.py": "272be2c9bc3c21843d065bd77616437a4a4331a10934fc762a5465fe9da6fc27",
+    "src/og_build_variant_engine.py": "6517c10cf722ce975f23ac7f82e8782eecca01e9fc7a358820e51576d314f34a",
+    "src/og_hmm_gate.py": "ee8145199e4ba8c6a6f13dabf0b19b49a3e5a0321d265d9b198d30d57dc1c18a",
+    "src/og_management_variants.py": "64e03387fbd2b77996a930f9a41902da0f596d246bb63b78e4e9bfd5d9e0ba3c",
+    "src/og_regime_killswitch.py": "44e59d7f455f510bf859bedfa39a65cefb118a86f2571bef1e20719104970663",
+    "src/strict_engine.py": "9ffc0224310ef4904f012d946a56b0db94d777290b07fd5b3ee5d38fadf539f5"
+  },
+  "canonical_scripts": {
+    "scripts/og_final_buildoff_be45.py": "fbcbe157678a58228647cc733af9503439649dc09b030963f0b91e63451fa962",
+    "scripts/og_regime_killswitch_assemble.py": "647b50a8c234ed13d86932450cad051a1cd72c92b22c552b29788a383376fad7",
+    "scripts/og_regime_killswitch_backtest.py": "68077806d39afa46b1c37f31647aeb4b84e4d2cddc7b0c9ad073caa4fd5109f8",
+    "scripts/og_validation_dual_config.py": "914e5ce44bef50a2e373a231ded104d60cf8746adbb38b210ee6225e79ac8af6",
+    "scripts/build_nq_continuous.py": "66dfb89a7a98a30d48865ecfa3276a6d2b4822d1e74590d2b4cd395fb83f7df3"
+  },
+  "canonical_tests": {
+    "tests/test_regime_killswitch_causality.py": "3f3f867e642a1b87d9315e1abdb3128a5d92328d564f2975dc70c54a08079eea",
+    "tests/test_prop_hard_blackout.py": "320e5e87591c51a149a572a80f2d1e8ddb5c5129cb1d0e14e9d41ece00b74a79",
+    "tests/test_strategy_invariants.py": "0a33e21a8b9408d0038838317e37e682aca8243c8fd50ecadf602bf91d27e773",
+    "tests/test_og_stage_a_invariants.py": "9a11725ed43ef80024ed20b3d90ebff2290b28a2ddf323354c91d08edec467c6"
+  },
+  "canonical_docs": {
+    "docs/OG_OPERATIONAL_100R_BUILD_RESULTS.md": "f46dc19b077db3405f9d13735352ccff9ca0115507eadabbedc7b5b3995d3853",
+    "docs/OG_STAGE_A_VERIFICATION_REPORT.md": "b1d77613782f96044dcaa17703fc747201f4daa609e336138d676b7653795ea6",
+    "docs/OG_EXTERNAL_2013_2015_RESULTS.md": "07d4592c094973e11602e06a6509bf822278822c4b0d683900219c3b4a3a3ddd",
+    "docs/OG_REGIME_KILLSWITCH_RESULTS.md": "6086c7cd920ff9885e5ba00cef0d1db166afe3feac51f29f02fffa8ad9db99da",
+    "docs/OG_VALIDATION_RESULTS_DUAL_CONFIG.md": "b3a4b258eeb17cd5e5106c63d455db48bb07af577112114b680b12a3219a3804"
+  },
+  "data_files": {
+    "nq_continuous_1m": {
+      "path": "data/nq_1m/nq_continuous_2018_2026_1m.csv",
+      "expected_sha256_manifest": "3d0228fcc17a40933d4fdc3983a8153e5bb6445ed9e743919b3eb5c516e53880",
+      "expected_sha256_reconstructed_verified_harmless": "9f427eb053b6c63e50f79baf666f239f851558d1558e706fc126cbe69f3a5af4",
+      "expected_rows": 2964655,
+      "present_in_working_tree": false,
+      "status": "REQUIRES_SEPARATE_PROVISIONING",
+      "note": "Raw data is gitignored (.gitignore at frozen commit). Must be reconstructed from raw Databento archives via scripts/build_nq_continuous.py or copied from separate storage."
+    },
+    "vxn_daily_2018_2026": {
+      "path": "data/vxn_daily_2018_2026.csv",
+      "sha256": "76cc072c941542183d8c82174fe4f552b0f140f9cb368c302ad51f651992dc4e",
+      "rows": 2140,
+      "present_in_working_tree": true,
+      "status": "VERIFIED"
+    },
+    "vxn_history_raw": {
+      "path": "data/vxn_cboe_official/VXN_History_raw.csv",
+      "sha256": "6fb3ef65a94a700fa9c0ac94307d3a703e408a222d1f415deb7eb2b493f65037",
+      "present_in_working_tree": true,
+      "status": "VERIFIED"
+    },
+    "external_2013_2015_vxn_normalized": {
+      "path": "data/external_2013_2015/normalized/vxn_daily_2012warmup_2015.csv",
+      "sha256": "9355c3d720ef33707810638e158e513dc1fb037ad77a74bc3a6bfd27664a37c7",
+      "present_in_working_tree": true,
+      "status": "VERIFIED"
+    },
+    "external_2013_2015_condition": {
+      "path": "data/external_2013_2015/raw/condition.json",
+      "sha256": "d2aba68b6f9bccb07862ddca13a87c626d36587b8fe484ba47b38e3e54fe5014",
+      "present_in_working_tree": true,
+      "status": "VERIFIED"
+    },
+    "external_2013_2015_manifest": {
+      "path": "data/external_2013_2015/raw/manifest.json",
+      "sha256": "701c73f65ac99251e91db463c19a77664811d94306e099624f6a1ed9ea66235a",
+      "present_in_working_tree": true,
+      "status": "VERIFIED"
+    },
+    "external_2013_2015_metadata": {
+      "path": "data/external_2013_2015/raw/metadata.json",
+      "sha256": "d2c281066004516ec6d12b95000c6c5bbe67d2b0308c4e2195a5d855a131634a",
+      "present_in_working_tree": true,
+      "status": "VERIFIED"
+    }
+  },
+  "frozen_ledgers": [
+    {
+      "ledger_id": "og_external_2013_2015",
+      "path": "outputs/og_external_2013_2015/operational_100r_trades.csv",
+      "sha256": "5929f1ec49984661b6cdd41ee60d0e466dc3aa3f615856b7a14d1928a478bce5",
+      "n_rows_incl_header": 316,
+      "n_trades": 315,
+      "created_by_commit": "5d632d7 OG_EXTERNAL_2013_2015_RESULTS: single-execution diagnostic run, EXTERNAL_DUAL_NO_SUPPORT",
+      "status": "VERIFIED"
+    },
+    {
+      "ledger_id": "og_build_years_A",
+      "path": "outputs/og_build_years/final_buildoff_A_build_years_trades.csv",
+      "sha256": "3546c0768b57d99de92a76f24a84f1c492bb82e92a959ae04ef3ce51a508c168",
+      "n_rows_incl_header": 408,
+      "n_trades": 407,
+      "expected_n_trades_per_config": 407,
+      "created_by_commit": "71abb39 OG_FINAL_BUILDOFF_BE45: final 4-candidate bakeoff (A/B/C/D) under human-overridden BE45",
+      "status": "VERIFIED"
+    },
+    {
+      "ledger_id": "og_validation_100r",
+      "path": "outputs/og_validation/OG_OPERATIONAL_100R_validation_trades.csv",
+      "sha256": "0ea5c7918802c0ad18e3d98991a7f00c8dedd0f5d157fb944f411ff2339ef52f",
+      "n_rows_incl_header": 634,
+      "n_trades": 633,
+      "created_by_commit": "add8f30 OG_VALIDATION_RESULTS_DUAL_CONFIG: locked validation run, DUAL_CONFIG_FAIL",
+      "status": "VERIFIED"
+    }
+  ],
+  "assembled_sequence": {
+    "expected_component_ledgers": [
+      "outputs/og_external_2013_2015/operational_100r_trades.csv",
+      "outputs/og_build_years/final_buildoff_A_build_years_trades.csv",
+      "outputs/og_validation/OG_OPERATIONAL_100R_validation_trades.csv"
+    ],
+    "expected_included_years": ["2013", "2014", "2015", "2018", "2019", "2020", "2021", "2022", "2023", "2024", "2025", "2026 partial"],
+    "expected_absent_years": ["2016", "2017"],
+    "expected_total_shadow_rows": 1355
+  },
+  "missing_or_absent_items": [
+    {
+      "item": "data/nq_1m/nq_continuous_2018_2026_1m.csv",
+      "severity": "EXPECTED_ABSENCE",
+      "reason": "Raw market data is gitignored (confirmed .gitignore exists at frozen commit). Must be provisioned separately before running reproduction engine.",
+      "expected_sha256": "3d0228fcc17a40933d4fdc3983a8153e5bb6445ed9e743919b3eb5c516e53880"
+    },
+    {
+      "item": "pandas (Python package)",
+      "severity": "EXPECTED_ABSENCE",
+      "reason": "Not installed in current Codespace environment. Required by requirements.txt (pandas>=2.0, numpy>=1.24). Must be installed before running reproduction engine.",
+      "expected_version": ">=2.0"
+    },
+    {
+      "item": "numpy (Python package)",
+      "severity": "EXPECTED_ABSENCE",
+      "reason": "Not installed in current Codespace environment. Required by requirements.txt.",
+      "expected_version": ">=1.24"
+    },
+    {
+      "item": "pytest (Python package)",
+      "severity": "EXPECTED_ABSENCE",
+      "reason": "Not installed in current Codespace environment. Required by requirements.txt.",
+      "expected_version": ">=7.0"
+    }
+  ],
+  "environment": {
+    "python_version": "3.12.1",
+    "platform": "linux",
+    "available_packages": {
+      "PyYAML": "6.0.3"
+    },
+    "requirements_file": "requirements.txt",
+    "requirements_content": [
+      "pandas>=2.0",
+      "numpy>=1.24",
+      "PyYAML>=6.0",
+      "pytest>=7.0"
+    ]
+  },
+  "notable_differences_from_config_metadata": {
+    "vxn_sha256_match": true,
+    "build_ledger_A_sha256_match": true,
+    "build_ledger_A_rows_match": true
+  },
+  "evidence_lock_artifacts": {
+    "canonical_config_lock": "reproduction/og_operational_100r/canonical_config.json",
+    "evidence_manifest": "reproduction/og_operational_100r/evidence_manifest.json"
+  },
+  "push_status": {
+    "pushed": false,
+    "reason": "Codespace GITHUB_TOKEN (ghu_ prefix) lacks push permissions to dylankazakovas93-dev/Volatility-hodlod. Commit fe36843 exists locally on branch fidelity/og-operational-100r-reproduction. Push manually or provide a token with write access.",
+    "manual_push_command": "git push origin fidelity/og-operational-100r-reproduction"
+  },
+  "prohibition_reminder": "No strategy logic implementation, optimization, parameter changes, or research extensions are authorized by this evidence lock. Stage 0 only."
+}

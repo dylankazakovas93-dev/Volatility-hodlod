@@ -1,0 +1,48 @@
+{
+  "strategy": "OG_OPERATIONAL_100R",
+  "verdict": "EXACT_REPRODUCTION",
+  "metrics": {
+    "expected": {
+      "n_shadow": 1355,
+      "n_active": 780,
+      "n_flat": 575,
+      "n_flat_runs": 20,
+      "net_pts": 6738.191,
+      "points_pf": 1.568369,
+      "total_r": 62.2389,
+      "r_pf": 1.249115,
+      "mdd_pts": -721.5375,
+      "mdd_r": -10.9691
+    },
+    "actual": {
+      "n_shadow": 1355,
+      "n_active": 780,
+      "n_flat": 575,
+      "n_flat_runs": 20,
+      "net_pts": 6738.191,
+      "points_pf": 1.568369,
+      "total_r": 62.2389,
+      "r_pf": 1.249115,
+      "mdd_pts": -721.5375,
+      "mdd_r": -10.9691
+    },
+    "is_flat_mismatches": 0,
+    "all_fields_match": true
+  },
+  "tests": {
+    "total": 98,
+    "passed": 98,
+    "failed": 0
+  },
+  "causality_invariants": {
+    "prefix_invariance": true,
+    "append_invariance": true,
+    "current_row_excluded": true,
+    "future_row_excluded": true,
+    "warmup_100_on": true,
+    "zero_loss_denominator": true,
+    "symmetric_110": true,
+    "off_rows_influence_future": true,
+    "deterministic": true
+  }
+}

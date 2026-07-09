@@ -1,0 +1,167 @@
+# OG_OPERATIONAL_100R — locked pre-validation research configuration
+#
+# STATUS: SECONDARY_OPERATIONAL_CONFIG__RETROSPECTIVE_BUILD_PASS__NOT_VALIDATED
+#
+# This is Candidate A of docs/OG_FINAL_BUILDOFF_BE45.md — identical to
+# OG_PRIMARY_150R (Candidate B) except target_r = 1.00 instead of 1.50.
+# It is SECONDARY / operational: preserved for potentially better
+# prop-firm consistency/day-smoothness properties (higher win rate, higher
+# %profitable-days, shallower drawdown — see docs/OG_100R_VS_150R_MECHANICS.md).
+# It is NOT a fallback replacement for OG_PRIMARY_150R and must be tested
+# and reported independently (see docs/OG_VALIDATION_PROTOCOL_DUAL_CONFIG.md)
+# — the two configs are never pooled or resolved into one "winner" using
+# validation-year performance.
+#
+# The ONLY parameter that differs between this file and
+# configs/OG_PRIMARY_150R.yaml is target.target_r (1.00 here, 1.50 there).
+# Every other effective parameter is identical between the two configs,
+# and identical to configs/OG_PHASE1_PROVISIONAL.yaml.
+
+status: SECONDARY_OPERATIONAL_CONFIG__RETROSPECTIVE_BUILD_PASS__NOT_VALIDATED
+config_id: OG_OPERATIONAL_100R
+paired_config: configs/OG_PRIMARY_150R.yaml   # primary, preregistered-winner test — this config is not a fallback for it
+
+# --- Provenance -------------------------------------------------------------
+source:
+  branch: research/og-build-four-years
+  # This is the commit that introduces this file (the documentation commit
+  # of the task that formalized OG_PRIMARY_150R / OG_OPERATIONAL_100R as
+  # locked dual configs). See git log for the exact SHA; recorded
+  # explicitly once known as:
+  introducing_commit: "ebc98d31ac5dbd4e89f474ebba6d3b03c523254d"
+  engine:
+    core_mechanics: src/strict_engine.py        # level generation, anchor/cap, touch consumption — UNMODIFIED
+    variant_layer: src/og_management_variants.py    # run_variant_managed(), simulate_managed() (barcount BE, target_r)
+    build_harness: src/og_build_variant_engine.py   # run_variant(), filter_build_years(), in_prop_hard_blackout()
+  candidate_reference: "Candidate A, docs/OG_FINAL_BUILDOFF_BE45.md"
+  provisional_predecessor: configs/OG_PHASE1_PROVISIONAL.yaml   # note: provisional file itself recorded target_r 1.50 (Candidate B); this file is the newly-formalized 1.00R sibling
+
+# --- Data (from docs/OG_STAGE_A_VERIFICATION_REPORT.md) ---------------------
+data:
+  bars_file: data/nq_1m/nq_continuous_2018_2026_1m.csv
+  bars_rows: 2964655
+  bars_span: ["2018-01-01T23:00:00+00:00", "2026-06-07T23:59:00+00:00"]
+  # Top-level file sha256 recorded in manifests/data_manifest.json is
+  # 3d0228fcc17a40933d4fdc3983a8153e5bb6445ed9e743919b3eb5c516e53880, but a
+  # from-scratch, independent reconstruction of the identical raw archives
+  # (matching manifest hashes for every raw .csv.zst) instead produces
+  # 9f427eb053b6c63e50f79baf666f239f851558d1558e706fc126cbe69f3a5af4.
+  # docs/OG_STAGE_A_VERIFICATION_REPORT.md section 4.1 proves this is a
+  # harmless pandas/numpy CSV-serialization artifact, not a content
+  # difference: running the frozen src/strict_engine.py against the
+  # reconstructed file reproduces the pre-existing, already-committed
+  # canonical outputs/baseline_executed.csv BYTE-FOR-BYTE
+  # (sha256 b9419b1be06310a179ec7c7fb05f6c4a4189ab9951ebfe3f5e42be19f4a0e56a
+  # for both). Both hashes are recorded here for full transparency.
+  bars_sha256_manifest: 3d0228fcc17a40933d4fdc3983a8153e5bb6445ed9e743919b3eb5c516e53880
+  bars_sha256_reconstructed_verified_harmless: 9f427eb053b6c63e50f79baf666f239f851558d1558e706fc126cbe69f3a5af4
+  vxn_file: data/vxn_daily_2018_2026.csv
+  vxn_sha256: 76cc072c941542183d8c82174fe4f552b0f140f9cb368c302ad51f651992dc4e
+  timezone: America/New_York
+
+# --- Level generation / stop-calc / core engine mechanics (unchanged) -------
+level_generation:
+  source: canonical_unchanged   # src/strict_engine.py — not modified anywhere in this research line
+  rth_start: "09:30"
+  rth_end: "16:00"
+  ib_minutes: 60
+  sigma_mult: 1.25
+  fixed_offset: 15.75    # NQ; offset_pct (0.07) unused, fixed_offset takes precedence
+  annual_trading_days: 252
+  line_days: 20
+  candidate_gate_eligible_count: 1841
+
+stop_calc:
+  cap_formula: "min(1.5 * anchor, SL_CAP)"   # unchanged; only the target moves in this research line
+  sl_cap: SL_CAP   # canonical constant from src/strict_engine.py, unchanged
+
+# --- Position / touch mechanics (unchanged) ---------------------------------
+one_global_position: true
+no_overlap: true
+no_stacking: true
+no_same_minute_reentry: true
+permanent_touch_consumption: true   # a blocked/consumed touch is never retried
+tie_order: age   # oldest-level-first on simultaneous touches (canonical default)
+intrabar_ambiguity: conservative   # conservative TP/SL ambiguity handling, unchanged from strict_engine.py
+
+# --- Session / time rules (unchanged) ---------------------------------------
+forced_liquidation_time_et: "15:00"   # session_cutoff(), unchanged
+prop_hard_blackout:
+  start_et: "16:00"    # inclusive
+  end_et: "19:00"       # exclusive
+  configurable: false   # hard-coded in src/og_build_variant_engine.py::in_prop_hard_blackout, always on, structurally independent of entry_blackout below
+
+entry_blackout:
+  name: RESEARCH_ENTRY_BLACKOUT_10_15
+  blocked_window_et: ["10:00", "15:00"]   # entries blocked 10:00 ET through 15:00 ET cutoff
+  blocked_window_minutes: [600, 900]
+  note: >
+    Blocked ENTRY interval (not an "allowed trading window"). Independent
+    of, and checked after, PROP_HARD_BLACKOUT.
+
+# --- Management: BE45, no extra lock, no HMM, SAL off -----------------------
+sal_enabled: false
+management:
+  mode: barcount
+  be_bars: 45
+  be_extra_lock: 0.0   # no additional lock beyond exact breakeven
+hmm_gate:
+  enabled: false
+
+# --- The one axis that differs from OG_PRIMARY_150R -------------------------
+target:
+  target_r: 1.00
+  lane: "A"
+  note: >
+    target_dist = target_r * cap. The stop distance/cap itself is never
+    changed by this parameter; only the target moves. This is the sole
+    parameter difference between OG_OPERATIONAL_100R and OG_PRIMARY_150R.
+
+# --- Data firewall reminder --------------------------------------------------
+data_firewall:
+  og_build_years: [2018, 2020, 2023, 2026]
+  build_2026_scope: "partial, through 2026-06-07"
+  excluded_years_never_used_for_outcomes: [2019, 2021, 2022, 2024, 2025]
+
+# --- Expected build ledger (recomputed in this session; not re-simulated) ---
+expected_build_ledger:
+  path: outputs/og_build_years/final_buildoff_A_build_years_trades.csv
+  sha256: 3546c0768b57d99de92a76f24a84f1c492bb82e92a959ae04ef3ce51a508c168
+  n_rows: 407
+  headline_metrics:
+    completed_years_2018_2020_2023:
+      n_trades: 350
+      net_pts: 2159.76
+      PF_pts: 1.4353
+      PF_R: 1.2282
+      cap_norm_R_total: 24.7984
+      avg_R_per_trade: 0.0709
+      win_rate: 0.3886
+    all_build_years_incl_2026:
+      n_trades: 407
+      net_pts: 4692.76
+      PF_pts: 1.7737
+      PF_R: 1.3689
+      cap_norm_R_total: 44.4520
+      avg_R_per_trade: 0.1092
+      win_rate: 0.4152
+  full_detail: outputs/og_build_years/final_buildoff_be45.csv (candidate == "A")
+  full_report: docs/OG_OPERATIONAL_100R_BUILD_RESULTS.md
+
+# --- Reproduction ------------------------------------------------------------
+reproduction:
+  script: scripts/og_final_buildoff_be45.py
+  candidate: A
+  invocation: >
+    python3 scripts/og_final_buildoff_be45.py
+    # runs all four candidates A/B/C/D in one pass; Candidate A corresponds
+    # to CANDIDATES["A"] = dict(window=(600, 900), window_name="10:00-15:00",
+    # target_r=1.00) with BE_BARS=45, sal_enabled=False, hmm_gate=None.
+    # Output ledger: outputs/og_build_years/final_buildoff_A_build_years_trades.csv
+
+invariant_tests:
+  command: >
+    python -m pytest tests/test_prop_hard_blackout.py tests/test_strategy_invariants.py
+    tests/test_og_stage_a_invariants.py -q
+  verified_in_this_session: true
+  result: "45 passed (test_prop_hard_blackout.py + test_strategy_invariants.py + test_og_stage_a_invariants.py)"

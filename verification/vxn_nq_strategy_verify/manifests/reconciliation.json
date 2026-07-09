@@ -1,0 +1,102 @@
+{
+  "audit_timestamp": "2026-07-09",
+  "repo": "/workspaces/Volatility-hodlod",
+  "branch": "fidelity/og-operational-100r-reproduction",
+  "git_state": {
+    "current_sha": "5c00fb90d4688422abb2ccb7de208b03febacb56",
+    "parent_sha": "2cdcdd3624d3f85dfd1566b9248db7aa37f5cc9f",
+    "working_tree": "clean"
+  },
+  "changed_files_since_stage1": [
+    {
+      "file": "reproduction/og_operational_100r/_synthetic_helpers.py",
+      "status": "M",
+      "insertions": 493,
+      "deletions": 23
+    },
+    {
+      "file": "reproduction/og_operational_100r/test_level_generation.py",
+      "status": "A",
+      "insertions": 183,
+      "deletions": 0
+    },
+    {
+      "file": "reproduction/og_operational_100r/test_og_rules.py",
+      "status": "M",
+      "insertions": 12,
+      "deletions": 11
+    }
+  ],
+  "test_changes": [
+    {
+      "original_name": "test_entry_blocked_1000_to_1500",
+      "new_name": "test_entry_blocked_1100_to_1500",
+      "status": "renamed_and_corrected",
+      "change": "block start boundary corrected from 10:00 to 11:00 to match frozen engine",
+      "frozen_evidence": "strict_engine.py:43: return not (11*60 <= m < 15*60)",
+      "weakens_engine": false
+    },
+    {
+      "original_name": "test_touch_consumed_when_entry_blocked",
+      "new_name": "test_touch_consumed_when_entry_blocked",
+      "status": "timestamp_corrected",
+      "change": "touch timestamp moved from 10:30 to 11:30 to match frozen block start",
+      "frozen_evidence": "strict_engine.py:43: block starts at 11:00 not 10:00",
+      "weakens_engine": false
+    },
+    {
+      "original_name": "test_blocked_touch_gone_forever",
+      "new_name": "test_blocked_touch_gone_forever",
+      "status": "timestamp_corrected",
+      "change": "touch timestamp moved from 10:30 to 11:30 to match frozen block start",
+      "frozen_evidence": "strict_engine.py:43: block starts at 11:00 not 10:00",
+      "weakens_engine": false
+    }
+  ],
+  "test_counts": {
+    "stage1_original_total": 72,
+    "stage1_passing_with_current_implementation": 69,
+    "stage1_failing_stale_boundary": 3,
+    "stage2_level_tests_new": 13,
+    "current_total": 85,
+    "current_passing": 85
+  },
+  "rule_coverage_all_present": true,
+  "engine_comparison": {
+    "frozen_executed_trades": 1107,
+    "independent_executed_trades": 1107,
+    "row_level_match": "all 15 columns identical across 1107 trades",
+    "aggregate_fields_match": {
+      "net_pts": true,
+      "PF": true,
+      "TP": true,
+      "SL": true,
+      "BE": true,
+      "cutoff": true,
+      "win_rate": true,
+      "max_drawdown": true,
+      "gap_through_count": true
+    },
+    "yearly_breakdown_match": true,
+    "cost_adjusted_match": true,
+    "frozen_executed_hash": "f8db4a85902cc889892350803ff44cd61b75e49d0fefa435fc3235a59a883e6a",
+    "independent_executed_hash": "f8db4a85902cc889892350803ff44cd61b75e49d0fefa435fc3235a59a883e6a",
+    "hash_match": true,
+    "ledger_row_count": 3486,
+    "ledger_value_mismatches": {
+      "count": 0,
+      "note": "2379 NaN-vs-NaT IEEE-754 false positives are not real mismatches"
+    }
+  },
+  "benchmarks": {
+    "1107_strict_canonical": {
+      "status": "reproduced",
+      "note": "Stage 3 complete: independent engine matches frozen exactly"
+    },
+    "1355_shadow_row_pooled": {
+      "status": "not_yet_claimed",
+      "note": "Requires rolling PF gate and pooled benchmark \u2014 not started"
+    }
+  },
+  "stage4_started": false
+}

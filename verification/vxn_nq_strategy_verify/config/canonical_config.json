@@ -1,0 +1,77 @@
+{
+  "lock_name": "OG_OPERATIONAL_100R_FIDELITY_EVIDENCE_LOCK",
+  "config_id": "OG_OPERATIONAL_100R",
+  "source_config_path": "configs/OG_OPERATIONAL_100R.yaml",
+  "source_config_sha256": "ea8be55a8c5f61913a1d1b141c61a3d65d8cdc958070e8415375918e6678743f",
+  "status": "SECONDARY_OPERATIONAL_CONFIG__RETROSPECTIVE_BUILD_PASS__NOT_VALIDATED",
+  "dual_config_lock": {
+    "path": "docs/OG_PRE_VALIDATION_DUAL_CONFIG_LOCK.json",
+    "sha256": "ee536db2745adc234e53c0567a5de61cc41a4ac7259a94465c2460595abe281b",
+    "lock_commit": "dad3da69aad401243544f80974f6d7506fefb7e2"
+  },
+  "paired_config": "configs/OG_PRIMARY_150R.yaml",
+  "target_r": 1.00,
+  "lane": "A",
+  "level_generation": {
+    "rth_start": "09:30",
+    "rth_end": "16:00",
+    "ib_minutes": 60,
+    "sigma_mult": 1.25,
+    "fixed_offset": 15.75,
+    "annual_trading_days": 252,
+    "line_days": 20
+  },
+  "stop_calc": {
+    "cap_formula": "min(1.5 * anchor, SL_CAP)",
+    "sl_cap": "SL_CAP"
+  },
+  "position_rules": {
+    "one_global_position": true,
+    "no_overlap": true,
+    "no_stacking": true,
+    "no_same_minute_reentry": true,
+    "permanent_touch_consumption": true,
+    "tie_order": "age",
+    "intrabar_ambiguity": "conservative"
+  },
+  "entry_restrictions": {
+    "forced_liquidation_time_et": "15:00",
+    "prop_hard_blackout": {"start_et": "16:00", "end_et": "19:00"},
+    "entry_blackout": {"name": "RESEARCH_ENTRY_BLACKOUT_10_15", "blocked_window_et": ["10:00", "15:00"]}
+  },
+  "management": {
+    "sal_enabled": false,
+    "mode": "barcount",
+    "be_bars": 45,
+    "be_extra_lock": 0.0,
+    "hmm_gate_enabled": false
+  },
+  "costs": {
+    "commission": 0,
+    "fees": 0,
+    "slippage": 0
+  },
+  "rolling_pf": {
+    "window_size": 100,
+    "shutdown_threshold": 1.10,
+    "reentry_threshold": 1.10,
+    "symmetric": true,
+    "applied_post_hoc": true
+  },
+  "data_firewall": {
+    "og_build_years": [2018, 2020, 2023, 2026],
+    "excluded_years": [2019, 2021, 2022, 2024, 2025]
+  },
+  "expected_benchmark": {
+    "shadow_rows": 1355,
+    "effective_net_points": 6738.191,
+    "effective_points_pf": 1.568369,
+    "effective_total_r": 62.2389,
+    "effective_r_pf": 1.249115,
+    "max_drawdown_points": -721.5375,
+    "max_drawdown_r": -10.9691,
+    "flat_rows": 575,
+    "flat_runs": 20,
+    "active_rows": 780
+  }
+}
