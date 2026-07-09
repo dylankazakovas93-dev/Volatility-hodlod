@@ -1,34 +1,33 @@
 {
   "strategy": "es_vix_level_discovery",
   "stage": 0,
-  "grid_id": "g001",
+  "research_type": "level_discovery_and_excursion_characterisation",
   "total_configurations": 132,
   "parameter_space": {
     "sigma_multiplier": [0.75, 1.0, 1.25, 1.5, 1.75, 2.0],
-    "fixed_offset": [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55],
-    "line_life_sessions": [10, 20]
+    "ib_minutes": [30, 60],
+    "offset_family": "proportional (offset_pct) or fixed (fixed_offset_es_points)",
+    "offset_proportional": [0.0, 0.02, 0.04, 0.06, 0.08, 0.1],
+    "offset_fixed_es_points": [2.5, 5.0, 7.5, 10.0, 15.0],
+    "line_life_sessions": 20
   },
   "fixed_parameters": {
     "instrument": "ES",
-    "volatility_index": "VIX",
-    "rth_window": "09:30-16:00 ET",
-    "ib_duration_minutes": 60,
+    "volatility_index": "VIX (official Cboe)",
+    "rth_window": "09:30-16:00 America/New_York",
     "annualization_days": 252,
-    "target_rr": 1.0,
-    "be_rule": "be45",
-    "stop_formula": "1.5 * previous_hourly_range, capped at 200",
-    "cost_commission": 0,
-    "cost_fees": 0,
-    "cost_slippage": 0,
-    "entry_blackout_start": "10:00 ET",
-    "entry_blackout_end": "15:00 ET",
-    "hard_blackout_start": "16:00 ET",
-    "hard_blackout_end": "19:00 ET",
     "creation_bar_excluded": true,
-    "expiry_boundary_bar_excluded": true,
-    "touch_bar_stop_only": true,
-    "stop_checked_before_target": true
+    "expiry_boundary_excluded": true,
+    "first_touch_only": true,
+    "touched_level_consumed_permanently": true,
+    "deterministic_simultaneous_touch_ordering": true
   },
-  "generated_at": null,
+  "prohibited_fields": [
+    "target_rr", "be_rule", "stop_formula", "commissions", "fees",
+    "slippage", "entry_blackout", "hard_blackout", "touch_bar_stop_only",
+    "stop_before_target", "position_sizing", "rolling_pf_gate",
+    "nq_trade_management_rules"
+  ],
+  "generated_at_utc": null,
   "generated_by_commit": null
 }

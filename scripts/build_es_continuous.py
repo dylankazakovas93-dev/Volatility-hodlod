@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
-"""Build ES continuous 1-minute CSV from Databento raw GLBX.MDP3 archives
-(dataset=GLBX.MDP3, schema=ohlcv-1m, symbols=ES.FUT, stype_in=parent).
+"""NONCAUSAL DIAGNOSTIC ONLY — builds ES continuous 1-minute CSV using
+same-day volume to select the active contract. This is NOT valid as a
+primary research builder.
+
+For the causal research-grade builder, see build_es_continuous_causal.py.
 
 Rule: for each UTC calendar day, keep only the standard quarterly contract
 (symbol matches ES[HMUZ]\\d) with highest total traded volume that day.

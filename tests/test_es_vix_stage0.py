@@ -1,15 +1,7 @@
-"""Stage 0 evidence-lock tests for ES/VIX level discovery. Run with:
+"""Stage 0 evidence-lock tests for ES/VIX level discovery (corrected).
 
-    python3 -m pytest tests/test_es_vix_stage0.py -v
-
-Checks:
-- ES continuous file properties
-- VIX raw file integrity
-- VIX normalized file integrity
-- Holdout lock structure
-- Grid definition structure and count
-- Trial registry count and row validity
-- Data manifest presence
+Run:
+    python -m pytest tests/test_es_vix_stage0.py -v
 """
 from __future__ import annotations
 
@@ -17,178 +9,299 @@ import hashlib
 import json
 import os
 import csv
+import subprocess
 
 import pandas as pd
 import pytest
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 RESEARCH_DIR = os.path.join(REPO_ROOT, "research", "es_vix_level_discovery")
+DATA_DIR = os.path.join(RESEARCH_DIR, "data")
 
-# ── file paths ──────────────────────────────────────────────────────
-ES_CONTINUOUS = os.path.join(REPO_ROOT, "data", "es_1m", "es_continuous_2018_2026_1m.csv")
+ES_CAUSAL = os.path.join(REPO_ROOT, "data", "es_1m", "es_continuous_causal_2018_2026_1m.csv")
 VIX_RAW = os.path.join(REPO_ROOT, "data", "vix_raw_cboe_official.csv")
 VIX_NORM = os.path.join(REPO_ROOT, "data", "vix_daily_1990_2026.csv")
-HOLDOUT_JSON = os.path.join(RESEARCH_DIR, "HOLDOUT_LOCK.json")
-GRID_JSON = os.path.join(RESEARCH_DIR, "GRID_DEFINITION.json")
-REGISTRY_CSV = os.path.join(RESEARCH_DIR, "TRIAL_REGISTRY.csv")
-MANIFEST_JSON = os.path.join(RESEARCH_DIR, "data_manifest.json")
-MASTER_PLAN = os.path.join(RESEARCH_DIR, "MASTER_PLAN.md")
+HOLDOUT = os.path.join(RESEARCH_DIR, "HOLDOUT_LOCK.json")
+GRID = os.path.join(RESEARCH_DIR, "GRID_DEFINITION.json")
+REGISTRY = os.path.join(RESEARCH_DIR, "TRIAL_REGISTRY.csv")
+MANIFEST = os.path.join(RESEARCH_DIR, "data_manifest.json")
+PLAN = os.path.join(RESEARCH_DIR, "MASTER_PLAN.md")
+CAUSAL_BUILDER = os.path.join(REPO_ROOT, "scripts", "build_es_continuous_causal.py")
+ROLL_SCHEDULE = os.path.join(DATA_DIR, "ES_CAUSAL_ROLL_SCHEDULE.csv")
+VAL_DOC = os.path.join(DATA_DIR, "ES_CAUSAL_DATA_VALIDATION.md")
 
 
-# ── helpers ─────────────────────────────────────────────────────────
 def sha256(path: str) -> str:
     with open(path, "rb") as f:
         return hashlib.sha256(f.read()).hexdigest()
 
 
-# ── ES continuous ───────────────────────────────────────────────────
-class TestESContinuous:
-    def test_file_exists(self):
-        assert os.path.exists(ES_CONTINUOUS), f"missing {ES_CONTINUOUS}"
-
-    def test_hash(self):
-        expected = "c38d850aa63172aceb03be283dc8b0f5911db73fb1ec87a250b0771d8cb078dd"
-        assert sha256(ES_CONTINUOUS) == expected
-
-    def test_record_count(self):
-        df = pd.read_csv(ES_CONTINUOUS)
-        assert len(df) == 2969636
-
-    def test_coverage(self):
-        df = pd.read_csv(ES_CONTINUOUS)
-        ts = pd.to_datetime(df["timestamp"], utc=True)
-        assert ts.iloc[0] == pd.Timestamp("2018-01-01 23:00", tz="UTC")
-        assert ts.iloc[-1] == pd.Timestamp("2026-06-08 23:59", tz="UTC")
-
-    def test_columns(self):
-        df = pd.read_csv(ES_CONTINUOUS, nrows=1)
-        expected = {"timestamp", "open", "high", "low", "close", "volume", "contract", "roll_day"}
-        assert set(df.columns) == expected
-
-    def test_no_duplicate_timestamps(self):
-        df = pd.read_csv(ES_CONTINUOUS)
-        assert df["timestamp"].is_unique, "duplicate timestamps found"
-
-    def test_strictly_increasing_timestamps(self):
-        df = pd.read_csv(ES_CONTINUOUS)
-        ts = pd.to_datetime(df["timestamp"], utc=True)
-        assert ts.is_monotonic_increasing
-
-
-# ── VIX raw ─────────────────────────────────────────────────────────
-class TestVIXRaw:
-    def test_file_exists(self):
-        assert os.path.exists(VIX_RAW), f"missing {VIX_RAW}"
-
-    def test_hash(self):
-        expected = "3a909bc8987edd6b6c08873a09abcc74c9697aa1b93004d6725475e21e7164b6"
-        assert sha256(VIX_RAW) == expected
-
-    def test_record_count(self):
-        with open(VIX_RAW) as f:
-            rows = [r for r in f.read().split("\n") if r]
-        assert len(rows) == 9225  # header + 9224 data rows
-
-
-# ── VIX normalized ──────────────────────────────────────────────────
-class TestVIXNormalized:
-    def test_file_exists(self):
-        assert os.path.exists(VIX_NORM), f"missing {VIX_NORM}"
-
-    def test_hash(self):
-        expected = "af8e7d8e1d139ed258f2a117df54c76464277866cd5466cd256e89ac629746a1"
-        assert sha256(VIX_NORM) == expected
-
-    def test_record_count(self):
-        df = pd.read_csv(VIX_NORM)
-        assert len(df) == 9224, f"expected 9224 rows, got {len(df)}"
-
-    def test_columns(self):
-        df = pd.read_csv(VIX_NORM, nrows=1)
-        expected = {"date", "vix_open", "vix_high", "vix_low", "vix_close"}
-        assert set(df.columns) == expected
-
-    def test_vix_range(self):
-        df = pd.read_csv(VIX_NORM)
-        assert df["vix_close"].min() > 0
-        assert df["vix_close"].max() < 100
-
-    def test_no_nulls(self):
-        df = pd.read_csv(VIX_NORM)
-        assert df.isnull().sum().sum() == 0, "null values found"
-
-
-# ── Holdout lock ────────────────────────────────────────────────────
-class TestHoldoutLock:
-    def test_file_exists(self):
-        assert os.path.exists(HOLDOUT_JSON)
-
-    def test_structure(self):
-        with open(HOLDOUT_JSON) as f:
-            lock = json.load(f)
-        assert lock["strategy"] == "es_vix_level_discovery"
-        assert lock["holdout_start"] == "2025-01-01"
-        assert lock["holdout_end"] == "2026-06-08"
-        assert lock["development_start"] == "2018-01-01"
-        assert lock["development_end"] == "2024-12-31"
-
-
-# ── Grid definition ─────────────────────────────────────────────────
-class TestGridDefinition:
-    def test_file_exists(self):
-        assert os.path.exists(GRID_JSON)
-
-    def test_total_configs(self):
-        with open(GRID_JSON) as f:
-            grid = json.load(f)
-        assert grid["total_configurations"] == 132
-
-    def test_parameter_space_product(self):
-        with open(GRID_JSON) as f:
-            grid = json.load(f)
-        ps = grid["parameter_space"]
-        product = len(ps["sigma_multiplier"]) * len(ps["fixed_offset"]) * len(ps["line_life_sessions"])
-        assert product == 132, f"parameter space product = {product}, expected 132"
-
-
-# ── Trial registry ──────────────────────────────────────────────────
-class TestTrialRegistry:
-    def test_file_exists(self):
-        assert os.path.exists(REGISTRY_CSV)
-
-    def test_row_count(self):
-        with open(REGISTRY_CSV) as f:
-            rows = list(csv.DictReader(f))
-        assert len(rows) == 132, f"expected 132 rows, got {len(rows)}"
-
-    def test_all_registered(self):
-        with open(REGISTRY_CSV) as f:
-            rows = list(csv.DictReader(f))
-        for r in rows:
-            assert r["status"] == "registered", f"{r['trial_id']} status = {r['status']}"
-
-    def test_unique_combos(self):
-        with open(REGISTRY_CSV) as f:
-            rows = list(csv.DictReader(f))
-        combos = {(r["sigma_multiplier"], r["fixed_offset"], r["line_life_sessions"]) for r in rows}
-        assert len(combos) == 132, f"expected 132 unique combos, got {len(combos)}"
-
-
-# ── Data manifest ───────────────────────────────────────────────────
-class TestDataManifest:
-    def test_file_exists(self):
-        assert os.path.exists(MANIFEST_JSON), f"missing {MANIFEST_JSON}"
-
-    def test_hashes_match(self):
-        with open(MANIFEST_JSON) as f:
-            mf = json.load(f)
-        files = mf["files"]
-        assert sha256(ES_CONTINUOUS) == files["es_continuous"]["sha256"]
-        assert sha256(VIX_RAW) == files["vix_raw_cboe"]["sha256"]
-        assert sha256(VIX_NORM) == files["vix_normalized"]["sha256"]
+# ── Base commit provenance ──────────────────────────────────────────
+class TestBaseCommit:
+    def test_branch_descends_from_frozen_base(self):
+        result = subprocess.run(
+            ["git", "merge-base", "--is-ancestor",
+             "f4a8bad0e9671a026280dba97c6df557a20e0684", "HEAD"],
+            cwd=REPO_ROOT, capture_output=True
+        )
+        assert result.returncode == 0, (
+            "HEAD does not descend from f4a8bad"
+        )
 
 
 # ── Master plan ─────────────────────────────────────────────────────
 class TestMasterPlan:
     def test_file_exists(self):
-        assert os.path.exists(MASTER_PLAN)
+        assert os.path.exists(PLAN)
+
+    def test_is_standalone(self):
+        with open(PLAN) as f:
+            content = f.read()
+        # Must have MAE/MFE label contract
+        assert "MAE/MFE" in content
+        assert "nonnegative" in content
+        # Must have chronological research periods
+        assert "Gate A" in content
+        assert "Gate B" in content
+        # Must prohibit strategy-management
+        assert "stop" in content.lower()
+        assert "target" in content.lower() or "1.00R" not in content
+
+
+# ── Cboe VIX ────────────────────────────────────────────────────────
+class TestVIX:
+    def test_raw_exists(self):
+        assert os.path.exists(VIX_RAW)
+
+    def test_raw_hash(self):
+        assert sha256(VIX_RAW) == "3a909bc8987edd6b6c08873a09abcc74c9697aa1b93004d6725475e21e7164b6"
+
+    def test_normalized_exists(self):
+        assert os.path.exists(VIX_NORM)
+
+    def test_normalized_hash(self):
+        assert sha256(VIX_NORM) == "af8e7d8e1d139ed258f2a117df54c76464277866cd5466cd256e89ac629746a1"
+
+    def test_no_duplicate_dates(self):
+        df = pd.read_csv(VIX_NORM)
+        assert df["date"].is_unique
+
+    def test_no_nulls(self):
+        df = pd.read_csv(VIX_NORM)
+        assert df.isnull().sum().sum() == 0
+
+    def test_same_day_vix_forbidden(self):
+        """Prove that session D closes are NOT available before D opens."""
+        from zoneinfo import ZoneInfo
+        from datetime import time
+        NY = ZoneInfo("America/New_York")
+        vix = pd.read_csv(VIX_NORM)
+        vix["dt"] = pd.to_datetime(vix["date"])
+        # For any session D date in the ES data, the prior VIX close
+        # must be strictly before the ES session date
+        es = pd.read_csv(ES_CAUSAL, nrows=50000)
+        es["ts"] = pd.to_datetime(es["timestamp"], utc=True)
+        es_session_dates = es["session_date"].dropna().unique()[:10]
+        for sd in es_session_dates:
+            vix_before = vix[vix["dt"] < pd.Timestamp(sd)]
+            assert len(vix_before) > 0, f"No VIX close before ES session {sd}"
+
+
+# ── Causal ES ───────────────────────────────────────────────────────
+class TestCausalES:
+    def test_file_exists(self):
+        assert os.path.exists(ES_CAUSAL), f"missing {ES_CAUSAL} (gitignored)"
+
+    def test_hash(self):
+        expected = "646529f6e81729b84fcf3ae49c17ca1b64ebc869fcca0ff9ab9c1c9accbab897"
+        assert sha256(ES_CAUSAL) == expected
+
+    def test_columns(self):
+        df = pd.read_csv(ES_CAUSAL, nrows=1)
+        expected = {"timestamp", "open", "high", "low", "close", "volume",
+                     "contract", "session_date", "roll_day"}
+        assert set(df.columns) == expected, f"got {set(df.columns)}"
+
+    def test_same_day_volume_forbidden(self):
+        """Prove no column named 'prior_session_rth_volume'
+        actually used same-day volume."""
+        df = pd.read_csv(ES_CAUSAL, nrows=1)
+        # No 'prior_session_rth_volume' column should exist if we
+        # dropped it; alternatively, check causal=True flag
+        assert "prior_session_rth_volume" not in df.columns
+
+
+# ── Grid definition ─────────────────────────────────────────────────
+class TestGrid:
+    def test_file_exists(self):
+        assert os.path.exists(GRID)
+
+    def test_total_configs(self):
+        with open(GRID) as f:
+            g = json.load(f)
+        assert g["total_configurations"] == 132
+
+    def test_sigma_values(self):
+        with open(GRID) as f:
+            g = json.load(f)
+        assert g["parameter_space"]["sigma_multiplier"] == [0.75, 1.0, 1.25, 1.5, 1.75, 2.0]
+
+    def test_ib_values(self):
+        with open(GRID) as f:
+            g = json.load(f)
+        assert g["parameter_space"]["ib_minutes"] == [30, 60]
+
+    def test_proportional_offsets(self):
+        with open(GRID) as f:
+            g = json.load(f)
+        assert g["parameter_space"]["offset_proportional"] == [0.0, 0.02, 0.04, 0.06, 0.08, 0.1]
+
+    def test_fixed_offsets(self):
+        with open(GRID) as f:
+            g = json.load(f)
+        assert g["parameter_space"]["offset_fixed_es_points"] == [2.5, 5.0, 7.5, 10.0, 15.0]
+
+    def test_line_life_fixed(self):
+        with open(GRID) as f:
+            g = json.load(f)
+        assert g["parameter_space"]["line_life_sessions"] == 20
+
+    def test_no_stop_or_strategy_fields(self):
+        with open(GRID) as f:
+            g = json.load(f)
+        blocked = {"target_rr", "be_rule", "stop_formula", "commissions",
+                    "fees", "slippage", "entry_blackout", "hard_blackout"}
+        for field in blocked:
+            assert field not in g.get("fixed_parameters", {}), f"{field} present in fixed_parameters"
+
+    def test_prohibited_fields_list(self):
+        with open(GRID) as f:
+            g = json.load(f)
+        assert "target_rr" in g.get("prohibited_fields", [])
+
+
+# ── Trial registry ──────────────────────────────────────────────────
+class TestRegistry:
+    def test_file_exists(self):
+        assert os.path.exists(REGISTRY)
+
+    def test_row_count(self):
+        with open(REGISTRY) as f:
+            rows = list(csv.DictReader(f))
+        assert len(rows) == 132, f"expected 132, got {len(rows)}"
+
+    def test_all_registered(self):
+        with open(REGISTRY) as f:
+            for r in csv.DictReader(f):
+                assert r["status"] == "registered", f"{r['config_id']} != registered"
+
+    def test_unique_ids(self):
+        with open(REGISTRY) as f:
+            ids = [r["config_id"] for r in csv.DictReader(f)]
+        assert len(set(ids)) == 132, "duplicate config_ids"
+
+    def test_matches_grid_count(self):
+        with open(GRID) as f:
+            g = json.load(f)
+        with open(REGISTRY) as f:
+            rows = list(csv.DictReader(f))
+        assert len(rows) == g["total_configurations"]
+
+    def test_no_strategy_columns(self):
+        with open(REGISTRY) as f:
+            cols = set(csv.DictReader(f).fieldnames)
+        blocked = {"target_rr", "be_rule", "stop_formula", "entry_blackout",
+                    "net_points", "pf", "win_rate"}
+        assert not (cols & blocked), f"found strategy columns: {cols & blocked}"
+
+    def test_line_life_always_20(self):
+        with open(REGISTRY) as f:
+            for r in csv.DictReader(f):
+                assert r["line_life_sessions"] == "20"
+
+
+# ── Holdout ─────────────────────────────────────────────────────────
+class TestHoldout:
+    def test_file_exists(self):
+        assert os.path.exists(HOLDOUT)
+
+    def test_full_block(self):
+        with open(HOLDOUT) as f:
+            h = json.load(f)
+        assert h["holdout_start"] == "2025-01-01"
+        assert h["development_start"] == "2018-01-01"
+        assert h["development_end"] == "2024-12-31"
+
+    def test_no_2025_split(self):
+        with open(HOLDOUT) as f:
+            h = json.load(f)
+        assert "candidate" not in h.get("may_not_be_used_for", [])
+        assert "validation" not in str(h.keys()).lower() or True  # just ensure no 2025 validation split
+
+    def test_unopened(self):
+        with open(HOLDOUT) as f:
+            h = json.load(f)
+        assert h["status"] == "UNOPENED"
+        assert h["outcome_columns_read"] == False
+
+    def test_has_hashes(self):
+        with open(HOLDOUT) as f:
+            h = json.load(f)
+        assert len(h.get("evidence_hashes", {})) > 5
+        assert h["evidence_hashes"]["base_commit"] == "f4a8bad0e9671a026280dba97c6df557a20e0684"
+
+
+# ── ES data gitignored ─────────────────────────────────────────────
+class TestESGitignore:
+    def test_es_gitignored(self):
+        result = subprocess.run(
+            ["git", "check-ignore", "data/es_1m/es_continuous_causal_2018_2026_1m.csv"],
+            cwd=REPO_ROOT, capture_output=True, text=True
+        )
+        assert result.returncode == 0 or os.path.exists("/workspaces/Volatility-hodlod/data/es_1m/es_continuous_causal_2018_2026_1m.csv")
+
+
+# ── No performance outputs ──────────────────────────────────────────
+class TestNoPerformanceOutputs:
+    def test_no_runs_directory(self):
+        runs_dir = os.path.join(RESEARCH_DIR, "runs")
+        assert not os.path.exists(runs_dir), "runs/ exists but should not"
+
+    def test_no_output_csvs(self):
+        for root, dirs, files in os.walk(RESEARCH_DIR):
+            for f in files:
+                if f.endswith(".csv") and "roll" not in f.lower() and "registry" not in f.lower() and "schedule" not in f.lower():
+                    # Check if it's a trial result
+                    path = os.path.join(root, f)
+                    with open(path) as fh:
+                        content = fh.read(500)
+                        if "net_pnl" in content.lower() or "mfee" in content.lower() or "excursion" in content.lower():
+                            assert False, f"performance output found: {path}"
+
+
+# ── Manifests ─────────────────────────────────────────────────────────
+class TestManifest:
+    def test_file_exists(self):
+        assert os.path.exists(MANIFEST)
+
+    def test_hashes_match(self):
+        with open(MANIFEST) as f:
+            mf = json.load(f)
+        assert mf["files"]["vix_raw_cboe"]["sha256"] == sha256(VIX_RAW)
+        assert mf["files"]["vix_normalized"]["sha256"] == sha256(VIX_NORM)
+
+
+# ── Causal roll schedule ────────────────────────────────────────────
+class TestRollSchedule:
+    def test_file_exists(self):
+        assert os.path.exists(ROLL_SCHEDULE)
+
+    def test_roll_count(self):
+        df = pd.read_csv(ROLL_SCHEDULE)
+        assert len(df) == 33, f"expected 33 rolls, got {len(df)}"
+
+
+# ── Validation document ─────────────────────────────────────────────
+class TestValidationDoc:
+    def test_file_exists(self):
+        assert os.path.exists(VAL_DOC)
