@@ -126,9 +126,19 @@ class TestCausalES:
         """Prove no column named 'prior_session_rth_volume'
         actually used same-day volume."""
         df = pd.read_csv(ES_CAUSAL, nrows=1)
-        # No 'prior_session_rth_volume' column should exist if we
-        # dropped it; alternatively, check causal=True flag
         assert "prior_session_rth_volume" not in df.columns
+
+    def test_session_dates_unpopulated_from_future(self):
+        df = pd.read_csv(ES_CAUSAL, nrows=50000)
+        assert df["session_date"].notna().all()
+        assert df["contract"].nunique() >= 1
+
+    def test_first_last_session(self):
+        df = pd.read_csv(ES_CAUSAL)
+        first = df["session_date"].min()
+        last = df["session_date"].max()
+        assert str(first) == "2018-01-02"
+        assert str(last) == "2026-06-08"
 
 
 # ── Grid definition ─────────────────────────────────────────────────
@@ -250,6 +260,23 @@ class TestHoldout:
         assert len(h.get("evidence_hashes", {})) > 5
         assert h["evidence_hashes"]["base_commit"] == "f4a8bad0e9671a026280dba97c6df557a20e0684"
 
+    def test_no_null_lock_fields(self):
+        with open(HOLDOUT) as f:
+            h = json.load(f)
+        assert h["status"] == "UNOPENED"
+        assert h["outcome_columns_read"] == False
+        assert h["last_complete_rth_session"] == "2026-06-08"
+        assert h["development_start"] == "2018-01-01"
+        assert h["development_end"] == "2024-12-31"
+        assert h["holdout_start"] == "2025-01-01"
+        # Every evidence hash must be non-null
+        for k, v in h["evidence_hashes"].items():
+            assert v is not None, f"null hash in holdout evidence_hashes.{k}"
+        assert h["lock_source_commit"] == "8d2742218a962b999c33bb68540066cb80211f32"
+        assert h["locked_at_utc"] is not None
+        # No self-referential locked_by_commit field
+        assert "locked_by_commit" not in h
+
 
 # ── ES data gitignored ─────────────────────────────────────────────
 class TestESGitignore:
@@ -289,6 +316,20 @@ class TestManifest:
             mf = json.load(f)
         assert mf["files"]["vix_raw_cboe"]["sha256"] == sha256(VIX_RAW)
         assert mf["files"]["vix_normalized"]["sha256"] == sha256(VIX_NORM)
+        assert mf["files"]["es_continuous_causal"]["sha256"] == sha256(ES_CAUSAL)
+        assert mf["files"]["es_causal_builder_script"]["sha256"] == sha256(CAUSAL_BUILDER)
+        assert mf["files"]["grid_definition"]["sha256"] == sha256(GRID)
+        assert mf["files"]["master_plan"]["sha256"] == sha256(PLAN)
+        assert mf["files"]["es_causal_roll_schedule"]["sha256"] == sha256(ROLL_SCHEDULE)
+
+    def test_no_null_fields(self):
+        with open(MANIFEST) as f:
+            mf = json.load(f)
+        assert mf["generated_at_utc"] is not None
+        assert "generated_by_commit" not in mf
+        for file_key, file_val in mf["files"].items():
+            if isinstance(file_val, dict) and "sha256" in file_val:
+                assert file_val["sha256"] is not None, f"null sha256 in manifest.files.{file_key}"
 
 
 # ── Causal roll schedule ────────────────────────────────────────────

@@ -4,7 +4,7 @@
   "development_start": "2018-01-01",
   "development_end": "2024-12-31",
   "holdout_start": "2025-01-01",
-  "last_complete_rth_session": null,
+  "last_complete_rth_session": "2026-06-08",
   "status": "UNOPENED",
   "outcome_columns_read": false,
   "may_not_be_used_for": [
@@ -24,13 +24,15 @@
     "es_source_es2018_zip": "0498cc64e762f727c677f4ceadb6ed739a04276c80b4ad83a2055a03d04012e7",
     "es_source_es2023_zip": "993561800f6755a61d96bb9698bf7547a315fb1c74ae450b7c7fc7270e8ca31f",
     "es_source_es2026_zip": "91ed2c5a3f5518467701b6cf2967ef8729aa6ed25bea0a6a8aacd3e6a742bf15",
-    "es_continuous_causal": null,
+    "es_continuous_causal": "646529f6e81729b84fcf3ae49c17ca1b64ebc869fcca0ff9ab9c1c9accbab897",
     "vix_raw_cboe": "3a909bc8987edd6b6c08873a09abcc74c9697aa1b93004d6725475e21e7164b6",
     "vix_normalized": "af8e7d8e1d139ed258f2a117df54c76464277866cd5466cd256e89ac629746a1",
-    "grid_definition": null,
+    "grid_definition": "50d1f7a263b579c03b60f94cabb6a396b7d464e055683e51ad6faec0095e8603",
     "causal_builder_script": "8191781447480ab41f71c15063a4b154f3e6366b7f52356658622eba285bad5c",
+    "master_plan": "966f07b81b06fa47cf50056cd7557f17e78e2a500b5caee3572627244eba0a11",
+    "roll_schedule": "ede99f517a2ab1e96a2d1dcda528a2ce92166258138fdc6de87611475694db1e",
     "base_commit": "f4a8bad0e9671a026280dba97c6df557a20e0684"
   },
-  "locked_at_utc": null,
-  "locked_by_commit": null
+  "lock_source_commit": "8d2742218a962b999c33bb68540066cb80211f32",
+  "locked_at_utc": "2026-07-09T15:52:30+00:00"
 }

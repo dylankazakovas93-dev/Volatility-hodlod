@@ -4,6 +4,10 @@
   "base_commit": "f4a8bad0e9671a026280dba97c6df557a20e0684",
   "research_type": "level_discovery_and_excursion_characterisation",
   "files": {
+    "master_plan": {
+      "path": "research/es_vix_level_discovery/MASTER_PLAN.md",
+      "sha256": "966f07b81b06fa47cf50056cd7557f17e78e2a500b5caee3572627244eba0a11"
+    },
     "es_source_archives": {
       "es2018_zip_outer": "0498cc64e762f727c677f4ceadb6ed739a04276c80b4ad83a2055a03d04012e7",
       "es2023_zip_outer": "993561800f6755a61d96bb9698bf7547a315fb1c74ae450b7c7fc7270e8ca31f",
@@ -13,14 +17,19 @@
       "path": "data/es_1m/es_continuous_causal_2018_2026_1m.csv",
       "sha256": "646529f6e81729b84fcf3ae49c17ca1b64ebc869fcca0ff9ab9c1c9accbab897",
       "record_count": 2804976,
-      "coverage": "2018-01-02 05:00Z to 2026-06-08 23:59Z",
       "contracts_used": 34,
       "roll_days": 33,
-      "builder_script_sha256": "8191781447480ab41f71c15063a4b154f3e6366b7f52356658622eba285bad5c"
+      "first_complete_rth_session": "2018-01-02",
+      "last_complete_rth_session": "2026-06-08"
+    },
+    "es_causal_builder_script": {
+      "path": "scripts/build_es_continuous_causal.py",
+      "sha256": "8191781447480ab41f71c15063a4b154f3e6366b7f52356658622eba285bad5c"
     },
     "es_causal_roll_schedule": {
       "path": "research/es_vix_level_discovery/data/ES_CAUSAL_ROLL_SCHEDULE.csv",
-      "record_count": 33
+      "sha256": "ede99f517a2ab1e96a2d1dcda528a2ce92166258138fdc6de87611475694db1e",
+      "roll_count": 33
     },
     "es_causal_data_validation": {
       "path": "research/es_vix_level_discovery/data/ES_CAUSAL_DATA_VALIDATION.md"
@@ -29,26 +38,26 @@
       "path": "data/vix_raw_cboe_official.csv",
       "sha256": "3a909bc8987edd6b6c08873a09abcc74c9697aa1b93004d6725475e21e7164b6",
       "source_url": "https://cdn.cboe.com/api/global/us_indices/daily_prices/VIX_History.csv",
-      "record_count": 9225,
       "coverage": "1990-01-02 to 2026-07-08",
-      "duplicate_dates": 0,
-      "null_values": 0
+      "null_values": 0,
+      "duplicate_dates": 0
     },
     "vix_normalized": {
       "path": "data/vix_daily_1990_2026.csv",
       "sha256": "af8e7d8e1d139ed258f2a117df54c76464277866cd5466cd256e89ac629746a1",
+      "columns": ["date", "vix_open", "vix_high", "vix_low", "vix_close"],
       "record_count": 9224,
       "coverage": "1990-01-02 to 2026-07-08",
-      "columns": ["date", "vix_open", "vix_high", "vix_low", "vix_close"],
-      "duplicate_dates": 0,
-      "null_values": 0
+      "null_values": 0,
+      "duplicate_dates": 0
     },
     "grid_definition": {
       "sha256": "50d1f7a263b579c03b60f94cabb6a396b7d464e055683e51ad6faec0095e8603",
       "total_configurations": 132
     },
-    "master_plan_sha256": null
+    "holdout_lock": {
+      "sha256": "3fc6b543a3b58cc8add497c76fbab76d98683546ce45794530ce3f32e1053f6d"
+    }
   },
-  "generated_at_utc": null,
-  "generated_by_commit": null
+  "generated_at_utc": "2026-07-09T15:52:30+00:00"
 }
