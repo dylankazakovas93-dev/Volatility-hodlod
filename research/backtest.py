@@ -29,7 +29,10 @@ def simulate(signals: pd.DataFrame, bars: pd.DataFrame, horizon_minutes: float |
         return pd.DataFrame()
 
     n = len(bars)
-    ts = bars["ts_event"].to_numpy()
+    # tz-naive datetime64[ns] (values are already UTC) -- keeps the array-wide
+    # comparisons below on the fast numpy path instead of falling back to
+    # elementwise Python Timestamp comparisons over an object array
+    ts = bars["ts_event"].dt.tz_convert(None).to_numpy()
     sess = bars["session"].to_numpy()
     o = bars["open"].to_numpy(dtype=float)
     h = bars["high"].to_numpy(dtype=float)
@@ -39,7 +42,7 @@ def simulate(signals: pd.DataFrame, bars: pd.DataFrame, horizon_minutes: float |
     sig = signals.sort_values("bar_index").reset_index(drop=True)
 
     trades = []
-    next_available_time = pd.Timestamp("1970-01-01", tz="UTC")
+    next_available_time = np.datetime64("1970-01-01")
 
     for _, s in sig.iterrows():
         sig_bar = int(s["bar_index"])

@@ -119,7 +119,9 @@ def run_engine(bars: pd.DataFrame, session_prior_hilo: dict) -> pd.DataFrame:
         premium, cluster_id, dist_to_dev
     """
     n = len(bars)
-    ts = bars["ts_event"].to_numpy()
+    # tz-naive datetime64[ns] (values are already UTC) -- tz-aware .to_numpy()
+    # returns an object array of Timestamps, which is ~100x slower to compare/subtract
+    ts = bars["ts_event"].dt.tz_convert(None).to_numpy()
     sess = bars["session"].to_numpy()
     o = bars["open"].to_numpy(dtype=float)
     h = bars["high"].to_numpy(dtype=float)
