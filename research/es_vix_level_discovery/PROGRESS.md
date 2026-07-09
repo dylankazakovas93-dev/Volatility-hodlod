@@ -31,6 +31,26 @@ The prior commit is preserved in history but is not the valid evidence lock.
 - [x] No level grid executed
 - [x] Frozen NQ/VXN branch untouched
 
-## Stage 1 — Not Started
+## Stage 1 — Level Generation, Touch Detection & MAE/MFE Engine ✅
+
+- [x] Deterministic ES/VIX level-generation engine for a single grid config
+- [x] Prior-completed Cboe VIX alignment (causal, no future VIX)
+- [x] 30/60-minute IB boundary behavior verified
+- [x] Proportional and fixed offset families
+- [x] 20-session line lifetime with creation-bar exclusion
+- [x] First physical touch only with permanent consumption
+- [x] Deterministic simultaneous-touch ordering (older level first, upper before lower)
+- [x] Upper level = SHORT, lower level = LONG
+- [x] Clean-touch and gap-through reference prices
+- [x] Overlap-cluster identifiers
+- [x] Unrestricted MAE/MFE labels: 15min, 30min, 60min, 120min, RTH remainder
+- [x] Labels begin on first complete minute after touch bar (no touch-bar leakage)
+- [x] First-passage labels (FAVORABLE_FIRST, ADVERSE_FIRST, AMBIGUOUS, NOT_REACHED)
+- [x] Schema definitions and deterministic CSV writers for all 4 output files
+- [x] 31 Stage 1 synthetic and boundary tests all passing
+- [x] 47 Stage 0 corrected tests still passing
+- [x] No performance outcomes generated, no full 132-grid search run
+- [x] No 2025–2026 OHLC values inspected
+- [x] Holdout remains UNOPENED, outcome_columns_read remains false
 
 ## Stage 2 — Not Started
