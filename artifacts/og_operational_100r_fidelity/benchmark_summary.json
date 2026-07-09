@@ -1,0 +1,32 @@
+{
+  "benchmark": "OG_OPERATIONAL_100R rolling-PF gated result",
+  "expected_shadow_rows": 1355,
+  "actual_shadow_rows": 1355,
+  "expected_metrics": {
+    "net_pts": 6738.191,
+    "points_pf": 1.568369,
+    "total_r": 62.2389,
+    "r_pf": 1.249115,
+    "mdd_pts": -721.5375,
+    "mdd_r": -10.9691,
+    "flat_rows": 575,
+    "flat_runs": 20
+  },
+  "actual_metrics": {
+    "net_pts": 6738.191,
+    "points_pf": 1.568369,
+    "total_r": 62.2389,
+    "r_pf": 1.249115,
+    "mdd_pts": -721.5375,
+    "mdd_r": -10.9691,
+    "flat_rows": 575,
+    "flat_runs": 20
+  },
+  "is_flat_mismatches": 0,
+  "verdict": "EXACT_REPRODUCTION",
+  "stages_completed": 8,
+  "artifact_hashes": {
+    "gated_benchmark.csv": "3e3097067b2f529bbed907d309531f2a3466306f77c388640abfd7f66d4f3a96",
+    "assembled_shadow.csv": "6c7b19a5897324707605412cbe7fc172e6dd541036cc89d2c8a7be514430b283"
+  }
+}
