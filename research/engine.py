@@ -35,6 +35,8 @@ PREMIUM_AGE_MIN = 150
 ZONE_PAD_TICKS = 2
 ZONE_PAD = ZONE_PAD_TICKS * TICK
 
+MAX_ACTIVE_CLUSTERS = 500  # Pine's own safety valve on active_lines
+
 MIN_AGE_MS = MIN_CLUSTER_MIN * MS_MIN
 PREM_AGE_MS = PREMIUM_AGE_MIN * MS_MIN
 
@@ -151,6 +153,7 @@ def run_engine(bars: pd.DataFrame, session_prior_hilo: dict) -> pd.DataFrame:
         cur_close = c[i]
 
         # 1) mitigation check for existing clusters (skip the cluster's own birth bar)
+        any_mitigated = False
         for cl in active:
             if cl.mitigated or i <= cl.born_bar:
                 continue
@@ -158,10 +161,14 @@ def run_engine(bars: pd.DataFrame, session_prior_hilo: dict) -> pd.DataFrame:
                 limit = cl.high - cl.rng * MIT_THRESH
                 if cur_close < limit:
                     cl.mitigated = True
+                    any_mitigated = True
             else:
                 limit = cl.low + cl.rng * MIT_THRESH
                 if cur_close > limit:
                     cl.mitigated = True
+                    any_mitigated = True
+        if any_mitigated:
+            active = [cl for cl in active if not cl.mitigated]
 
         # 2) spawn new cluster on this bar if it qualifies
         if is_bull[i]:
@@ -172,6 +179,10 @@ def run_engine(bars: pd.DataFrame, session_prior_hilo: dict) -> pd.DataFrame:
             target = f_tick(h[i] - rng[i] * VC_FIB)
             active.append(Cluster(next_cid, i, cur_time, h[i], l[i], rng[i], -1, target))
             next_cid += 1
+
+        # Pine's own safety valve: cap active cluster lines at 500, evict oldest first
+        if len(active) > MAX_ACTIVE_CLUSTERS:
+            active.pop(0)
 
         # 3) zone liveness + signal generation, vs THIS bar's session grid
         grid = grid_for(cur_sess)
@@ -236,10 +247,6 @@ def run_engine(bars: pd.DataFrame, session_prior_hilo: dict) -> pd.DataFrame:
             elif cur_close < z_bot:
                 cl.side = "below"
             # else stays 'inside', no signal (already in the zone, no fresh touch)
-
-        # drop mitigated clusters from the active list (mirrors Pine's array.remove)
-        if active and any(cl.mitigated for cl in active):
-            active = [cl for cl in active if not cl.mitigated]
 
     return pd.DataFrame(signals)
 
