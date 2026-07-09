@@ -1,0 +1,40 @@
+{
+  "label_definition": "A (realized in-position: entry -> strategy's actual exit) -- CENSORED by TP/SL/BE/cutoff, see module docstring",
+  "params": {
+    "sigma_mult": 2.0,
+    "offset_pct": 0.08,
+    "ib_minutes": 30
+  },
+  "population": "executed trades only (427 total before split), not all physical touches",
+  "train": {
+    "end": "2024-12-31",
+    "n": 206
+  },
+  "validation": {
+    "start": "2024-12-31",
+    "end": "2025-12-31",
+    "n": 160
+  },
+  "test": {
+    "start": "2025-12-31",
+    "n": 61
+  },
+  "embargoed_rows_dropped_at_boundaries": 0,
+  "total_rows": 427,
+  "vol_tercile_boundaries_fit_on_train": [
+    24.05175419094549,
+    28.178969347041548
+  ],
+  "feature_columns": [
+    "sigma_day",
+    "vol_close_prior",
+    "ib_range_pts",
+    "level_distance_from_open_pts",
+    "side_direction",
+    "entry_hour_et",
+    "day_of_week",
+    "dist_prior_bar_close_pts",
+    "trailing_5session_avg_ib_range_pts",
+    "stop_distance_R_cap"
+  ]
+}
