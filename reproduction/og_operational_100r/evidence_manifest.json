@@ -7,7 +7,10 @@
     "branch": "fidelity/og-operational-100r-reproduction",
     "starting_commit": "9e6cadcedf01a65d6effb3159f061d9e52952f88",
     "starting_commit_message": "OG regime killswitch: implement 4 causal monitoring mechanisms + full backtest",
-    "working_tree_clean": true
+    "working_tree_clean": true,
+    "evidence_lock_commit": "fe36843b4d77d54a2e8a4bf00346e6bdf0b78b99",
+    "evidence_lock_commit_message": "Lock OG operational 1R fidelity evidence",
+    "evidence_lock_committed_at": "2026-07-09T09:18:00Z"
   },
   "frozen_references": [
     {
@@ -222,6 +225,11 @@
   "evidence_lock_artifacts": {
     "canonical_config_lock": "reproduction/og_operational_100r/canonical_config.json",
     "evidence_manifest": "reproduction/og_operational_100r/evidence_manifest.json"
+  },
+  "push_status": {
+    "pushed": false,
+    "reason": "Codespace GITHUB_TOKEN (ghu_ prefix) lacks push permissions to dylankazakovas93-dev/Volatility-hodlod. Commit fe36843 exists locally on branch fidelity/og-operational-100r-reproduction. Push manually or provide a token with write access.",
+    "manual_push_command": "git push origin fidelity/og-operational-100r-reproduction"
   },
   "prohibition_reminder": "No strategy logic implementation, optimization, parameter changes, or research extensions are authorized by this evidence lock. Stage 0 only."
 }
