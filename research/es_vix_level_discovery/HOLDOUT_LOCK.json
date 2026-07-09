@@ -1,0 +1,12 @@
+{
+  "strategy": "es_vix_level_discovery",
+  "purpose": "reserve final test period — never opened until full development and validation are locked",
+  "holdout_start": "2025-01-01",
+  "holdout_end": "2026-06-08",
+  "development_start": "2018-01-01",
+  "development_end": "2024-12-31",
+  "validation_period": "2025-01-01 to 2025-12-31 (candidate review only)",
+  "final_test_period": "2026-01-01 to 2026-06-08 (untouched until final report)",
+  "locked_at": null,
+  "locked_by_commit": null
+}

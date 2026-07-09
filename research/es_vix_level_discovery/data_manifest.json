@@ -1,0 +1,92 @@
+{
+  "strategy": "es_vix_level_discovery",
+  "stage": 0,
+  "files": {
+    "es_source_archives": {
+      "es2018.zip": {
+        "path": "/workspaces/quant-stack/data/raw/ES/es2018.zip",
+        "sha256": null,
+        "member_files": {
+          "glbx-mdp3-20180101-20191231.ohlcv-1m.csv.zst": {
+            "sha256": "a3f9eaa234b28cb7d86f2022f347d8f2a719790cf8879439945565a03265abe4",
+            "record_count": 1118868,
+            "coverage": "2018-01-01T23:00Z to 2019-12-31T21:59Z"
+          },
+          "condition.json": {
+            "sha256": "57789f43e85d1eb88af86f56b7f0a51820ac6a1e3f3b7c953c7c1b39159aa1e6"
+          },
+          "metadata.json": {
+            "sha256": "482cd1b02dc59c55c6464da3c85698938aed9da84597c42a29d6a560483bcefb"
+          },
+          "manifest.json": {
+            "sha256": "9253540597f785326c047fd47e706cc6e11b98ca6ebb1d2be86f51c6be6491ff"
+          }
+        }
+      },
+      "es2023.zip": {
+        "path": "/workspaces/quant-stack/data/raw/ES/es2023.zip",
+        "sha256": null,
+        "member_files": {
+          "glbx-mdp3-20200101-20231230.ohlcv-1m.csv.zst": {
+            "sha256": "12ddd7a83d577c85b3043f41e827571f20c6c9800cc824b752af5a1ca36d4e1f",
+            "record_count": 2247980,
+            "coverage": "2020-01-01T23:00Z to 2023-12-29T21:59Z"
+          },
+          "condition.json": {
+            "sha256": "71e293097b1195e36cf15669c0fce6d117355a9c2b0b7230b9cbe719e2871a76"
+          },
+          "metadata.json": {
+            "sha256": "8e19833b63e45858ecf91d93101574155c990ac2546b519559eec5ab528b8b0b"
+          },
+          "manifest.json": {
+            "sha256": "5daf4c8858de71a58a1da8accfb0355a60e4b58bd6b02c83a4240b331c35056c"
+          }
+        }
+      },
+      "es2026.zip": {
+        "path": "/workspaces/quant-stack/data/raw/ES/es2026.zip",
+        "sha256": null,
+        "member_files": {
+          "glbx-mdp3-20240101-20260608.ohlcv-1m.csv.zst": {
+            "sha256": "1a41db6e86537419b1987e40e2ae19c20ad159263989a0d3571a8a6a8d1ea21b",
+            "record_count": 1375031,
+            "coverage": "2024-01-01T23:00Z to 2026-06-08T23:59Z"
+          },
+          "condition.json": {
+            "sha256": "e9ed6dc20d2c81478df72aa96be76591cf9e499f40d22219bd95899fcfd27ff6"
+          },
+          "metadata.json": {
+            "sha256": "966b753d229ca0b29d12f7234f917185c12b430aec5b3ee266d774beb267e658"
+          },
+          "manifest.json": {
+            "sha256": "2a9825715e2fa503d8440b3cf7e80c5a41d3a9447a0b33517d54a61df82a1470"
+          }
+        }
+      }
+    },
+    "es_continuous": {
+      "path": "data/es_1m/es_continuous_2018_2026_1m.csv",
+      "sha256": "c38d850aa63172aceb03be283dc8b0f5911db73fb1ec87a250b0771d8cb078dd",
+      "record_count": 2969636,
+      "coverage": "2018-01-01T23:00Z to 2026-06-08T23:59Z",
+      "contracts_used": 34,
+      "roll_days": 33
+    },
+    "vix_raw_cboe": {
+      "path": "data/vix_raw_cboe_official.csv",
+      "sha256": "3a909bc8987edd6b6c08873a09abcc74c9697aa1b93004d6725475e21e7164b6",
+      "source_url": "https://cdn.cboe.com/api/global/us_indices/daily_prices/VIX_History.csv",
+      "record_count": 9225,
+      "coverage": "1990-01-02 to 2026-07-08"
+    },
+    "vix_normalized": {
+      "path": "data/vix_daily_1990_2026.csv",
+      "sha256": "af8e7d8e1d139ed258f2a117df54c76464277866cd5466cd256e89ac629746a1",
+      "record_count": 9224,
+      "coverage": "1990-01-02 to 2026-07-08",
+      "columns": ["date", "vix_open", "vix_high", "vix_low", "vix_close"]
+    }
+  },
+  "generated_at": null,
+  "generated_by_commit": null
+}

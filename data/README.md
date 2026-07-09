@@ -1,16 +1,40 @@
 # Data
 
-This directory intentionally does **not** contain the large canonical NQ
-bars file in this handoff repository/branch — it is too large for a normal
-git object (211 MB) and is excluded via `.gitignore`. The small VXN file
-*is* committed directly.
+This directory intentionally does **not** contain the large canonical bars
+files in this repository/branch — they are too large for normal git objects
+and are excluded via `.gitignore`. Small volatility index files *are*
+committed directly.
 
-## Required files
+## Required files (NQ strategy)
 
 | File | Size | SHA-256 | In this repo? |
 |---|---|---|---|
 | `nq_1m/nq_continuous_2018_2026_1m.csv` | ~211 MB | `3d0228fcc17a40933d4fdc3983a8153e5bb6445ed9e743919b3eb5c516e53880` | **No — place it yourself** |
 | `vxn_daily_2018_2026.csv` | ~176 KB | `76cc072c941542183d8c82174fe4f552b0f140f9cb368c302ad51f651992dc4e` | Yes, committed |
+
+## Required files (ES/VIX strategy)
+
+| File | Size | SHA-256 | In this repo? |
+|---|---|---|---|
+| `es_1m/es_continuous_2018_2026_1m.csv` | ~190 MB | `c38d850aa63172aceb03be283dc8b0f5911db73fb1ec87a250b0771d8cb078dd` | **No — build from raw archives** |
+| `vix_raw_cboe_official.csv` | ~460 KB | `3a909bc8987edd6b6c08873a09abcc74c9697aa1b93004d6725475e21e7164b6` | Yes, committed |
+| `vix_daily_1990_2026.csv` | ~312 KB | `af8e7d8e1d139ed258f2a117df54c76464277866cd5466cd256e89ac629746a1` | Yes, committed |
+
+### Building the ES continuous file
+
+Requires the raw Databento ES archives (`es2018.zip`, `es2023.zip`, `es2026.zip`)
+and the build script:
+
+```
+python3 scripts/build_es_continuous.py \
+    --zip /path/to/es2018.zip \
+    --zip /path/to/es2023.zip \
+    --zip /path/to/es2026.zip \
+    --out data/es_1m/es_continuous_2018_2026_1m.csv
+```
+
+The raw archives are available in the canonical data library at
+`/workspaces/quant-stack/data/raw/ES/`.
 
 ## Getting the NQ bars file
 
