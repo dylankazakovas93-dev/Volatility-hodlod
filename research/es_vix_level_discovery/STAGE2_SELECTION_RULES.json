@@ -1,0 +1,74 @@
+{
+  "specification": "Stage 2 development elimination and survivor selection rules",
+  "strategy": "es_vix_level_discovery",
+  "stage": 2,
+  "classification_labels": ["PASS", "FAIL", "INCONCLUSIVE_LOW_POWER"],
+  "minimum_power_requirements": {
+    "min_complete_primary_horizon_touches": 100,
+    "min_long_touches": 30,
+    "min_short_touches": 30,
+    "min_unique_sessions": 40,
+    "require_both_years": true,
+    "low_power_label": "INCONCLUSIVE_LOW_POWER"
+  },
+  "elimination_method": "pareto_frontier",
+  "pareto_dimensions": [
+    "favorable_excursion",
+    "adverse_excursion",
+    "directional_horizon_return",
+    "first_passage_probability",
+    "matched_random_baseline_lift",
+    "temporal_stability",
+    "long_short_stability",
+    "effective_sample_size"
+  ],
+  "elimination_conditions": [
+    {
+      "id": "baseline_lift_nonpositive",
+      "condition": "baseline lift is nonpositive at both 60 and 120 minutes",
+      "label": "FAIL"
+    },
+    {
+      "id": "favorable_first_fails_random",
+      "condition": "favorable-first metrics fail to beat matched random at both primary horizons",
+      "label": "FAIL"
+    },
+    {
+      "id": "adverse_tail_without_benefit",
+      "condition": "adverse-tail MAE is materially worse without favorable-excursion benefit",
+      "label": "FAIL"
+    },
+    {
+      "id": "one_direction_dominated",
+      "condition": "nearly all support comes from one direction",
+      "label": "FAIL"
+    },
+    {
+      "id": "temporal_clustering",
+      "condition": "nearly all support comes from one year or small cluster of sessions",
+      "label": "FAIL"
+    },
+    {
+      "id": "isolated_parameter_spike",
+      "condition": "isolated parameter spike with unsupported neighbours",
+      "label": "FAIL"
+    },
+    {
+      "id": "clearly_dominated",
+      "condition": "configuration is clearly dominated on multiple pareto dimensions",
+      "label": "FAIL"
+    }
+  ],
+  "survivor_cap": 36,
+  "retention_rule": "retain credible neighbouring cells around leading regions where those neighbours are not clearly dominated",
+  "supporting_summary": "robust median ranks across locked primary metrics as supporting summary only",
+  "forbidden_actions": [
+    "use one opaque scalar score as sole selector",
+    "select winner by whichever horizon looks best later",
+    "eliminate configurations before viewing metrics",
+    "change the 132-config grid",
+    "change Stage 1 signal or label semantics",
+    "add TP, SL, BE, trailing, sizing, costs or trade management",
+    "fit MAE/MFE formulas"
+  ]
+}

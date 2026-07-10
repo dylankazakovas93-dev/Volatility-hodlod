@@ -91,4 +91,41 @@ correction-required issues:
 - [x] No 2025–2026 OHLC values inspected
 - [x] Holdout remains UNOPENED, outcome_columns_read remains false
 
-## Stage 2 — Not Started
+## Stage 2 — Development Execution Framework Frozen ✅
+
+### Stage 2A — Freeze and Build the Grid Runner ✅
+
+- [x] STAGE2_EXECUTION_SPEC.md written: development period locked to 2018–2019
+- [x] STAGE2_SELECTION_RULES.json: Pareto-frontier elimination, survivor cap 36
+- [x] BASELINE_DEFINITIONS.md: matched-random baseline matching contract frozen
+- [x] stage2_runner.py: CLI with --preflight, --synthetic-smoke, --development-run
+- [x] stage2_metrics.py: locked metric families (counts, excursions, returns,
+      first-passage, stability diagnostics, neighbour support, concentration)
+- [x] stage2_baselines.py: 1,000-resample deterministic matched-random baseline
+      with VIX deciles from 2018–2019 only, seed manifest
+- [x] stage2_selection.py: minimum-power rules, Pareto-frontier dominance,
+      isolated-spike detection, direction/year clustering, survivor cap 36
+- [x] __init__.py added to research/ and research/es_vix_level_discovery/ for
+      consistent import support
+- [x] Date firewall enforced: exit code 75 on 2020+ data
+- [x] Exactly 132 configurations verified; registry/grid equality enforced
+- [x] All metric denominators and missing-value rules defined explicitly
+- [x] Ratio of medians (median_MFE / median_MAE) calculated as specified
+- [x] VIX deciles from development data only (2018–2019)
+- [x] Baseline matching respects horizon availability
+- [x] Overlap-adjusted effective sample size computed
+- [x] Zero-denominator handling for MAE
+- [x] Tests: 69 Stage 2 tests, all passing
+- [x] Stage 0 and Stage 1 tests continue to pass (86 + 69 = 155 total)
+- [x] --preflight passes
+- [x] --synthetic-smoke passes
+- [x] --development-run NOT executed
+- [x] No 2020+ OHLC or outcome values accessed
+- [x] No 2025–2026 OHLC values inspected for any purpose
+- [x] Gate A and holdout remain UNOPENED
+- [x] Runners directory structure frozen: runs/&lt;run_id&gt;/ with 11 artifact files
+- [x] 132-config grid unchanged
+- [x] Stage 1 signal/label semantics unchanged
+- [x] No TP, SL, BE, trailing, sizing, costs or trade management added
+
+### Stage 2B — Historical Development Results — Not Started
