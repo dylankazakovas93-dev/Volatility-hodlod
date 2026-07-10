@@ -16,6 +16,8 @@ Populations (unchanged from prior work): premium (zone grade, both variants),
 retest (variant), formation (variant). Entry/signal generation is completely
 frozen -- only the exit config is fit per fold.
 """
+import csv
+import os
 import sys
 import numpy as np
 import pandas as pd
@@ -57,16 +59,36 @@ def slice_signals(signals: pd.DataFrame, bars: pd.DataFrame, start, end) -> pd.D
     return signals[mask]
 
 
-def main():
+def append_row(path, row):
+    """Append one result row to a per-population CSV immediately, so a
+    container restart or crash mid-run only loses the in-progress fold,
+    never the folds already completed."""
+    write_header = not os.path.exists(path)
+    with open(path, "a", newline="") as f:
+        w = csv.DictWriter(f, fieldnames=list(row.keys()))
+        if write_header:
+            w.writeheader()
+        w.writerow(row)
+
+
+def main(pop_names):
     bars = pd.read_parquet(f"{CACHE_DIR}/full_bars.parquet")
     signals = pd.read_parquet(f"{CACHE_DIR}/full_signals.parquet")
     print(f"loaded {len(bars):,} bars, {len(signals):,} signals "
           f"({bars['session'].min()} -> {bars['session'].max()})", flush=True)
 
-    results = []
-    for pop_name, filt in POPULATIONS.items():
+    for pop_name in pop_names:
+        filt = POPULATIONS[pop_name]
         pop_signals = filt(signals)
+        results_path = f"{OUT_DIR}/walk_forward_results_{pop_name}.csv"
+        done_folds = set()
+        if os.path.exists(results_path):
+            done_folds = set(pd.read_csv(results_path)["fold"].tolist())
+
         for fold in FOLDS:
+            if fold["fold"] in done_folds:
+                print(f"[{pop_name}][fold {fold['fold']}] already done, skipping", flush=True)
+                continue
             train_sig = slice_signals(pop_signals, bars, *fold["train"])
             trade_sig = slice_signals(pop_signals, bars, *fold["trade"])
             train_years = (pd.Timestamp(fold["train"][1]) - pd.Timestamp(fold["train"][0])).days / 365.25
@@ -79,7 +101,7 @@ def main():
                        train_n_candidates=len(train_sig), trade_n_candidates=len(trade_sig))
             if not best:
                 row.update(status="insufficient train data")
-                results.append(row)
+                append_row(results_path, row)
                 print(f"[{pop_name}][fold {fold['fold']}] insufficient train data "
                       f"(n_candidates={len(train_sig)})", flush=True)
                 continue
@@ -92,7 +114,7 @@ def main():
                        breakeven_frac=best["breakeven_frac"],
                        train_sharpe=best["sharpe_annual"], train_n=best["n"],
                        **{f"oos_{k}": v for k, v in oos.items()})
-            results.append(row)
+            append_row(results_path, row)
             oos_trades.to_csv(f"{OUT_DIR}/wf_trades_{pop_name}_fold{fold['fold']}.csv", index=False)
             print(f"[{pop_name}][fold {fold['fold']}] train-picked TP={best['tp']:.1f} "
                   f"SL={best['sl']:.1f} cutoff={best['cutoff']} be={best['breakeven_frac']} "
@@ -101,10 +123,9 @@ def main():
                   f"PF={oos.get('profit_factor',float('nan')):.2f} "
                   f"Sharpe={oos.get('sharpe_annual',float('nan')):.2f}", flush=True)
 
-    out = pd.DataFrame(results)
-    out.to_csv(f"{OUT_DIR}/walk_forward_results.csv", index=False)
-    print("\nWrote", f"{OUT_DIR}/walk_forward_results.csv")
+    print(f"\n[{','.join(pop_names)}] done")
 
 
 if __name__ == "__main__":
-    main()
+    requested = sys.argv[1:] or list(POPULATIONS.keys())
+    main(requested)
