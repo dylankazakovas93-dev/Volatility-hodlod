@@ -410,33 +410,74 @@ def compute_offset_family_metrics(
     return grouped
 
 
+def _are_adjacent_cells(c1: dict, c2: dict) -> bool:
+    """Return True if c2 is an immediately adjacent grid neighbour of c1.
+
+    Adjacent means differing on exactly one axis, where the differing
+    value is the immediate previous or next value in that axis's domain
+    *and* the offset family is the same (proportional vs fixed are never
+    neighbours).
+    """
+    if c1["config_id"] == c2["config_id"]:
+        return False
+    if c1["offset_family"] != c2["offset_family"]:
+        return False
+    sigma_vals = [0.75, 1.0, 1.25, 1.5, 1.75, 2.0]
+    pct_offsets = [0.0, 0.02, 0.04, 0.06, 0.08, 0.1]
+    fixed_offsets = [2.5, 5.0, 7.5, 10.0, 15.0]
+
+    diffs = 0
+    # sigma
+    if c1["sigma_multiplier"] != c2["sigma_multiplier"]:
+        try:
+            i1 = sigma_vals.index(c1["sigma_multiplier"])
+            i2 = sigma_vals.index(c2["sigma_multiplier"])
+        except ValueError:
+            return False
+        if abs(i1 - i2) != 1:
+            return False
+        diffs += 1
+    # ib_minutes
+    if c1["ib_minutes"] != c2["ib_minutes"]:
+        diffs += 1
+    # offset_value (same family already checked)
+    if c1["offset_value"] != c2["offset_value"]:
+        if c1["offset_family"] == "proportional":
+            try:
+                i1 = pct_offsets.index(c1["offset_value"])
+                i2 = pct_offsets.index(c2["offset_value"])
+            except ValueError:
+                return False
+            if abs(i1 - i2) != 1:
+                return False
+        else:  # fixed
+            try:
+                i1 = fixed_offsets.index(c1["offset_value"])
+                i2 = fixed_offsets.index(c2["offset_value"])
+            except ValueError:
+                return False
+            if abs(i1 - i2) != 1:
+                return False
+        diffs += 1
+    return diffs == 1
+
+
 def compute_neighbour_support(
     metrics_df: pd.DataFrame,
     grid_df: pd.DataFrame,
 ) -> pd.DataFrame:
-    """Compute neighbouring-parameter support for each config.
+    """Compute immediately-adjacent neighbour support for each config.
 
-    A neighbour is any other config differing in exactly one parameter.
-    For each config, report: neighbour count, mean median_mfe_points
-    of neighbours, and mean median_mae_points of neighbours.
+    A neighbour is an immediately adjacent grid cell: previous/next
+    sigma, 30 vs 60 IB, previous/next offset within the same offset
+    family.  Proportional and fixed families are never neighbours.
     """
     configs = grid_df.to_dict("records")
     neighbour_map = {}
     for i, c1 in enumerate(configs):
         neighbours = []
         for j, c2 in enumerate(configs):
-            if i == j:
-                continue
-            diffs = 0
-            if c1["sigma_multiplier"] != c2["sigma_multiplier"]:
-                diffs += 1
-            if c1["ib_minutes"] != c2["ib_minutes"]:
-                diffs += 1
-            if c1["offset_family"] != c2["offset_family"]:
-                diffs += 1
-            if c1["offset_value"] != c2["offset_value"]:
-                diffs += 1
-            if diffs == 1:
+            if _are_adjacent_cells(c1, c2):
                 neighbours.append(c2["config_id"])
         neighbour_map[c1["config_id"]] = neighbours
 

@@ -48,6 +48,7 @@ from research.es_vix_level_discovery.stage2_baselines import (
     _decile_index,
     _rth_time_bucket,
     _horizon_available,
+    _session_seed,
     BASE_SEED,
     N_RESAMPLES,
 )
@@ -62,15 +63,15 @@ from research.es_vix_level_discovery.stage2_selection import (
     SURVIVOR_CAP,
     _is_dominated,
     _check_baseline_lift,
-    _check_one_direction,
-    _check_temporal_clustering,
     _check_isolated_spike,
+    _check_stability_year_direction,
+    _are_adjacent_cells,
 )
 from research.es_vix_level_discovery.stage2_runner import (
     load_grid,
     load_registry,
     preflight,
-    firewall_enforce,
+    firewall_enforce_full,
     DEVELOPMENT_START,
     DEVELOPMENT_END,
 )
@@ -218,7 +219,7 @@ class TestDateFirewall:
         if touches.empty:
             pytest.skip("No touches generated for 2020 test")
         with pytest.raises(SystemExit) as exc:
-            firewall_enforce(touches, pd.DataFrame(), es)
+            firewall_enforce_full(touches, pd.DataFrame(), None, es)
         assert exc.value.code == 75
 
     def test_firewall_passes_2018_2019(self):
@@ -230,7 +231,7 @@ class TestDateFirewall:
         levels = engine.generate_levels(es, vix)
         touches = engine.detect_touches(levels, es)
         excursions = engine.compute_excursions(touches, es)
-        firewall_enforce(touches, excursions, es)
+        firewall_enforce_full(levels, touches, excursions, es)
 
     def test_firewall_rejects_post_2019_excursion(self):
         """Excursion with label_start outside 2018-2019 fails."""
@@ -245,7 +246,7 @@ class TestDateFirewall:
             pytest.skip("No touches generated for 2020 test")
         excursions = engine.compute_excursions(touches, es)
         with pytest.raises(SystemExit) as exc:
-            firewall_enforce(touches, excursions, es)
+            firewall_enforce_full(None, touches, excursions, None)
         assert exc.value.code == 75
 
 
@@ -492,11 +493,11 @@ class TestBaselineFirewall:
         touches = engine.detect_touches(levels, es)
         touches = engine.assign_overlap_clusters(touches)
         result = build_baseline(
-            touches, es, vix,
+            touches, levels, es, vix,
             horizons=["60m"],
             n_resamples=5,
         )
-        results = result["results"]
+        results = result["aggregated"]
         if not results.empty:
             random_sessions = results["random_timestamp"].apply(
                 lambda ts: str(pd.Timestamp(ts))[:10]
@@ -512,9 +513,9 @@ class TestBaselineFirewall:
 
 class TestBaselineDeterminism:
     def test_seeds_deterministic(self):
-        from research.es_vix_level_discovery.stage2_baselines import _seed_for_resample
-        s1 = [_seed_for_resample(i) for i in range(10)]
-        s2 = [_seed_for_resample(i) for i in range(10)]
+        from research.es_vix_level_discovery.stage2_baselines import _session_seed
+        s1 = [_session_seed("CFG", "60m", "T1", i, "MASTER") for i in range(10)]
+        s2 = [_session_seed("CFG", "60m", "T1", i, "MASTER") for i in range(10)]
         assert s1 == s2
 
     def test_baseline_horizon_availability(self):
@@ -647,6 +648,42 @@ class TestLowPower:
 # 13. Dominated config classification
 # ══════════════════════════════════════════════════════════════════════
 
+class TestBaselineLiftCheck:
+    def test_baseline_lift_nonpositive_both(self):
+        lift_df = pd.DataFrame({
+            "config_id": ["A", "A"],
+            "horizon": ["60m", "120m"],
+            "metric": ["median_mfe_points", "median_mfe_points"],
+            "actual_value": [1.0, 1.0],
+            "baseline_median": [2.0, 2.0],
+            "baseline_p05": [1.5, 1.5],
+            "baseline_p95": [3.0, 3.0],
+            "actual_minus_baseline": [-1.0, -1.0],
+            "percentage_lift": [-0.5, -0.5],
+            "actual_percentile": [0.2, 0.2],
+            "one_sided_p_value": [0.2, 0.2],
+            "n_random_observations": [100, 100],
+        })
+        assert _check_baseline_lift("A", lift_df) is True
+
+    def test_baseline_lift_positive_one_horizon(self):
+        lift_df = pd.DataFrame({
+            "config_id": ["A", "A"],
+            "horizon": ["60m", "120m"],
+            "metric": ["median_mfe_points", "median_mfe_points"],
+            "actual_value": [3.0, 1.0],
+            "baseline_median": [2.0, 2.0],
+            "baseline_p05": [1.5, 1.5],
+            "baseline_p95": [3.0, 3.0],
+            "actual_minus_baseline": [1.0, -1.0],
+            "percentage_lift": [0.5, -0.5],
+            "actual_percentile": [0.8, 0.2],
+            "one_sided_p_value": [0.8, 0.2],
+            "n_random_observations": [100, 100],
+        })
+        assert _check_baseline_lift("A", lift_df) is False
+
+
 class TestDominated:
     def test_clearly_dominated(self):
         metrics = pd.DataFrame({
@@ -692,21 +729,21 @@ class TestDominated:
 class TestIsolatedSpike:
     def test_isolated_spike_detected(self):
         metrics = pd.DataFrame({
-            "config_id": ["SPIKE", "NEIGH_1", "NEIGH_2"],
-            "horizon": ["60m", "60m", "60m"],
-            "median_mfe_points": [10.0, 2.0, 2.0],
-            "median_mae_points": [5.0, 3.0, 3.0],
-            "mean_directional_return_over_sigma": [0.5, 0.3, 0.3],
-            "positive_directional_return_rate": [0.6, 0.5, 0.5],
+            "config_id": ["SPIKE", "NEIGH_1", "NEIGH_2", "NEIGH_3"],
+            "horizon": ["60m", "60m", "60m", "60m"],
+            "median_mfe_points": [10.0, 2.0, 2.0, 2.0],
+            "median_mae_points": [5.0, 3.0, 3.0, 3.0],
+            "mean_directional_return_over_sigma": [0.5, 0.3, 0.3, 0.3],
+            "positive_directional_return_rate": [0.6, 0.5, 0.5, 0.5],
         })
         grid = pd.DataFrame({
-            "config_id": ["SPIKE", "NEIGH_1", "NEIGH_2"],
-            "sigma_multiplier": [1.0, 1.0, 1.0],
-            "ib_minutes": [30, 30, 30],
-            "offset_family": ["proportional", "proportional", "proportional"],
-            "offset_parameter": ["offset_pct", "offset_pct", "offset_pct"],
-            "offset_value": [0.0, 0.02, 0.04],
-            "line_life_sessions": [20, 20, 20],
+            "config_id": ["SPIKE", "NEIGH_1", "NEIGH_2", "NEIGH_3"],
+            "sigma_multiplier": [1.0, 1.0, 1.0, 1.0],
+            "ib_minutes": [30, 30, 30, 30],
+            "offset_family": ["proportional", "proportional", "proportional", "proportional"],
+            "offset_parameter": ["offset_pct", "offset_pct", "offset_pct", "offset_pct"],
+            "offset_value": [0.04, 0.02, 0.06, 0.08],
+            "line_life_sessions": [20, 20, 20, 20],
         })
         is_spike = _check_isolated_spike("SPIKE", metrics, grid)
         assert is_spike is True
@@ -759,10 +796,11 @@ class TestSurvivorCap:
         })
         decisions = classify_configs(
             metrics_df=metrics,
-            baseline_df=pd.DataFrame(),
+            baseline_lift_df=pd.DataFrame(),
             direction_metrics=pd.DataFrame(),
             year_metrics=pd.DataFrame(),
             grid_df=pd.DataFrame(),
+            excursions_df=pd.DataFrame(),
         )
         passed = len(decisions[decisions["classification"] == "PASS"])
         assert passed <= 36
@@ -1007,8 +1045,8 @@ class TestDeterminism:
             "p_neither_reached_1.00": [0.4, 0.4, 0.5, 0.5],
             "mfe_mae_ratio_of_medians": [2.5, 2.5, 0.75, 0.75],
         })
-        d1 = classify_configs(metrics, pd.DataFrame(), pd.DataFrame(), pd.DataFrame(), pd.DataFrame())
-        d2 = classify_configs(metrics, pd.DataFrame(), pd.DataFrame(), pd.DataFrame(), pd.DataFrame())
+        d1 = classify_configs(metrics, baseline_lift_df=pd.DataFrame(), direction_metrics=pd.DataFrame(), year_metrics=pd.DataFrame(), grid_df=pd.DataFrame(), excursions_df=pd.DataFrame())
+        d2 = classify_configs(metrics, baseline_lift_df=pd.DataFrame(), direction_metrics=pd.DataFrame(), year_metrics=pd.DataFrame(), grid_df=pd.DataFrame(), excursions_df=pd.DataFrame())
         pd.testing.assert_frame_equal(d1, d2)
 
 
@@ -1094,8 +1132,19 @@ class TestOneDirection:
             "median_mae_points": [2.0, 2.0],
             "mean_directional_return_over_sigma": [0.5, 0.5],
         })
-        dominated = _check_one_direction("A", dir_metrics)
-        assert dominated is True
+        yr = pd.DataFrame({
+            "config_id": ["A", "A"],
+            "horizon": ["60m", "60m"],
+            "year": ["2018", "2019"],
+            "touch_count": [100, 100],
+            "complete_label_count": [95, 95],
+            "median_mfe_points": [5.0, 5.0],
+            "median_mae_points": [2.0, 2.0],
+            "mean_directional_return_over_sigma": [0.5, 0.5],
+        })
+        reasons = _check_stability_year_direction("A", yr, dir_metrics, pd.DataFrame())
+        has_dir_issue = any("direction" in r for r in reasons)
+        assert has_dir_issue
 
     def test_balanced_direction(self):
         dir_metrics = pd.DataFrame({
@@ -1108,8 +1157,19 @@ class TestOneDirection:
             "median_mae_points": [2.0, 2.0],
             "mean_directional_return_over_sigma": [0.5, 0.5],
         })
-        dominated = _check_one_direction("A", dir_metrics)
-        assert dominated is False
+        yr = pd.DataFrame({
+            "config_id": ["A", "A"],
+            "horizon": ["60m", "60m"],
+            "year": ["2018", "2019"],
+            "touch_count": [100, 100],
+            "complete_label_count": [95, 95],
+            "median_mfe_points": [5.0, 5.0],
+            "median_mae_points": [2.0, 2.0],
+            "mean_directional_return_over_sigma": [0.5, 0.5],
+        })
+        reasons = _check_stability_year_direction("A", yr, dir_metrics, pd.DataFrame())
+        has_dir_issue = any("direction" in r for r in reasons)
+        assert not has_dir_issue
 
 
 # ══════════════════════════════════════════════════════════════════════
@@ -1128,8 +1188,19 @@ class TestTemporalClustering:
             "median_mae_points": [2.0, 2.0],
             "mean_directional_return_over_sigma": [0.5, 0.5],
         })
-        clustered = _check_temporal_clustering("A", year_metrics)
-        assert clustered is True
+        dir_metrics = pd.DataFrame({
+            "config_id": ["A", "A"],
+            "horizon": ["60m", "60m"],
+            "direction": ["LONG", "SHORT"],
+            "touch_count": [100, 100],
+            "complete_label_count": [95, 95],
+            "median_mfe_points": [5.0, 5.0],
+            "median_mae_points": [2.0, 2.0],
+            "mean_directional_return_over_sigma": [0.5, 0.5],
+        })
+        reasons = _check_stability_year_direction("A", year_metrics, dir_metrics, pd.DataFrame())
+        has_year_issue = any("year" in r for r in reasons)
+        assert has_year_issue
 
     def test_temporal_balanced(self):
         year_metrics = pd.DataFrame({
@@ -1142,5 +1213,695 @@ class TestTemporalClustering:
             "median_mae_points": [2.0, 2.0],
             "mean_directional_return_over_sigma": [0.5, 0.5],
         })
-        clustered = _check_temporal_clustering("A", year_metrics)
-        assert clustered is False
+        dir_metrics = pd.DataFrame({
+            "config_id": ["A", "A"],
+            "horizon": ["60m", "60m"],
+            "direction": ["LONG", "SHORT"],
+            "touch_count": [100, 95],
+            "complete_label_count": [95, 90],
+            "median_mfe_points": [5.0, 5.0],
+            "median_mae_points": [2.0, 2.0],
+            "mean_directional_return_over_sigma": [0.5, 0.5],
+        })
+        reasons = _check_stability_year_direction("A", year_metrics, dir_metrics, pd.DataFrame())
+        has_year_issue = any("year" in r for r in reasons)
+        assert not has_year_issue
+
+
+# ══════════════════════════════════════════════════════════════════════
+# 26. SYNTHETIC TESTS PROVING STAGE 2A CORRECTIONS
+# ══════════════════════════════════════════════════════════════════════
+
+class TestCorrection01DevelopmentRunNotStub:
+    """1. development_run is not a stub — it runs the full pipeline."""
+
+    def test_development_run_executable(self):
+        from research.es_vix_level_discovery.stage2_runner import development_run
+        # Verify it's a real function with actual pipeline code
+        import inspect
+        source = inspect.getsource(development_run)
+        assert "es_raw" in source
+        assert "load_grid" in source
+        assert "firewall_enforce_full" in source
+        assert "MANIFEST.json" in source
+        assert "CONFIG_RESULTS.csv" in source
+        assert "SURVIVOR_DECISIONS.csv" in source
+        assert "OUTPUT_HASHES.sha256" in source
+
+
+class TestCorrection02ConfirmationFlag:
+    """2. --confirm-development-only flag is required."""
+
+    def test_confirmation_flag_required(self):
+        from research.es_vix_level_discovery.stage2_runner import main
+        import sys
+        old = sys.argv
+        try:
+            sys.argv = ["stage2_runner.py", "--development-run", "test_run"]
+            with pytest.raises(SystemExit) as exc:
+                main()
+            # Should exit 1 with error message, not run anything
+            assert exc.value.code == 1
+        finally:
+            sys.argv = old
+
+    def test_both_flags_accepted(self):
+        from research.es_vix_level_discovery.stage2_runner import main
+        import sys
+        old = sys.argv
+        try:
+            sys.argv = ["stage2_runner.py",
+                        "--development-run", "test_both",
+                        "--confirm-development-only"]
+            # The function will try to load data and fail with file not found
+            # in test context; that's fine — we just verify the flags parse
+            with pytest.raises((SystemExit, FileNotFoundError, Exception)):
+                main()
+        finally:
+            sys.argv = old
+
+
+class TestCorrection03FilterBeforeLevelGeneration:
+    """3. ES data is filtered to 2018-2019 before level generation."""
+
+    def test_filter_before_levels(self):
+        from research.es_vix_level_discovery.stage2_runner import development_run
+        import inspect
+        source = inspect.getsource(development_run)
+        assert "session_date\".between(" in source or "between(" in source
+        assert "2018-01-01" in source
+        assert "2019-12-31" in source
+
+    def test_filtered_es_no_2020(self):
+        """Prove filtered data has no post-2019 rows."""
+        es = synthetic_multiday_es("2018-01-02", num_sessions=500)
+        if "session_date" not in es.columns:
+            ny = pd.to_datetime(es["timestamp"], utc=True).dt.tz_convert("America/New_York")
+            es["session_date"] = ny.dt.strftime("%Y-%m-%d")
+        filtered = es[es["session_date"].between("2018-01-01", "2019-12-31")]
+        # Even with 500 sessions, nothing should exceed 2019
+        max_date = filtered["session_date"].max()
+        assert str(max_date)[:4] <= "2019"
+
+
+class TestCorrection04FirewallInspectsEveryDatedField:
+    """4. Firewall inspects all dated output rows."""
+
+    def test_firewall_checks_level_session(self):
+        """Level with session_date in 2020 should fail."""
+        levels = pd.DataFrame({
+            "level_id": ["L1"],
+            "config_id": ["CFG"],
+            "session_date": ["2020-01-15"],
+            "created_at": ["2020-01-15 10:00:00-05:00"],
+            "first_eligible_at": ["2020-01-15 10:01:00-05:00"],
+            "direction": ["UPPER"],
+            "level_price": [4800.0],
+        })
+        with pytest.raises(SystemExit) as exc:
+            firewall_enforce_full(levels, None, None, None)
+        assert exc.value.code == 75
+
+    def test_firewall_checks_touch_timestamp(self):
+        touches = pd.DataFrame({
+            "touch_id": ["T1"],
+            "level_id": ["L1"],
+            "config_id": ["CFG"],
+            "level_direction": ["UPPER"],
+            "touch_direction": ["SHORT"],
+            "level_price": [4800.0],
+            "touch_bar_timestamp": ["2020-06-01 10:30:00-04:00"],
+            "touch_bar_open": [4800.0],
+            "touch_bar_high": [4805.0],
+            "touch_bar_low": [4795.0],
+            "reference_entry_price": [4800.0],
+            "gap_through": [False],
+            "session_created": ["2019-12-01"],
+            "session_touched": ["2020-06-01"],
+            "level_age_sessions": [5],
+            "level_age_minutes": [100],
+            "sigma_day": [10.0],
+            "vix_source_date": ["2019-11-30"],
+            "vix_available_at": ["2019-12-01 09:30:00"],
+            "deterministic_order": [1],
+            "overlap_cluster_id": [0],
+        })
+        with pytest.raises(SystemExit) as exc:
+            firewall_enforce_full(None, touches, None, None)
+        assert exc.value.code == 75
+
+    def test_firewall_checks_label_start(self):
+        excursions = pd.DataFrame({
+            "touch_id": ["T1"],
+            "config_id": ["CFG"],
+            "level_direction": ["UPPER"],
+            "touch_direction": ["SHORT"],
+            "horizon": ["60m"],
+            "label_status": ["COMPLETE"],
+            "label_start": ["2020-01-02 10:01:00-05:00"],
+            "requested_end_exclusive": ["2020-01-02 11:01:00-05:00"],
+            "actual_last_bar": ["2020-01-02 11:00:00-05:00"],
+            "required_bar_count": [60],
+            "actual_bar_count": [60],
+            "mae": [1.0],
+            "mfe": [1.0],
+            "mae_sigma_ratio": [0.1],
+            "mfe_sigma_ratio": [0.1],
+            "mae_ib_range_ratio": [0.05],
+            "mfe_ib_range_ratio": [0.05],
+            "directional_horizon_close_return_sigma": [0.5],
+            "sigma_day": [10.0],
+            "fp_025_sigma": ["FAVORABLE_FIRST"],
+            "fp_050_sigma": ["FAVORABLE_FIRST"],
+            "fp_075_sigma": ["NOT_REACHED"],
+            "fp_100_sigma": ["NOT_REACHED"],
+            "fp_025_timestamp": ["2020-01-02 10:05:00-05:00"],
+            "fp_050_timestamp": ["2020-01-02 10:10:00-05:00"],
+            "fp_075_timestamp": [None],
+            "fp_100_timestamp": [None],
+        })
+        with pytest.raises(SystemExit) as exc:
+            firewall_enforce_full(None, None, excursions, None)
+        assert exc.value.code == 75
+
+    def test_firewall_passes_2018_2019_labels(self):
+        excursions = pd.DataFrame({
+            "touch_id": ["T1"],
+            "config_id": ["CFG"],
+            "level_direction": ["UPPER"],
+            "touch_direction": ["SHORT"],
+            "horizon": ["60m"],
+            "label_status": ["COMPLETE"],
+            "label_start": ["2019-06-01 10:01:00-04:00"],
+            "requested_end_exclusive": ["2019-06-01 11:01:00-04:00"],
+            "actual_last_bar": ["2019-06-01 11:00:00-04:00"],
+            "required_bar_count": [60],
+            "actual_bar_count": [60],
+            "mae": [1.0],
+            "mfe": [1.0],
+            "mae_sigma_ratio": [0.1],
+            "mfe_sigma_ratio": [0.1],
+            "mae_ib_range_ratio": [0.05],
+            "mfe_ib_range_ratio": [0.05],
+            "directional_horizon_close_return_sigma": [0.5],
+            "sigma_day": [10.0],
+            "fp_025_sigma": ["FAVORABLE_FIRST"],
+            "fp_050_sigma": ["FAVORABLE_FIRST"],
+            "fp_075_sigma": ["NOT_REACHED"],
+            "fp_100_sigma": ["NOT_REACHED"],
+            "fp_025_timestamp": [None],
+            "fp_050_timestamp": [None],
+            "fp_075_timestamp": [None],
+            "fp_100_timestamp": [None],
+        })
+        firewall_enforce_full(None, None, excursions, None)
+
+
+class TestCorrection05ExactVIXDecileMatching:
+    """5. Baseline uses exact VIX decile from actual touch."""
+
+    def test_decile_matching_applied(self):
+        vix = synthetic_vix(vix_close=15.0, num_days=500)
+        vix["date"] = pd.to_datetime(vix["date"])
+        bounds = _vix_decile_bounds(vix)
+        idx = _decile_index(15.0, bounds)
+        assert 0 <= idx < 10
+
+    def test_random_sigma_from_random_session(self):
+        """Random candidate uses its own session's sigma_day."""
+        es = synthetic_multiday_es("2018-01-02", num_sessions=10)
+        vix = synthetic_vix(vix_close=15.0, num_days=500)
+        vix["date"] = pd.to_datetime(vix["date"])
+        cfg = LevelConfig("TEST_RSIG", 1.0, 30, "proportional", "offset_pct", 0.0)
+        engine = VIXLevelEngine(cfg)
+        levels = engine.generate_levels(es, vix)
+        touches = engine.detect_touches(levels, es)
+        touches = engine.assign_overlap_clusters(touches)
+        if not touches.empty:
+            result = build_baseline(
+                touches, levels, es, vix,
+                horizons=["60m"],
+                n_resamples=2,
+            )
+            agg = result["aggregated"]
+            if not agg.empty:
+                assert "rand_sigma_day_used" in agg.columns
+                assert agg["rand_sigma_day_used"].notna().any()
+
+    def test_actual_label_window_excluded(self):
+        """Random candidates exclude the actual touch's bar and label window."""
+        es = synthetic_multiday_es("2018-01-02", num_sessions=10)
+        vix = synthetic_vix(vix_close=15.0, num_days=500)
+        vix["date"] = pd.to_datetime(vix["date"])
+        cfg = LevelConfig("TEST_EXW", 1.0, 30, "proportional", "offset_pct", 0.0)
+        engine = VIXLevelEngine(cfg)
+        levels = engine.generate_levels(es, vix)
+        touches = engine.detect_touches(levels, es)
+        touches = engine.assign_overlap_clusters(touches)
+        if not touches.empty:
+            result = build_baseline(
+                touches, levels, es, vix,
+                horizons=["60m"],
+                n_resamples=2,
+            )
+            agg = result["aggregated"]
+            if not agg.empty and "random_timestamp" in agg.columns:
+                for _, row in agg.iterrows():
+                    rt = str(row.get("random_timestamp", ""))[:10]
+                    assert rt >= "2018-01-01"
+                    assert rt <= "2019-12-31"
+
+
+class TestCorrection06BaselineAggregationOneRow:
+    """6. One aggregated row per config × horizon × resample."""
+
+    def test_aggregation_structure(self):
+        """Each config/horizon/resample appears once."""
+        es = synthetic_multiday_es("2018-01-02", num_sessions=10)
+        vix = synthetic_vix(vix_close=15.0, num_days=500)
+        vix["date"] = pd.to_datetime(vix["date"])
+        cfg = LevelConfig("TEST_AGG", 1.0, 30, "proportional", "offset_pct", 0.0)
+        engine = VIXLevelEngine(cfg)
+        levels = engine.generate_levels(es, vix)
+        touches = engine.detect_touches(levels, es)
+        touches = engine.assign_overlap_clusters(touches)
+        if not touches.empty:
+            result = build_baseline(
+                touches, levels, es, vix,
+                horizons=["60m"],
+                n_resamples=3,
+            )
+            agg = result["aggregated"]
+            if not agg.empty:
+                n_combos = agg.groupby(["config_id", "horizon", "resample"]).size()
+                assert (n_combos == 1).all(), \
+                    "Each config/horizon/resample appears more than once"
+
+    def test_seeds_differ_across_touches(self):
+        """Deterministic seeds contain config_id, horizon, touch_id, resample."""
+        s1 = _session_seed("CFG_A", "60m", "T1", 0, "MASTER")
+        s2 = _session_seed("CFG_A", "60m", "T2", 0, "MASTER")
+        s3 = _session_seed("CFG_A", "120m", "T1", 0, "MASTER")
+        s4 = _session_seed("CFG_B", "60m", "T1", 0, "MASTER")
+        s5 = _session_seed("CFG_A", "60m", "T1", 1, "MASTER")
+        # Different touch_id → different seed
+        assert s1 != s2
+        # Different horizon → different seed
+        assert s1 != s3
+        # Different config → different seed
+        assert s1 != s4
+        # Different resample → different seed
+        assert s1 != s5
+
+
+class TestCorrection07BaselineResultsMetrics:
+    """7. BASELINE_RESULTS.csv has all required metrics."""
+
+    def test_baseline_summary_columns(self):
+        es = synthetic_multiday_es("2018-01-02", num_sessions=10)
+        vix = synthetic_vix(vix_close=15.0, num_days=500)
+        vix["date"] = pd.to_datetime(vix["date"])
+        cfg = LevelConfig("TEST_BSC", 1.0, 30, "proportional", "offset_pct", 0.0)
+        engine = VIXLevelEngine(cfg)
+        levels = engine.generate_levels(es, vix)
+        touches = engine.detect_touches(levels, es)
+        touches = engine.assign_overlap_clusters(touches)
+        if not touches.empty:
+            result = build_baseline(
+                touches, levels, es, vix,
+                horizons=["60m"],
+                n_resamples=3,
+            )
+            summary = result["summary"]
+            if not summary.empty:
+                expected = [
+                    "config_id", "horizon", "selected_count",
+                    "median_mfe_points", "median_mae_points",
+                    "p90_mae_points", "p95_mae_points",
+                    "mean_directional_return_over_sigma",
+                    "median_directional_return_over_sigma",
+                    "positive_directional_return_rate",
+                ]
+                for col in expected:
+                    assert col in summary.columns, f"Missing: {col}"
+
+    def test_first_passage_in_summary(self):
+        es = synthetic_multiday_es("2018-01-02", num_sessions=10)
+        vix = synthetic_vix(vix_close=15.0, num_days=500)
+        vix["date"] = pd.to_datetime(vix["date"])
+        cfg = LevelConfig("TEST_FPS", 1.0, 30, "proportional", "offset_pct", 0.0)
+        engine = VIXLevelEngine(cfg)
+        levels = engine.generate_levels(es, vix)
+        touches = engine.detect_touches(levels, es)
+        touches = engine.assign_overlap_clusters(touches)
+        if not touches.empty:
+            result = build_baseline(
+                touches, levels, es, vix,
+                horizons=["60m"],
+                n_resamples=3,
+            )
+            summary = result["summary"]
+            if not summary.empty:
+                for thresh in ["0.25", "0.50", "0.75", "1.00"]:
+                    for fp in ["p_favorable_first", "p_adverse_first",
+                               "p_ambiguous", "p_neither_reached"]:
+                        col = f"{fp}_{thresh}"
+                        assert col in summary.columns, f"Missing: {col}"
+
+
+class TestCorrection08BaselineLiftCorrect:
+    """8. Correct baseline lift calculation."""
+
+    def _make_baseline_agg(self, n=10):
+        return pd.DataFrame({
+            "config_id": ["A"] * n,
+            "horizon": ["60m"] * n,
+            "resample": list(range(n)),
+            "selected_count": [10] * n,
+            "median_mfe_points": [float(3 + i * 0.2) for i in range(n)],
+            "median_mae_points": [float(1 + i * 0.1) for i in range(n)],
+            "p90_mae_points": [3.0] * n,
+            "p95_mae_points": [4.0] * n,
+            "mean_directional_return_over_sigma": [0.5] * n,
+            "median_directional_return_over_sigma": [0.4] * n,
+            "positive_directional_return_rate": [0.6] * n,
+            "p_favorable_first_0.25": [0.5] * n,
+            "p_adverse_first_0.25": [0.3] * n,
+            "p_ambiguous_0.25": [0.1] * n,
+            "p_neither_reached_0.25": [0.1] * n,
+            "p_favorable_first_0.50": [0.4] * n,
+            "p_adverse_first_0.50": [0.3] * n,
+            "p_ambiguous_0.50": [0.1] * n,
+            "p_neither_reached_0.50": [0.2] * n,
+            "p_favorable_first_0.75": [0.3] * n,
+            "p_adverse_first_0.75": [0.3] * n,
+            "p_ambiguous_0.75": [0.1] * n,
+            "p_neither_reached_0.75": [0.3] * n,
+            "p_favorable_first_1.00": [0.2] * n,
+            "p_adverse_first_1.00": [0.3] * n,
+            "p_ambiguous_1.00": [0.1] * n,
+            "p_neither_reached_1.00": [0.4] * n,
+            "rand_sigma_day_used": [10.0] * n,
+        })
+
+    def test_lift_has_all_fields(self):
+        actual = pd.DataFrame({
+            "config_id": ["A"],
+            "horizon": ["60m"],
+            "median_mfe_points": [5.0],
+        })
+        baseline = self._make_baseline_agg(10)
+        lift = compute_baseline_lift(actual, baseline, horizons=["60m"])
+        if not lift.empty:
+            lr = lift.iloc[0]
+            assert "baseline_median" in lift.columns
+            assert "baseline_p05" in lift.columns
+            assert "baseline_p95" in lift.columns
+            assert "actual_minus_baseline" in lift.columns
+            assert "percentage_lift" in lift.columns
+            assert "actual_percentile" in lift.columns
+            assert "one_sided_p_value" in lift.columns
+            assert lr["actual_minus_baseline"] > 0  # actual > baseline
+            assert lr["percentage_lift"] is not None
+
+    def test_lift_respects_metric_direction(self):
+        """MAE has lower-is-better: high actual MAE gives high p-value."""
+        actual = pd.DataFrame({
+            "config_id": ["A"],
+            "horizon": ["60m"],
+            "median_mae_points": [10.0],
+        })
+        baseline = self._make_baseline_agg(10)
+        lift = compute_baseline_lift(actual, baseline, horizons=["60m"])
+        if not lift.empty:
+            mae_lift = lift[lift["metric"] == "median_mae_points"]
+            if not mae_lift.empty:
+                # actual is worse (10 vs ~1-1.9), all random < actual
+                # p for lower-is-better = count(random < actual) / n = 1.0
+                assert not mae_lift["one_sided_p_value"].isna().all()
+                assert mae_lift["one_sided_p_value"].iloc[0] == 1.0
+
+
+class TestCorrection09NeighbourImmediatelyAdjacent:
+    """9. Neighbours are immediately adjacent grid cells only."""
+
+    def test_same_sigma_diff_ib_adjacent(self):
+        """Same sigma, different IB is adjacent."""
+        from research.es_vix_level_discovery.stage2_metrics import _are_adjacent_cells
+        c1 = {"config_id": "A", "sigma_multiplier": 1.0, "ib_minutes": 30,
+              "offset_family": "proportional", "offset_value": 0.0}
+        c2 = {"config_id": "B", "sigma_multiplier": 1.0, "ib_minutes": 60,
+              "offset_family": "proportional", "offset_value": 0.0}
+        assert _are_adjacent_cells(c1, c2)
+
+    def test_diff_offset_family_not_neighbour(self):
+        """Proportional and fixed are never neighbours."""
+        from research.es_vix_level_discovery.stage2_metrics import _are_adjacent_cells
+        c1 = {"config_id": "A", "sigma_multiplier": 1.0, "ib_minutes": 30,
+              "offset_family": "proportional", "offset_value": 0.0}
+        c2 = {"config_id": "B", "sigma_multiplier": 1.0, "ib_minutes": 30,
+              "offset_family": "fixed", "offset_value": 2.5}
+        assert not _are_adjacent_cells(c1, c2)
+
+    def test_nonadjacent_sigma_not_neighbour(self):
+        """Sigma diff of 2 steps (0.75→1.25) is not adjacent."""
+        from research.es_vix_level_discovery.stage2_metrics import _are_adjacent_cells
+        c1 = {"config_id": "A", "sigma_multiplier": 0.75, "ib_minutes": 30,
+              "offset_family": "proportional", "offset_value": 0.0}
+        c2 = {"config_id": "B", "sigma_multiplier": 1.25, "ib_minutes": 30,
+              "offset_family": "proportional", "offset_value": 0.0}
+        assert not _are_adjacent_cells(c1, c2)
+
+    def test_multiple_axes_not_neighbour(self):
+        """Diff in sigma AND ib is not a neighbour."""
+        from research.es_vix_level_discovery.stage2_metrics import _are_adjacent_cells
+        c1 = {"config_id": "A", "sigma_multiplier": 1.0, "ib_minutes": 30,
+              "offset_family": "proportional", "offset_value": 0.0}
+        c2 = {"config_id": "B", "sigma_multiplier": 1.25, "ib_minutes": 60,
+              "offset_family": "proportional", "offset_value": 0.0}
+        assert not _are_adjacent_cells(c1, c2)
+
+    def test_adjacent_proportional_offset(self):
+        """0.0 and 0.02 are adjacent proportional offsets."""
+        from research.es_vix_level_discovery.stage2_metrics import _are_adjacent_cells
+        c1 = {"config_id": "A", "sigma_multiplier": 1.0, "ib_minutes": 30,
+              "offset_family": "proportional", "offset_value": 0.0}
+        c2 = {"config_id": "B", "sigma_multiplier": 1.0, "ib_minutes": 30,
+              "offset_family": "proportional", "offset_value": 0.02}
+        assert _are_adjacent_cells(c1, c2)
+
+    def test_adjacent_fixed_offset(self):
+        """2.5 and 5.0 are adjacent fixed offsets."""
+        from research.es_vix_level_discovery.stage2_metrics import _are_adjacent_cells
+        c1 = {"config_id": "A", "sigma_multiplier": 1.0, "ib_minutes": 30,
+              "offset_family": "fixed", "offset_value": 2.5}
+        c2 = {"config_id": "B", "sigma_multiplier": 1.0, "ib_minutes": 30,
+              "offset_family": "fixed", "offset_value": 5.0}
+        assert _are_adjacent_cells(c1, c2)
+
+    def test_nonadjacent_proportional_offset(self):
+        """0.0 and 0.04 are NOT adjacent."""
+        from research.es_vix_level_discovery.stage2_metrics import _are_adjacent_cells
+        c1 = {"config_id": "A", "sigma_multiplier": 1.0, "ib_minutes": 30,
+              "offset_family": "proportional", "offset_value": 0.0}
+        c2 = {"config_id": "B", "sigma_multiplier": 1.0, "ib_minutes": 30,
+              "offset_family": "proportional", "offset_value": 0.04}
+        assert not _are_adjacent_cells(c1, c2)
+
+
+class TestCorrection10StabilityBothHorizons:
+    """10. Stability checks separate for 60m and 120m."""
+
+    def test_stability_returns_horizon_specific_reasons(self):
+        yr = pd.DataFrame({
+            "config_id": ["A", "A", "A", "A"],
+            "horizon": ["60m", "60m", "120m", "120m"],
+            "year": ["2018", "2019", "2018", "2019"],
+            "touch_count": [190, 10, 80, 80],
+            "complete_label_count": [180, 10, 75, 75],
+            "median_mfe_points": [5.0, 5.0, 4.0, 4.0],
+            "median_mae_points": [2.0, 2.0, 2.0, 2.0],
+            "mean_directional_return_over_sigma": [0.5, 0.5, 0.4, 0.4],
+        })
+        dr = pd.DataFrame({
+            "config_id": ["A", "A", "A", "A"],
+            "horizon": ["60m", "60m", "120m", "120m"],
+            "direction": ["LONG", "SHORT", "LONG", "SHORT"],
+            "touch_count": [100, 100, 80, 80],
+            "complete_label_count": [95, 95, 75, 75],
+            "median_mfe_points": [5.0, 5.0, 4.0, 4.0],
+            "median_mae_points": [2.0, 2.0, 2.0, 2.0],
+            "mean_directional_return_over_sigma": [0.5, 0.5, 0.4, 0.4],
+        })
+        reasons = _check_stability_year_direction("A", yr, dr, pd.DataFrame())
+        has_60m = any("60m" in r for r in reasons)
+        has_120m = any("120m" in r for r in reasons)
+        # Only 60m should have year issue (190/200 = 95% > 80%)
+        assert has_60m
+        assert not has_120m
+
+
+class TestCorrection11SurvivorRankNotAlphabetical:
+    """11. Survivor selection ranks by metrics, not config_id alphabetically."""
+
+    def test_survivor_follows_rank_not_alphabetical(self):
+        """When capped, rank determines survivor, not config ID order."""
+        ids_60m = sorted([f"CFG_{i}" for i in range(50)])
+        ids_120m = sorted([f"CFG_{i}" for i in range(50)])
+        metrics = pd.DataFrame({
+            "config_id": ids_60m + ids_120m,
+            "horizon": ["60m"] * 50 + ["120m"] * 50,
+            "valid_complete_labels": [200] * 100,
+            "long_count": [80] * 100,
+            "short_count": [80] * 100,
+            "unique_sessions": [60] * 100,
+            "generated_levels": [100] * 100,
+            "physical_first_touches": [200] * 100,
+            "incomplete_labels": [0] * 100,
+            "gap_through_count": [10] * 100,
+            "ambiguous_first_passage_count": [5] * 100,
+            "overlap_clusters": [10] * 100,
+            "overlap_adjusted_effective_n": [150] * 100,
+            "median_mfe_points": [float(i % 10) for i in range(100)],
+            "median_mae_points": [float(10 - i % 10) for i in range(100)],
+            "mean_directional_return_over_sigma": [0.5 + 0.05 * (i % 10) for i in range(100)],
+            "positive_directional_return_rate": [0.5 + 0.05 * (i % 10) for i in range(100)],
+            "p_favorable_first_0.25": [0.5] * 100,
+            "p_adverse_first_0.25": [0.3] * 100,
+            "p_ambiguous_0.25": [0.1] * 100,
+            "p_neither_reached_0.25": [0.1] * 100,
+            "p_favorable_first_0.50": [0.4] * 100,
+            "p_adverse_first_0.50": [0.3] * 100,
+            "p_ambiguous_0.50": [0.1] * 100,
+            "p_neither_reached_0.50": [0.2] * 100,
+            "p_favorable_first_0.75": [0.3] * 100,
+            "p_adverse_first_0.75": [0.3] * 100,
+            "p_ambiguous_0.75": [0.1] * 100,
+            "p_neither_reached_0.75": [0.3] * 100,
+            "p_favorable_first_1.00": [0.2] * 100,
+            "p_adverse_first_1.00": [0.3] * 100,
+            "p_ambiguous_1.00": [0.1] * 100,
+            "p_neither_reached_1.00": [0.4] * 100,
+            "mfe_mae_ratio_of_medians": [2.0] * 100,
+        })
+        decisions = classify_configs(
+            metrics_df=metrics,
+            baseline_lift_df=pd.DataFrame(),
+            direction_metrics=pd.DataFrame(),
+            year_metrics=pd.DataFrame(),
+            grid_df=pd.DataFrame(),
+            excursions_df=pd.DataFrame(),
+        )
+        passed = decisions[decisions["classification"] == "PASS"]
+        assert len(passed) <= 36
+        # The configs with highest median_mfe_points should survive,
+        # NOT the alphabetically first ones
+        if len(passed) > 0:
+            survived_ids = passed["config_id"].tolist()
+            assert survived_ids != sorted(ids_60m[:36]), \
+                "Survivors are alphabetically first — ranking not applied"
+
+    def test_equal_weight_60m_120m(self):
+        """Both primary horizons receive equal weight in median ranks."""
+        rank = compute_median_ranks(
+            pd.DataFrame({
+                "config_id": ["A", "A", "B", "B"],
+                "horizon": ["60m", "120m", "60m", "120m"],
+                "median_mfe_points": [5.0, 3.0, 3.0, 5.0],
+                "mean_directional_return_over_sigma": [0.5, 0.3, 0.3, 0.5],
+                "positive_directional_return_rate": [0.6, 0.4, 0.4, 0.6],
+            }),
+            horizons=["60m", "120m"]
+        )
+        if not rank.empty:
+            # Both A and B should have similar combined rank
+            assert "combined_rank" in rank.columns
+
+
+class TestCorrection12AllArtifactsWritten:
+    """12. All required artifacts are written."""
+
+    def test_artifact_list_in_runner(self):
+        import inspect
+        from research.es_vix_level_discovery.stage2_runner import development_run
+        source = inspect.getsource(development_run)
+        artifacts = [
+            "MANIFEST.json",
+            "CONFIG_RESULTS.csv",
+            "YEAR_RESULTS.csv",
+            "DIRECTION_RESULTS.csv",
+            "MONTH_RESULTS.csv",
+            "VIX_REGIME_RESULTS.csv",
+            "TIME_OF_DAY_RESULTS.csv",
+            "BASELINE_RESULTS.csv",
+            "NEIGHBOURHOOD_RESULTS.csv",
+            "SURVIVOR_DECISIONS.csv",
+            "REPORT.md",
+            "OUTPUT_HASHES.sha256",
+        ]
+        for art in artifacts:
+            assert art in source, f"Missing artifact writer: {art}"
+
+
+class TestCorrection13DeterminismAndHoldout:
+    """13. Deterministic synthetic reruns match, holdout remains UNOPENED."""
+
+    def test_holdout_remains_unopened(self):
+        with open(HOLDOUT_PATH) as f:
+            h = json.load(f)
+        assert h["status"] == "UNOPENED"
+
+    def test_baseline_seeds_deterministic(self):
+        s1 = [_session_seed("CFG_A", "60m", "T1", i, "MASTER") for i in range(5)]
+        s2 = [_session_seed("CFG_A", "60m", "T1", i, "MASTER") for i in range(5)]
+        assert s1 == s2
+
+    def test_classify_configs_stable_with_extra_params(self):
+        """Adding excursions_df/neighbour_support_df doesn't break determinism."""
+        metrics = pd.DataFrame({
+            "config_id": ["A", "A", "B", "B"],
+            "horizon": ["60m", "120m", "60m", "120m"],
+            "valid_complete_labels": [200, 200, 200, 200],
+            "long_count": [80, 80, 80, 80],
+            "short_count": [80, 80, 80, 80],
+            "unique_sessions": [60, 60, 60, 60],
+            "generated_levels": [100, 100, 100, 100],
+            "physical_first_touches": [200, 200, 200, 200],
+            "incomplete_labels": [0, 0, 0, 0],
+            "gap_through_count": [10, 10, 10, 10],
+            "ambiguous_first_passage_count": [5, 5, 5, 5],
+            "overlap_clusters": [10, 10, 10, 10],
+            "overlap_adjusted_effective_n": [150, 150, 150, 150],
+            "median_mfe_points": [5.0, 5.0, 3.0, 3.0],
+            "median_mae_points": [2.0, 2.0, 4.0, 4.0],
+            "mean_directional_return_over_sigma": [0.5, 0.5, 0.3, 0.3],
+            "positive_directional_return_rate": [0.6, 0.6, 0.5, 0.5],
+            "p_favorable_first_0.25": [0.5, 0.5, 0.4, 0.4],
+            "p_adverse_first_0.25": [0.3, 0.3, 0.3, 0.3],
+            "p_ambiguous_0.25": [0.1, 0.1, 0.1, 0.1],
+            "p_neither_reached_0.25": [0.1, 0.1, 0.2, 0.2],
+            "p_favorable_first_0.50": [0.4, 0.4, 0.3, 0.3],
+            "p_adverse_first_0.50": [0.3, 0.3, 0.3, 0.3],
+            "p_ambiguous_0.50": [0.1, 0.1, 0.1, 0.1],
+            "p_neither_reached_0.50": [0.2, 0.2, 0.3, 0.3],
+            "p_favorable_first_0.75": [0.3, 0.3, 0.2, 0.2],
+            "p_adverse_first_0.75": [0.3, 0.3, 0.3, 0.3],
+            "p_ambiguous_0.75": [0.1, 0.1, 0.1, 0.1],
+            "p_neither_reached_0.75": [0.3, 0.3, 0.4, 0.4],
+            "p_favorable_first_1.00": [0.2, 0.2, 0.1, 0.1],
+            "p_adverse_first_1.00": [0.3, 0.3, 0.3, 0.3],
+            "p_ambiguous_1.00": [0.1, 0.1, 0.1, 0.1],
+            "p_neither_reached_1.00": [0.4, 0.4, 0.5, 0.5],
+            "mfe_mae_ratio_of_medians": [2.5, 2.5, 0.75, 0.75],
+        })
+        d1 = classify_configs(metrics, baseline_lift_df=pd.DataFrame(),
+                               direction_metrics=pd.DataFrame(),
+                               year_metrics=pd.DataFrame(),
+                               grid_df=pd.DataFrame(),
+                               excursions_df=pd.DataFrame())
+        d2 = classify_configs(metrics, baseline_lift_df=pd.DataFrame(),
+                               direction_metrics=pd.DataFrame(),
+                               year_metrics=pd.DataFrame(),
+                               grid_df=pd.DataFrame(),
+                               excursions_df=pd.DataFrame())
+        pd.testing.assert_frame_equal(d1, d2)

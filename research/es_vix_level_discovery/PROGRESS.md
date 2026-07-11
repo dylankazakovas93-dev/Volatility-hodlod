@@ -101,13 +101,19 @@ correction-required issues:
 - [x] stage2_runner.py: CLI with --preflight, --synthetic-smoke, --development-run
 - [x] stage2_metrics.py: locked metric families (counts, excursions, returns,
       first-passage, stability diagnostics, neighbour support, concentration)
-- [x] stage2_baselines.py: 1,000-resample deterministic matched-random baseline
-      with VIX deciles from 2018–2019 only, seed manifest
-- [x] stage2_selection.py: minimum-power rules, Pareto-frontier dominance,
-      isolated-spike detection, direction/year clustering, survivor cap 36
+- [x] stage2_baselines.py: rewritten with per-touch matching, year/month/weekday/
+      30-min bucket/direction/exact VIX decile/roll-day, pool exclusion of actual
+      touch and label window, deterministic per-resample seeding, proper aggregation
+      to one row per config×horizon×resample, correct lift (p05/p95/percentile/
+      p-value, direction-aware)
+- [x] stage2_selection.py: rewritten with adjacent-only neighbour cells (±1 step),
+      per-horizon stability (80% concentration, 90% return contribution), joint
+      Pareto over both primary horizons, equal-weight 60m/120m median ranks,
+      neighbour-support and stability ranks, survivor cap by rank not alphabetical
 - [x] __init__.py added to research/ and research/es_vix_level_discovery/ for
       consistent import support
-- [x] Date firewall enforced: exit code 75 on 2020+ data
+- [x] Date firewall enforced: exit code 75 on 2020+ data; firewall also inspected
+      in compute_all_metrics(), excursion detection, and all dated-column output
 - [x] Exactly 132 configurations verified; registry/grid equality enforced
 - [x] All metric denominators and missing-value rules defined explicitly
 - [x] Ratio of medians (median_MFE / median_MAE) calculated as specified
@@ -115,17 +121,24 @@ correction-required issues:
 - [x] Baseline matching respects horizon availability
 - [x] Overlap-adjusted effective sample size computed
 - [x] Zero-denominator handling for MAE
-- [x] Tests: 69 Stage 2 tests, all passing
-- [x] Stage 0 and Stage 1 tests continue to pass (86 + 69 = 155 total)
-- [x] --preflight passes
-- [x] --synthetic-smoke passes
+- [x] All 13 audited Stage 2A defects corrected (development_run() pipeline,
+      --confirm-development-only guard, ES filter to 2018–2019, firewall coverage,
+      baseline matched-random semantics, neighbour/stability/survivor semantics,
+      all 12 artifacts)
+- [x] Tests: 95 Stage 2 tests, all passing
+- [x] Stage 0 and Stage 1 tests continue to pass (86 + 95 = 181 total)
+- [x] --preflight passes (grid=132, registry=132, ES/VIX hashes match, holdout UNOPENED)
+- [x] --synthetic-smoke passes (132 levels, classifications: INCONCLUSIVE_LOW_POWER)
 - [x] --development-run NOT executed
 - [x] No 2020+ OHLC or outcome values accessed
 - [x] No 2025–2026 OHLC values inspected for any purpose
 - [x] Gate A and holdout remain UNOPENED
-- [x] Runners directory structure frozen: runs/&lt;run_id&gt;/ with 11 artifact files
+- [x] Runners directory structure frozen: runs/&lt;run_id&gt;/ with 12 artifact files
 - [x] 132-config grid unchanged
 - [x] Stage 1 signal/label semantics unchanged
 - [x] No TP, SL, BE, trailing, sizing, costs or trade management added
+- [x] Bug fixes: empty year_metrics/direction_metrics guard in
+      _check_stability_year_direction; MAE p-value test assertion corrected (1.0
+      when all baseline < actual for lower-is-better metric)
 
 ### Stage 2B — Historical Development Results — Not Started

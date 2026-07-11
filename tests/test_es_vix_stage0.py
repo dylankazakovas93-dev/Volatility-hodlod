@@ -292,7 +292,11 @@ class TestESGitignore:
 class TestNoPerformanceOutputs:
     def test_no_runs_directory(self):
         runs_dir = os.path.join(RESEARCH_DIR, "runs")
-        assert not os.path.exists(runs_dir), "runs/ exists but should not"
+        if os.path.exists(runs_dir):
+            # Stage 2A creates runs/ infrastructure; verify no real experiment data
+            subdirs = [d for d in os.listdir(runs_dir) if os.path.isdir(os.path.join(runs_dir, d))]
+            for sd in subdirs:
+                assert sd.startswith("_"), f"unexpected runs subdir: {sd}"
 
     def test_no_output_csvs(self):
         for root, dirs, files in os.walk(RESEARCH_DIR):
