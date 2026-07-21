@@ -1,0 +1,74 @@
+{
+  "control (tolerance=-1, no near-miss entries added)": {
+    "tolerance_atr": -1,
+    "executed": 1107,
+    "net_pts": 6648.17,
+    "PF": 1.2924,
+    "TP": 394,
+    "SL": 333,
+    "BE": 281,
+    "cutoff": 99,
+    "max_drawdown": -1290.29,
+    "near_miss_trades": 0,
+    "near_miss_pnl": 0.0,
+    "negative_years": [
+      2019,
+      2023,
+      2024
+    ]
+  },
+  "tolerance=0.25 ATR": {
+    "tolerance_atr": 0.25,
+    "executed": 1108,
+    "net_pts": 6736.67,
+    "PF": 1.2963,
+    "TP": 395,
+    "SL": 333,
+    "BE": 281,
+    "cutoff": 99,
+    "max_drawdown": -1290.29,
+    "near_miss_trades": 1,
+    "near_miss_pnl": 88.5,
+    "negative_years": [
+      2019,
+      2023,
+      2024
+    ]
+  },
+  "tolerance=0.5 ATR": {
+    "tolerance_atr": 0.5,
+    "executed": 1113,
+    "net_pts": 7118.04,
+    "PF": 1.3131,
+    "TP": 399,
+    "SL": 333,
+    "BE": 282,
+    "cutoff": 99,
+    "max_drawdown": -1290.29,
+    "near_miss_trades": 6,
+    "near_miss_pnl": 469.88,
+    "negative_years": [
+      2019,
+      2023,
+      2024
+    ]
+  },
+  "tolerance=1.0 ATR": {
+    "tolerance_atr": 1.0,
+    "executed": 1120,
+    "net_pts": 7753.04,
+    "PF": 1.341,
+    "TP": 404,
+    "SL": 333,
+    "BE": 284,
+    "cutoff": 99,
+    "max_drawdown": -1254.18,
+    "near_miss_trades": 13,
+    "near_miss_pnl": 1104.88,
+    "negative_years": [
+      2019,
+      2023,
+      2024
+    ]
+  }
+}
