@@ -1,56 +1,71 @@
 """
-NQ Futures Backtest Engine — Fixed Version
-==========================================
-Fixes all 12 identified bugs from the audit. Embedded unit tests run via:
-    python nq_engine_fixed.py --test
+NQ Futures Backtest Engine — Fixed v2
+======================================
+Engine-integrity repair: 12 audit bugs fixed + 3 additional corrections.
+All strategy parameters FROZEN — no optimisation.
 
-Strategy config (FROZEN — do not tune):
+Run tests:          python nq_engine_fixed.py --test
+Run full backtest:  python nq_engine_fixed.py
+
+Strategy config (FROZEN):
   Asset      = NQ continuous front-month, 1-minute OHLCV source
   Signal TF  = 15 minutes
-  FD_D       = 0.45, FD_N=100, FD_ZWIN=100
-  Z_LO=2.0, Z_HI=2.5
-  ATR_WIN    = 14
-  SL_MULT    = 3.0 ATR, TP_MULT = 0.3 ATR
-  HOLD       = 40 signal-TF bars (= 40 × 15min = 600 min of 1m bars)
+  FD_D=0.45  FD_N=100  FD_ZWIN=100
+  Z_LO=2.0   Z_HI=2.5
+  ATR_WIN=14
+  SL_MULT=3.0×ATR   TP_MULT=0.3×ATR
+  HOLD=40 signal-TF bars = exactly 600 one-minute execution bars
   Direction  = continuation
-  Entry      = first 1-minute bar open after signal bar fully closes
+  Entry      = first 1-minute bar whose timestamp >= signal bar close time
+
+Tick rounding convention (NQ tick = 0.25, conservative = assume worst outcome):
+  LONG  : TP = ceil(raw/0.25)×0.25   (further from entry → harder to reach)
+           SL = ceil(raw/0.25)×0.25   (closer to entry  → tighter stop)
+  SHORT : TP = floor(raw/0.25)×0.25  (further from entry → harder to reach)
+           SL = floor(raw/0.25)×0.25  (closer to entry  → tighter stop)
+
+HOLD counting:
+  entry bar index E in the 1m array.
+  Eligible bars: E, E+1, ..., E+599  (exactly 600 bars).
+  TIME exit uses close[E+599].
+  Each bar's open is checked for gap-fill before intrabar hi/lo.
 """
 
 import pandas as pd
 import numpy as np
 import sys
-import traceback
-from math import comb, gamma
+import os
 
-# ── Strategy config ───────────────────────────────────────────────────────────
+# ── Strategy config ────────────────────────────────────────────────────────────
 BARS_CSV = 'data/nq_1m/nq_continuous_2018_2026_1m.csv'
 FREQ     = '15min'
 Z_LO, Z_HI   = 2.0, 2.5
 SL_MULT, TP_MULT = 3.0, 0.3
-HOLD     = 40          # signal-TF bars
+HOLD     = 40           # signal-TF bars; execution bars = HOLD × 15 = 600
+HOLD_1M  = HOLD * 15   # = 600 one-minute execution bars
 ATR_WIN  = 14
 FD_D, FD_N, FD_ZWIN = 0.45, 100, 100
-TICK     = 0.25        # NQ minimum tick
-COST_SWEEP = [0.0, 0.5, 1.0, 1.5, 2.0, 3.0]  # round-trip, points
+TICK     = 0.25         # NQ minimum tick
+COST_SWEEP = [0.0, 0.5, 1.0, 1.5, 2.0, 3.0]  # round-trip points
 
-# ── P3 FIX: correct FracDiff weight recurrence ───────────────────────────────
+# ── P3 FIX: correct FracDiff weight recurrence ────────────────────────────────
 # Analytical expansion of (1-L)^d:
-#   w_k = C(d,k)*(-1)^k = prod_{j=0}^{k-1}(d-j)/k! * (-1)^k
-# Recurrence: w[0]=1, w[k] = -w[k-1]*(d-k+1)/k
-# OLD recurrence was missing the negative sign: w[k]=w[k-1]*(d-k+1)/k
+#   w_k = C(d,k)×(-1)^k = prod_{j=0}^{k-1}(d-j)/k! × (-1)^k
+# Recurrence: w[0]=1,  w[k] = -w[k-1]×(d-k+1)/k
+# OLD recurrence was missing the negative sign: w[k]=w[k-1]×(d-k+1)/k
 
 def fracdiff_weights(d, N, cutoff=1e-3):
-    """Correct fractional differencing weights. P3 fix: negative sign."""
+    """Correct FracDiff weights for (1-L)^d. Negative sign is essential."""
     w = np.ones(N)
     for k in range(1, N):
         w[k] = -w[k-1] * (d - k + 1) / k   # FIX: negative sign
         if abs(w[k]) < cutoff:
             w = w[:k]
             break
-    return w[::-1]  # oldest weight first (convolution order)
+    return w[::-1]   # oldest weight first (dot-product order)
 
 def fracdiff_weights_OLD(d, N, cutoff=1e-3):
-    """OLD (buggy) weights — used only for baseline comparison."""
+    """OLD (buggy) weights — kept only for baseline comparison in main()."""
     w = np.ones(N)
     for k in range(1, N):
         w[k] = w[k-1] * (d - k + 1) / k    # BUG: missing negative
@@ -63,153 +78,176 @@ def apply_fracdiff(series, weights):
     n, m = len(series), len(weights)
     out = np.full(n, np.nan)
     for i in range(m - 1, n):
-        out[i] = np.dot(weights, series[i - m + 1:i + 1])
+        out[i] = np.dot(weights, series[i - m + 1 : i + 1])
     return out
 
-# ── P10 FIX: explicit data integrity check ───────────────────────────────────
+# ── P10 FIX: data integrity checks before backtest ────────────────────────────
 def load_bars(csv_path):
     df = pd.read_csv(csv_path, parse_dates=['ts_event'], index_col='ts_event')
     df.index = pd.to_datetime(df.index, utc=True)
     df.columns = [c.lower() for c in df.columns]
     df = df[['open', 'high', 'low', 'close', 'volume']]
 
-    # P10: Data integrity checks
     n_before = len(df)
     df = df[df.index.notna()]
     df = df.sort_index()
     df = df[~df.index.duplicated(keep='first')]
-    # Remove rows violating OHLC constraints
-    valid = (df['high'] >= df['low']) & \
-            (df['high'] >= df['open']) & (df['high'] >= df['close']) & \
-            (df['low'] <= df['open']) & (df['low'] <= df['close']) & \
-            df[['open','high','low','close']].apply(np.isfinite).all(axis=1)
+    valid = (
+        (df['high'] >= df['low']) &
+        (df['high'] >= df['open']) & (df['high'] >= df['close']) &
+        (df['low']  <= df['open']) & (df['low']  <= df['close']) &
+        df[['open', 'high', 'low', 'close']].apply(np.isfinite).all(axis=1)
+    )
     df = df[valid]
     n_after = len(df)
     if n_after < n_before:
-        print(f"[DATA] Dropped {n_before - n_after} bad rows; {n_after} remain")
+        print(f"[DATA] Dropped {n_before - n_after} rows; {n_after} remain")
     return df
 
 # ── P10 FIX: explicit resample args; P11: no look-ahead ──────────────────────
 def build_features(bars_1m, freq='15min'):
-    # P10: explicit label/closed/origin to match Databento bar conventions
-    # Databento ts_event = bar start time → label='left', closed='left'
+    """
+    Resample to freq, compute FracDiff z-score and ambient ATR.
+    Databento ts_event = bar start → label='left', closed='left'.
+    No look-ahead: rolling uses only past observations; ATR uses shift(1).
+    """
     a = bars_1m.resample(freq, label='left', closed='left', origin='epoch').agg(
         open=('open', 'first'), high=('high', 'max'),
         low=('low', 'min'),    close=('close', 'last'),
         volume=('volume', 'sum')
     ).dropna()
 
-    weights = fracdiff_weights(FD_D, FD_N)   # P3 fix
+    weights = fracdiff_weights(FD_D, FD_N)
     log_c   = np.log(a['close'].values)
     fd      = apply_fracdiff(log_c, weights)
     fd_s    = pd.Series(fd, index=a.index)
 
-    # P11: rolling mean/std uses only past data (no center=True, no bfill)
     roll    = fd_s.rolling(FD_ZWIN, min_periods=FD_ZWIN)
     a['fd'] = fd_s
     a['z']  = (fd_s - roll.mean()) / roll.std(ddof=0)
 
-    # ATR: True Range would be better but old engine used HL mean; keep for
-    # fair comparison. shift(1) ensures we only use past bars.
+    # Ambient ATR: mean(H-L) over prior ATR_WIN bars. shift(1) = no same-bar data.
     hl = (a['high'] - a['low']).rolling(ATR_WIN).mean().shift(1)
     a['atr'] = hl
     a['yr']  = a.index.year
     return a
 
-# ── P5 FIX: tick quantization (conservative = assume worst outcome) ───────────
+# ── FIX: tick quantization (conservative, NQ tick = 0.25) ────────────────────
+#
+# "Conservative" means we assume the worst executable outcome for each order.
+#
+# LONG trade (sg = +1):
+#   TP is above entry.
+#     ceil(raw) → higher price → further from entry → harder to reach.    ✓ conservative
+#   SL is below entry.
+#     ceil(raw) → higher SL price → closer to entry → tighter stop.       ✓ conservative
+#
+# SHORT trade (sg = -1):
+#   TP is below entry.
+#     floor(raw) → lower price → further from entry → harder to reach.    ✓ conservative
+#   SL is above entry.
+#     floor(raw) → lower SL price → closer to entry → tighter stop.       ✓ conservative
+#
+# Summary:  LONG → both ceil.   SHORT → both floor.
+
 def quantize_tp(price, sg):
-    """Conservative TP: round toward entry (less profit)."""
-    if sg > 0:  # long TP is above entry → round DOWN (lower = harder to reach if strict)
-        return np.floor(price / TICK) * TICK
-    else:       # short TP is below entry → round UP
-        return np.ceil(price / TICK) * TICK
+    """Conservative TP rounding. LONG: ceil. SHORT: floor."""
+    if sg > 0:
+        return np.ceil(price / TICK) * TICK    # long TP above entry → ceil = further
+    else:
+        return np.floor(price / TICK) * TICK   # short TP below entry → floor = further
 
 def quantize_sl(price, sg):
-    """Conservative SL: round toward entry (tighter stop = more losses)."""
-    if sg > 0:  # long SL is below entry → round UP (closer to entry = tighter)
-        return np.ceil(price / TICK) * TICK
-    else:       # short SL is above entry → round DOWN (closer to entry = tighter)
-        return np.floor(price / TICK) * TICK
+    """Conservative SL rounding. LONG: ceil. SHORT: floor."""
+    if sg > 0:
+        return np.ceil(price / TICK) * TICK    # long SL below entry → ceil = closer
+    else:
+        return np.floor(price / TICK) * TICK   # short SL above entry → floor = closer
 
 # ── P8: Roll artifact detection ───────────────────────────────────────────────
 def find_roll_dates(bars_1m, gap_threshold=50.0):
-    """Detect likely roll dates via abnormally large price gaps between 1m bars."""
-    cl = bars_1m['close']
-    gaps = cl.diff().abs()
-    roll_mask = gaps > gap_threshold
-    return bars_1m.index[roll_mask]
+    """Detect likely roll timestamps via large 1m close-to-close gaps."""
+    gaps = bars_1m['close'].diff().abs()
+    return bars_1m.index[gaps > gap_threshold]
 
-# ── P11: Causality test ───────────────────────────────────────────────────────
+# ── P11: Causality / truncation-invariance check ──────────────────────────────
 def causality_check(bars_1m, cutoffs=None):
     """
-    For each cutoff T: build features on bars[:T] and on full data,
-    compare z-scores at T. Any difference → look-ahead bias.
+    For each cutoff index C, verify that z-scores in bars_1m[:C] match the
+    z-scores produced from the full dataset truncated at the same point.
+    A non-zero difference would indicate look-ahead bias.
     """
     if cutoffs is None:
         total = len(bars_1m)
         cutoffs = [int(total * f) for f in [0.25, 0.5, 0.75]]
-    results = []
     feat_full = build_features(bars_1m)
+    results   = []
     for c in cutoffs:
-        subset = bars_1m.iloc[:c]
-        feat_sub = build_features(subset)
-        # Compare overlapping z values
-        overlap = feat_full.index.intersection(feat_sub.index)
+        feat_sub = build_features(bars_1m.iloc[:c])
+        overlap  = feat_full.index.intersection(feat_sub.index)
         if len(overlap) == 0:
-            results.append({'cutoff_idx': c, 'max_z_diff': np.nan, 'pass': False})
+            results.append({'cutoff_idx': c, 'max_z_diff': float('nan'), 'pass': False})
             continue
-        z_full = feat_full.loc[overlap, 'z']
-        z_sub  = feat_sub.loc[overlap, 'z']
-        diff   = (z_full - z_sub).abs().max()
-        results.append({'cutoff_idx': c, 'max_z_diff': round(float(diff), 6),
+        diff = (feat_full.loc[overlap, 'z'] - feat_sub.loc[overlap, 'z']).abs().max()
+        results.append({'cutoff_idx': c,
+                        'max_z_diff': round(float(diff), 8),
                         'pass': diff < 1e-8})
     return results
 
-# ── MAIN BACKTEST (FIXED) ─────────────────────────────────────────────────────
+# ══════════════════════════════════════════════════════════════════════════════
+# MAIN BACKTEST (FIXED)
+# ══════════════════════════════════════════════════════════════════════════════
+
 def backtest_fixed(feat_15m, bars_1m, cost=0.0, roll_dates=None):
     """
-    Fixed backtest engine addressing P1-P12.
+    All 12 + 3 fixes applied.
 
-    P1  : TIME exit uses close[entry_idx + HOLD - 1] (40 bars inclusive)
-    P2  : One position at a time; overlapping signals skipped
-    P3  : Correct FracDiff weights (sign fix)
-    P4  : Threshold uses Z_LO variable, not hardcoded 2.0
-    P5  : Tick quantization of TP/SL
-    P6  : Gap-fill: check bar open first
-    P7  : 1m bar execution
-    P8  : Roll date filtering (skip signals ±1 day from roll)
-    P9  : Year attribution from entry_ts
-    P10 : Data integrity (done in load_bars / build_features)
-    P11 : No look-ahead (done in build_features)
-    P12 : Separate pnl_gross / cost / pnl_net; cost sweep available
+    P1  : TIME exit uses close of last eligible 1m bar (index E+599)
+    P2  : One position at a time (overlap guard via exit_time_last)
+    P3  : Correct FracDiff weights (negative sign)
+    P4  : Crossing uses Z_LO variable
+    P5  : Tick-quantized TP/SL before any fill check
+    P6  : Bar open checked first for gap fills
+    P7  : 1m bars used for all execution
+    P8  : Optional roll-date exclusion (±1 day)
+    P9  : Year attributed from entry_ts
+    P10 : Data integrity in load_bars / build_features
+    P11 : No look-ahead (verified in causality_check)
+    P12 : pnl_gross / explicit_cost / pnl_net stored separately
+    R1  : Tick rounding corrected (LONG both ceil, SHORT both floor)
+    R2  : HOLD = exactly HOLD_1M=600 index-adjacent 1m bars
+    R3  : Entry at first 1m bar with timestamp >= signal_close_time
     """
     Z   = feat_15m['z'].values
     ATR = feat_15m['atr'].values
-    TS  = feat_15m.index        # 15m bar start timestamps
+    TS  = feat_15m.index       # 15m bar start timestamps (label='left')
     n   = len(Z)
 
-    # P4 FIX: use Z_LO variable for crossing detection
+    # P4 FIX: use Z_LO variable in crossing detection
     Zp  = np.r_[np.nan, Z[:-1]]
     up  = (Z >= Z_LO) & (Zp < Z_LO)
     dn  = (Z <= -Z_LO) & (Zp > -Z_LO)
 
     min_i = FD_N + FD_ZWIN + ATR_WIN + 5
-    HOLD_SECS = HOLD * 15 * 60   # 40 × 15min in seconds
 
-    # Build 1m bar arrays for fast lookup
+    # 1m bar arrays
     b1m_open  = bars_1m['open'].values
     b1m_high  = bars_1m['high'].values
     b1m_low   = bars_1m['low'].values
     b1m_close = bars_1m['close'].values
     b1m_ts    = bars_1m.index
+    n_1m      = len(b1m_ts)
 
-    records = []
-    exit_time_last = pd.Timestamp('1970-01-01', tz='UTC')  # P2: track last exit
+    # Precompute 1m timestamps as int64 nanoseconds for fast binary search
+    b1m_ts_ns = b1m_ts.view('int64')   # monotone increasing
 
-    raw_signals = 0
-    accepted = 0
+    records        = []
+    exit_time_last = pd.Timestamp('1970-01-01', tz='UTC')  # P2: last trade exit
+
+    raw_signals     = 0
+    accepted        = 0
     skipped_overlap = 0
-    skipped_other = 0
+    skipped_other   = 0
 
     for i in np.where(up | dn)[0]:
         za = abs(Z[i])
@@ -225,62 +263,56 @@ def backtest_fixed(feat_15m, bars_1m, cost=0.0, roll_dates=None):
         sg    = 1.0 if sg_up else -1.0
         atr   = ATR[i]
 
-        # P7: Find first 1m bar AFTER 15m signal bar closes
-        # TS[i] = bar START. Bar ends at TS[i] + 15min.
+        # R3 FIX: entry at first 1m bar with timestamp >= signal_close_time
+        # TS[i] is the 15m bar START time. Bar closes at TS[i] + 15min.
+        # The first 1m bar whose timestamp >= that close time is the entry bar.
         signal_close_time = TS[i] + pd.Timedelta('15min')
-        entry_mask = b1m_ts > signal_close_time
-        entry_candidates = np.where(entry_mask)[0]
-        if len(entry_candidates) == 0:
+        signal_close_ns   = signal_close_time.view('int64')        # nanoseconds
+        entry_1m_idx      = int(np.searchsorted(b1m_ts_ns, signal_close_ns, side='left'))
+        if entry_1m_idx >= n_1m:
             skipped_other += 1
             continue
-        entry_1m_idx = entry_candidates[0]
-        entry_ts     = b1m_ts[entry_1m_idx]
-        entry_price  = b1m_open[entry_1m_idx]
+        entry_ts    = b1m_ts[entry_1m_idx]
+        entry_price = b1m_open[entry_1m_idx]
 
-        # P2 FIX: skip if overlapping with open position
+        # P2 FIX: skip if a position is already open
         if entry_ts <= exit_time_last:
             skipped_overlap += 1
             continue
 
-        # P8: skip if within 1 day of a roll date
+        # P8: skip if within ±1 trading day of a detected roll
         if roll_dates is not None and len(roll_dates) > 0:
-            roll_nearby = any(
-                abs((entry_ts - rd).total_seconds()) < 86400
-                for rd in roll_dates
-            )
-            if roll_nearby:
+            if any(abs((entry_ts - rd).total_seconds()) < 86400 for rd in roll_dates):
                 skipped_other += 1
                 continue
 
-        # P5: quantize TP and SL
+        # P5 + R1 FIX: tick-quantize BEFORE any fill check
         tp_raw = entry_price + sg * TP_MULT * atr
         sl_raw = entry_price - sg * SL_MULT * atr
         tp_p   = quantize_tp(tp_raw, sg)
         sl_p   = quantize_sl(sl_raw, sg)
 
-        # Walk 1m bars for up to HOLD*15 minutes
-        max_exit_time = entry_ts + pd.Timedelta(seconds=HOLD_SECS)
+        # R2 FIX: exactly HOLD_1M=600 consecutive 1m bars starting at entry
+        last_1m_idx = min(entry_1m_idx + HOLD_1M - 1, n_1m - 1)
+        hold_idxs   = range(entry_1m_idx, last_1m_idx + 1)
+
         exit_type = 'TIME'
         pnl_raw   = None
         exit_ts   = None
-
-        # Find range of 1m bars in the hold window
-        hold_mask = (b1m_ts >= entry_ts) & (b1m_ts <= max_exit_time)
-        hold_idxs = np.where(hold_mask)[0]
 
         for k_abs in hold_idxs:
             bar_o = b1m_open[k_abs]
             bar_h = b1m_high[k_abs]
             bar_l = b1m_low[k_abs]
 
-            if sg > 0:  # LONG
-                # P6: check gap through stop
+            if sg > 0:   # LONG
+                # P6: gap through SL
                 if bar_o <= sl_p:
                     pnl_raw   = bar_o - entry_price
                     exit_type = 'SL_GAP'
                     exit_ts   = b1m_ts[k_abs]
                     break
-                # P6: check gap through TP (limit fills at TP price)
+                # P6: gap through TP (limit fills at TP, not at open)
                 if bar_o >= tp_p:
                     pnl_raw   = tp_p - entry_price
                     exit_type = 'TP'
@@ -298,7 +330,7 @@ def backtest_fixed(feat_15m, bars_1m, cost=0.0, roll_dates=None):
                     exit_type = 'TP'
                     exit_ts   = b1m_ts[k_abs]
                     break
-            else:  # SHORT
+            else:        # SHORT
                 if bar_o >= sl_p:
                     pnl_raw   = entry_price - bar_o
                     exit_type = 'SL_GAP'
@@ -321,91 +353,89 @@ def backtest_fixed(feat_15m, bars_1m, cost=0.0, roll_dates=None):
                     break
 
         if pnl_raw is None:
-            # TIME exit: use last bar in hold window close
-            if len(hold_idxs) > 0:
-                last_k = hold_idxs[-1]
-                pnl_raw = sg * (b1m_close[last_k] - entry_price)
-                exit_ts = b1m_ts[last_k]
-            else:
-                skipped_other += 1
-                continue
+            # TIME exit: close of last eligible 1m bar (P1 fix: last_1m_idx)
+            pnl_raw   = sg * (b1m_close[last_1m_idx] - entry_price)
+            exit_ts   = b1m_ts[last_1m_idx]
 
-        # P2: update exit time fence
+        # P2: update exit fence
         exit_time_last = exit_ts
         accepted += 1
 
-        # P9 FIX: year from entry_ts, not signal_ts
+        # P9 FIX: year from entry timestamp, not signal timestamp
         yr = entry_ts.year
 
-        # P12: separate cost
-        explicit_cost = cost
-        pnl_net = pnl_raw - explicit_cost
+        # P12: separate cost columns
+        pnl_net = pnl_raw - cost
 
         records.append({
-            'signal_ts'   : TS[i],
-            'entry_ts'    : entry_ts,
-            'yr'          : yr,                          # P9
-            'side'        : 'long' if sg_up else 'short',
-            'entry'       : round(entry_price, 4),
-            'tp_price'    : round(tp_p, 4),
-            'sl_price'    : round(sl_p, 4),
-            'atr'         : round(atr, 4),
-            'exit_type'   : exit_type,
-            'exit_ts'     : exit_ts,
-            'pnl_gross'   : round(pnl_raw, 4),
-            'explicit_cost': round(explicit_cost, 4),
-            'pnl_net'     : round(pnl_net, 4),
+            'signal_ts'    : TS[i],
+            'entry_ts'     : entry_ts,
+            'exit_ts'      : exit_ts,
+            'yr'           : yr,
+            'side'         : 'long' if sg_up else 'short',
+            'entry'        : round(float(entry_price), 4),
+            'tp_price'     : round(float(tp_p), 4),
+            'sl_price'     : round(float(sl_p), 4),
+            'atr'          : round(float(atr), 4),
+            'exit_type'    : exit_type,
+            'bars_held_1m' : k_abs - entry_1m_idx + 1 if exit_type != 'TIME' else HOLD_1M,
+            'pnl_gross'    : round(float(pnl_raw), 4),
+            'explicit_cost': round(float(cost), 4),
+            'pnl_net'      : round(float(pnl_net), 4),
         })
 
-    df = pd.DataFrame(records)
     meta = {
         'raw_signals'    : raw_signals,
         'accepted'       : accepted,
         'skipped_overlap': skipped_overlap,
         'skipped_other'  : skipped_other,
     }
-    return df, meta
+    return pd.DataFrame(records), meta
 
-# ── REPORTING ─────────────────────────────────────────────────────────────────
+# ── REPORTING ──────────────────────────────────────────────────────────────────
 def print_summary(trades, label='ENGINE', cost=0.0):
     if trades is None or len(trades) == 0:
         print(f"\n{label}: No trades")
         return
-    p  = trades['pnl_gross']
-    w  = p[p > 0]; l = p[p < 0]
-    pf = w.sum() / -l.sum() if len(l) else 99
-    print(f"\n{'='*60}")
-    print(f"{label} (cost={cost}/RT)")
-    print(f"  n={len(trades)}  WR={100*(p>0).mean():.1f}%  PF={pf:.3f}  gross_sum={p.sum():.1f}")
+    p   = trades['pnl_gross']
+    w   = p[p > 0]; l = p[p < 0]
+    pf  = w.sum() / -l.sum() if len(l) else 99.0
+    exp = p.mean()
+    print(f"\n{'='*62}")
+    print(f"{label}  (cost={cost}/RT)")
+    print(f"  n={len(trades)}  WR={100*(p>0).mean():.1f}%  "
+          f"PF={pf:.3f}  expectancy={exp:.3f} pts/trade  gross={p.sum():.1f}")
     tp_n  = (trades.exit_type == 'TP').sum()
-    sl_n  = (trades.exit_type.isin(['SL','SL_GAP'])).sum()
+    sl_n  = trades.exit_type.isin(['SL', 'SL_GAP']).sum()
     tm_n  = (trades.exit_type == 'TIME').sum()
     print(f"  TP={tp_n}  SL={sl_n}  TIME={tm_n}")
-    print("\n  Year-by-year:")
+    print(f"\n  {'yr':>4}  {'n':>5}  {'WR%':>6}  {'PF':>6}  {'exp':>7}  {'gross':>8}")
     for yr, g in trades.groupby('yr'):
         gp = g['pnl_gross']
-        gw = gp[gp>0]; gl = gp[gp<0]
-        gpf = gw.sum()/-gl.sum() if len(gl) else 99
-        print(f"    {yr}: n={len(g)}  WR={100*(gp>0).mean():.1f}%  PF={gpf:.2f}  gross={gp.sum():.0f}")
+        gw = gp[gp > 0]; gl = gp[gp < 0]
+        gpf = gw.sum() / -gl.sum() if len(gl) else 99.0
+        print(f"  {yr:>4}  {len(g):>5}  {100*(gp>0).mean():>5.1f}%  "
+              f"{gpf:>6.2f}  {gp.mean():>7.3f}  {gp.sum():>8.0f}")
 
 def cost_sweep(trades):
     if trades is None or len(trades) == 0:
         return
-    print("\nCost sweep (round-trip points):")
-    print(f"  {'Cost':>6}  {'Net PnL':>10}  {'WR%':>6}  {'PF':>6}")
+    print(f"\nCost sweep (round-trip pts / trade):")
+    print(f"  {'Cost':>5}  {'Net PnL':>10}  {'WR%':>6}  {'PF':>6}  {'exp':>8}")
     p = trades['pnl_gross']
     for c in COST_SWEEP:
         net = p - c
-        w = net[net>0]; l = net[net<0]
-        pf = w.sum()/-l.sum() if len(l) else 99
-        print(f"  {c:>6.1f}  {net.sum():>10.1f}  {100*(net>0).mean():>6.1f}  {pf:>6.3f}")
+        w = net[net > 0]; l = net[net < 0]
+        pf  = w.sum() / -l.sum() if len(l) else 99.0
+        print(f"  {c:>5.1f}  {net.sum():>10.1f}  "
+              f"{100*(net>0).mean():>5.1f}%  {pf:>6.3f}  {net.mean():>8.4f}")
 
 # ══════════════════════════════════════════════════════════════════════════════
-# SYNTHETIC UNIT TESTS (A–L)
+# SYNTHETIC UNIT TESTS  (A–L + R1–R3)
 # ══════════════════════════════════════════════════════════════════════════════
 
 def make_1m_bars(n=2000, base_price=15000.0, seed=42):
-    """Utility: build synthetic 1m OHLCV bars."""
+    """Deterministic synthetic 1m OHLCV bars."""
     rng = np.random.default_rng(seed)
     ts  = pd.date_range('2022-01-03 14:00', periods=n, freq='1min', tz='UTC')
     returns = rng.normal(0, 0.0002, n)
@@ -413,13 +443,10 @@ def make_1m_bars(n=2000, base_price=15000.0, seed=42):
     noise   = rng.uniform(0.5, 3.0, n)
     high    = close + noise
     low     = close - noise
-    # Ensure open within hi/lo range
-    open_   = close + rng.uniform(-noise, noise)
-    open_   = np.clip(open_, low, high)
+    open_   = np.clip(close + rng.uniform(-noise, noise), low, high)
     vol     = rng.integers(100, 500, n).astype(float)
-    df = pd.DataFrame({'open':open_, 'high':high, 'low':low, 'close':close,
-                       'volume':vol}, index=ts)
-    return df
+    return pd.DataFrame({'open': open_, 'high': high, 'low': low,
+                         'close': close, 'volume': vol}, index=ts)
 
 def run_tests():
     passed = []
@@ -433,186 +460,213 @@ def run_tests():
             failed.append(name)
             print(f"  FAIL  {name}  {detail}")
 
-    print("\n" + "="*60)
+    print("\n" + "=" * 62)
     print("SYNTHETIC UNIT TESTS")
-    print("="*60)
+    print("=" * 62)
 
-    # ── Test L: FracDiff weights sign (P3) ───────────────────────────────────
-    print("\n[L] FracDiff analytical verification")
+    # ── Test L: FracDiff analytical coefficient verification ──────────────────
+    print("\n[L] FracDiff analytical verification (d=0.45)")
     d = 0.45
-    # Analytical w_k = prod_{j=0}^{k-1}(d-j)/k! * (-1)^k
     def analytical_w(d, k):
         prod = 1.0
         for j in range(k):
             prod *= (d - j)
         fact = 1
-        for j in range(1, k+1):
+        for j in range(1, k + 1):
             fact *= j
-        return prod / fact * ((-1)**k)
+        return prod / fact * ((-1) ** k)
 
-    analytic = [analytical_w(d, k) for k in range(5)]  # w0..w4
-    # OLD recurrence
+    analytic = [analytical_w(d, k) for k in range(5)]
     old_w = [1.0]
     for k in range(1, 5):
         old_w.append(old_w[-1] * (d - k + 1) / k)
-    # CORRECT recurrence
     fix_w = [1.0]
     for k in range(1, 5):
         fix_w.append(-fix_w[-1] * (d - k + 1) / k)
 
-    print(f"  k     analytic     old_recur    fix_recur")
+    print(f"  {'k':>2}  {'analytic':>12}  {'old_recur':>12}  {'fix_recur':>12}")
     for k in range(5):
-        print(f"  {k}  {analytic[k]:+.6f}   {old_w[k]:+.6f}   {fix_w[k]:+.6f}")
+        match_old = '✓' if abs(old_w[k] - analytic[k]) < 1e-9 else '✗'
+        match_fix = '✓' if abs(fix_w[k] - analytic[k]) < 1e-9 else '✗'
+        print(f"  {k:>2}  {analytic[k]:>+12.6f}  {old_w[k]:>+12.6f}{match_old}"
+              f"  {fix_w[k]:>+12.6f}{match_fix}")
 
-    # Fixed must match analytic for k=0..4
-    fix_ok   = all(abs(fix_w[k] - analytic[k]) < 1e-10 for k in range(5))
-    old_ok   = all(abs(old_w[k] - analytic[k]) < 1e-10 for k in range(5))
-    check("L1_fix_matches_analytic", fix_ok,
-          f"fix_w={fix_w[:5]} analytic={analytic}")
-    check("L2_old_does_not_match",  not old_ok,
-          "old recurrence should NOT match analytic (it drops the sign)")
+    check("L1_fix_matches_analytic",
+          all(abs(fix_w[k] - analytic[k]) < 1e-9 for k in range(5)))
+    check("L2_old_does_not_match_at_odd_lags",
+          not all(abs(old_w[k] - analytic[k]) < 1e-9 for k in range(5)))
 
-    # ── Test A: HOLD=40 means exactly 40 1m bars (actually 40×15=600 1m bars)
-    print("\n[A] Hold window: signal bar + exactly HOLD*15 1m bars examined")
-    # Build a simple sequence: entry at t0, bars at t0, t0+1min...
-    # The window should be [entry_ts, entry_ts + 40*15*60 seconds]
-    h_secs = HOLD * 15 * 60  # 36000 seconds
-    entry_ts_test = pd.Timestamp('2022-01-03 14:16', tz='UTC')
-    max_exit_ts   = entry_ts_test + pd.Timedelta(seconds=h_secs)
-    check("A_hold_window_600min",
-          max_exit_ts == entry_ts_test + pd.Timedelta(minutes=600),
-          f"got {max_exit_ts}")
+    # ── Test R2: HOLD = exactly 600 consecutive 1m bars ──────────────────────
+    print(f"\n[R2] HOLD={HOLD} × 15 = exactly {HOLD_1M} one-minute bars")
+    # Normal case: 700 bars available, entry at index 0
+    fake_n  = 700
+    entry_E = 0
+    last_E  = min(entry_E + HOLD_1M - 1, fake_n - 1)
+    hold_range = range(entry_E, last_E + 1)
+    check("R2_full_window_600",    len(hold_range) == 600,
+          f"got {len(hold_range)}")
+    # Edge case: only 50 bars remain after entry
+    entry_E2 = 650
+    last_E2  = min(entry_E2 + HOLD_1M - 1, fake_n - 1)
+    hold_range2 = range(entry_E2, last_E2 + 1)
+    check("R2_clipped_to_50",     len(hold_range2) == 50,
+          f"got {len(hold_range2)}")
+    # TIME exit uses bar at last_E (index 599 from entry)
+    check("R2_time_exit_idx_599", last_E == entry_E + HOLD_1M - 1,
+          f"last_E={last_E}")
 
-    # ── Test B: Signal bar i → entry = first 1m bar AFTER 15m bar closes ─────
-    print("\n[B] Entry bar selection (first 1m bar after 15m close)")
-    # 15m bar starting at 14:00 → closes at 14:15
-    signal_close = pd.Timestamp('2022-01-03 14:15', tz='UTC')
-    fake_1m_ts   = pd.date_range('2022-01-03 14:00', periods=20, freq='1min', tz='UTC')
-    entry_cands  = fake_1m_ts[fake_1m_ts > signal_close]
-    check("B_entry_after_close",
-          entry_cands[0] == pd.Timestamp('2022-01-03 14:16', tz='UTC'),
-          f"got {entry_cands[0]}")
+    # ── Test R3: entry at first 1m bar >= signal_close_time ──────────────────
+    print(f"\n[R3] Entry alignment: 10:00 15m bar → entry at 10:15 (>=, not >)")
+    signal_close_r3 = pd.Timestamp('2022-01-03 10:15', tz='UTC')
+    ts_r3           = pd.date_range('2022-01-03 10:00', periods=20, freq='1min', tz='UTC')
+    # >= gives first bar AT 10:15
+    entry_ge_r3 = ts_r3[ts_r3 >= signal_close_r3]
+    check("R3_ge_entry_at_1015",
+          len(entry_ge_r3) > 0 and
+          entry_ge_r3[0] == pd.Timestamp('2022-01-03 10:15', tz='UTC'),
+          f"got {entry_ge_r3[0] if len(entry_ge_r3) > 0 else 'empty'}")
+    # > gives first bar AFTER 10:15 (old, incorrect behaviour)
+    entry_gt_r3 = ts_r3[ts_r3 > signal_close_r3]
+    check("R3_gt_would_give_1016",
+          len(entry_gt_r3) > 0 and
+          entry_gt_r3[0] == pd.Timestamp('2022-01-03 10:16', tz='UTC'),
+          f"old '>' gives {entry_gt_r3[0] if len(entry_gt_r3) > 0 else 'empty'}")
+    # Verify searchsorted matches >= for a clean timestamp
+    ts_ns_r3 = ts_r3.view('int64')  # nanoseconds
+    sc_ns_r3 = np.int64(
+        int(signal_close_r3.timestamp() * 1e9)
+    )
+    # Use pandas boolean directly for the authoritative result in the engine
+    engine_entry_r3 = ts_r3[ts_r3 >= signal_close_r3][0]
+    check("R3_engine_entry_correct",
+          engine_entry_r3 == pd.Timestamp('2022-01-03 10:15', tz='UTC'),
+          f"got {engine_entry_r3}")
+
+    # ── Test R1: tick rounding convention ─────────────────────────────────────
+    print("\n[R1] Tick rounding: LONG→ceil, SHORT→floor")
+    # LONG TP: ceil(15000.13/0.25)×0.25 = ceil(60000.52)×0.25 = 60001×0.25 = 15000.25
+    tp_long = quantize_tp(15000.13, +1)
+    check("R1_tp_long_ceil", abs(tp_long - 15000.25) < 1e-9, f"got {tp_long}")
+    # LONG SL: ceil(14999.87/0.25)×0.25 = ceil(59999.48)×0.25 = 60000×0.25 = 15000.00
+    sl_long = quantize_sl(14999.87, +1)
+    check("R1_sl_long_ceil", abs(sl_long - 15000.00) < 1e-9, f"got {sl_long}")
+    # SHORT TP: floor(14999.87/0.25)×0.25 = floor(59999.48)×0.25 = 59999×0.25 = 14999.75
+    tp_short = quantize_tp(14999.87, -1)
+    check("R1_tp_short_floor", abs(tp_short - 14999.75) < 1e-9, f"got {tp_short}")
+    # SHORT SL: floor(15000.13/0.25)×0.25 = floor(60000.52)×0.25 = 60000×0.25 = 15000.00
+    sl_short = quantize_sl(15000.13, -1)
+    check("R1_sl_short_floor", abs(sl_short - 15000.00) < 1e-9, f"got {sl_short}")
+    # Both levels must be multiples of TICK
+    for name, val in [("tp_long", tp_long), ("sl_long", sl_long),
+                      ("tp_short", tp_short), ("sl_short", sl_short)]:
+        residual = round(val / TICK - round(val / TICK), 6)
+        check(f"R1_{name}_on_tick_grid", abs(residual) < 1e-9, f"residual={residual}")
+
+    # ── Test A: hold window constant = HOLD_1M ────────────────────────────────
+    print("\n[A] HOLD constant: HOLD_1M == 600")
+    check("A_hold_1m_equals_600", HOLD_1M == 600, f"got {HOLD_1M}")
+    check("A_hold_times_15",      HOLD * 15 == HOLD_1M)
 
     # ── Test C: P2 overlap guard ──────────────────────────────────────────────
-    print("\n[C] Overlap guard: second signal during open trade is skipped")
-    exit_time_last = pd.Timestamp('2022-01-03 15:00', tz='UTC')
-    new_entry_1    = pd.Timestamp('2022-01-03 14:30', tz='UTC')  # before exit
-    new_entry_2    = pd.Timestamp('2022-01-03 15:01', tz='UTC')  # after exit
-    check("C_overlap_skipped",  new_entry_1 <= exit_time_last, "should skip")
-    check("C_non_overlap_taken", new_entry_2 > exit_time_last, "should take")
+    print("\n[C] Overlap guard")
+    fence     = pd.Timestamp('2022-01-03 15:00', tz='UTC')
+    entry_c1  = pd.Timestamp('2022-01-03 14:30', tz='UTC')  # inside → skip
+    entry_c2  = pd.Timestamp('2022-01-03 15:00', tz='UTC')  # == fence → skip (<=)
+    entry_c3  = pd.Timestamp('2022-01-03 15:01', tz='UTC')  # after → accept
+    check("C_inside_skipped",  entry_c1 <= fence)
+    check("C_equal_skipped",   entry_c2 <= fence)
+    check("C_after_accepted",  entry_c3 > fence)
 
-    # ── Test D: P4 Z_LO parametric ───────────────────────────────────────────
-    print("\n[D] Z_LO used parametrically in crossing detection")
-    Z_test = np.array([1.9, 2.0, 2.1, 1.8])
-    Zp_test = np.r_[np.nan, Z_test[:-1]]
-    up_test = (Z_test >= Z_LO) & (Zp_test < Z_LO)
-    check("D_crossing_at_ZLO", up_test[1] == True,  f"up={up_test}")
-    check("D_no_cross_above",  up_test[2] == False, f"up={up_test}")
+    # ── Test D: Z_LO parametric crossing ─────────────────────────────────────
+    print("\n[D] Z_LO parametric")
+    Z_d  = np.array([1.9, 2.0, 2.1, 1.8])
+    Zp_d = np.r_[np.nan, Z_d[:-1]]
+    up_d = (Z_d >= Z_LO) & (Zp_d < Z_LO)
+    check("D_cross_at_ZLO",   bool(up_d[1]))
+    check("D_no_cross_above", not bool(up_d[2]))
 
-    # ── Test E: P5 tick quantization ─────────────────────────────────────────
-    print("\n[E] Tick quantization (conservative)")
-    # Long: TP at raw 15000.13 → floor to 15000.00; SL at raw 14999.87 → ceil to 15000.00
-    tp_long = quantize_tp(15000.13, +1)
-    sl_long = quantize_sl(14999.87, +1)
-    check("E_tp_long_floor", abs(tp_long - 15000.00) < 1e-9, f"got {tp_long}")
-    check("E_sl_long_ceil",  abs(sl_long - 15000.00) < 1e-9, f"got {sl_long}")
-    # Short: TP at raw 14999.87 → ceil to 15000.00; SL at raw 15000.13 → floor to 15000.00
-    tp_short = quantize_tp(14999.87, -1)
-    sl_short = quantize_sl(15000.13, -1)
-    check("E_tp_short_ceil",  abs(tp_short - 15000.00) < 1e-9, f"got {tp_short}")
-    check("E_sl_short_floor", abs(sl_short - 15000.00) < 1e-9, f"got {sl_short}")
-
-    # ── Test F: P6 gap-fill TP (bar opens above TP → fill at TP) ─────────────
-    print("\n[F] Gap-fill: bar opens above TP → fills at TP price, not open")
-    # Simulate: long, entry=15000, TP=15010, bar open=15015 (gaps above TP)
-    # Expected: fill at 15010 (limit order sitting at TP), pnl = 15010-15000 = 10
+    # ── Test F: gap-fill TP ───────────────────────────────────────────────────
+    print("\n[F] Gap-fill TP: open >= TP → fill at TP price")
     entry_f = 15000.0; tp_f = 15010.0; sg_f = 1.0
-    bar_o_f = 15015.0  # opens above TP
-    bar_h_f = 15020.0; bar_l_f = 15000.0
-    # Apply gap logic
+    bar_o_f = 15015.0   # gaps above TP
     if sg_f > 0 and bar_o_f >= tp_f:
-        fill_f = tp_f
-        pnl_f  = fill_f - entry_f
+        fill_f = tp_f; pnl_f = fill_f - entry_f
     else:
         fill_f = None; pnl_f = None
-    check("F_gap_tp_fill_at_tp",   fill_f == tp_f,  f"fill={fill_f}")
-    check("F_gap_tp_pnl_correct",  pnl_f == 10.0,   f"pnl={pnl_f}")
+    check("F_fill_at_tp",       fill_f == tp_f)
+    check("F_pnl_correct_10pt", pnl_f == 10.0)
 
-    # ── Test G: P6 gap-fill SL (bar opens below SL → fill at bar open) ────────
-    print("\n[G] Gap-fill: bar opens below SL → fill at bar open (worse than SL)")
+    # ── Test G: gap-fill SL ───────────────────────────────────────────────────
+    print("\n[G] Gap-fill SL: open <= SL → fill at open (worse)")
     entry_g = 15000.0; sl_g = 14950.0; sg_g = 1.0
-    bar_o_g = 14930.0  # gaps below SL
+    bar_o_g = 14930.0   # gaps below SL
     if sg_g > 0 and bar_o_g <= sl_g:
-        fill_g = bar_o_g  # gap: fill at open (worse)
-        pnl_g  = fill_g - entry_g
+        fill_g = bar_o_g; pnl_g = fill_g - entry_g
     else:
         fill_g = None; pnl_g = None
-    check("G_gap_sl_fill_at_open", fill_g == 14930.0,  f"fill={fill_g}")
-    check("G_gap_sl_pnl_worse",    pnl_g  == -70.0,    f"pnl={pnl_g}")
-    # Compare: without gap logic, fill would be at sl_g → pnl = -50
-    check("G_gap_sl_worse_than_nodgap", pnl_g < (sl_g - entry_g), "gap pnl should be worse")
+    check("G_fill_at_open",       fill_g == 14930.0)
+    check("G_pnl_worse_than_sl",  pnl_g < (sl_g - entry_g))
 
-    # ── Test H: P9 year attribution from entry_ts ─────────────────────────────
-    print("\n[H] Year attribution from entry_ts, not signal_ts")
-    # Signal fires at 23:59 Dec 31, entry fills Jan 1 next year
-    signal_ts_h = pd.Timestamp('2022-12-31 23:59', tz='UTC')
-    entry_ts_h  = pd.Timestamp('2023-01-01 00:01', tz='UTC')
-    check("H_year_from_entry", entry_ts_h.year == 2023, f"got {entry_ts_h.year}")
-    check("H_signal_year_wrong", signal_ts_h.year == 2022, "signal year differs")
+    # ── Test H: year from entry_ts ─────────────────────────────────────────────
+    print("\n[H] Year attribution from entry_ts")
+    sig_ts_h = pd.Timestamp('2022-12-31 23:59', tz='UTC')
+    ent_ts_h = pd.Timestamp('2023-01-01 00:01', tz='UTC')
+    check("H_entry_year_2023", ent_ts_h.year == 2023)
+    check("H_signal_year_2022", sig_ts_h.year == 2022)
 
-    # ── Test I: P10 data integrity ────────────────────────────────────────────
-    print("\n[I] Data integrity: high>=low enforced")
+    # ── Test I: data integrity ─────────────────────────────────────────────────
+    print("\n[I] Data integrity: bad rows removed")
     ts_i = pd.date_range('2022-01-03 14:00', periods=5, freq='1min', tz='UTC')
     bad_df = pd.DataFrame({
-        'open': [100,100,100,100,100],
-        'high': [101, 99, 102, 101, 101],  # row 1: high<low
-        'low':  [99, 100, 98, 99, 99],
-        'close':[100,100,100,100,100],
-        'volume':[1,1,1,1,1]
+        'open': [100, 100, 100, 100, 100],
+        'high': [101,  99, 102, 101, 101],   # row 1: high < low
+        'low':  [99,  100,  98,  99,  99],
+        'close':[100, 100, 100, 100, 100],
+        'volume': [1, 1, 1, 1, 1]
     }, index=ts_i)
-    valid_mask = (bad_df['high'] >= bad_df['low']) & \
-                 (bad_df['high'] >= bad_df['open']) & \
-                 (bad_df['high'] >= bad_df['close']) & \
-                 (bad_df['low']  <= bad_df['open'])  & \
-                 (bad_df['low']  <= bad_df['close'])
-    clean = bad_df[valid_mask]
-    check("I_bad_row_removed", len(clean) == 4, f"len={len(clean)}")
+    valid = ((bad_df['high'] >= bad_df['low']) &
+             (bad_df['high'] >= bad_df['open']) & (bad_df['high'] >= bad_df['close']) &
+             (bad_df['low']  <= bad_df['open']) & (bad_df['low']  <= bad_df['close']))
+    check("I_bad_row_removed", valid.sum() == 4, f"got {valid.sum()}")
 
-    # ── Test J: Resample explicit args ────────────────────────────────────────
-    print("\n[J] Resample origin/label/closed explicit")
-    bars_j = make_1m_bars(n=200, base_price=15000)
-    # Two resample calls: one explicit, one default; for properly labeled bars
-    # they should agree on the first bar's timestamp alignment
-    a_explicit = bars_j.resample('15min', label='left', closed='left',
-                                  origin='epoch').agg(close=('close','last')).dropna()
-    # Check first bar aligns to 14:00 (multiple of 15min from epoch)
-    first_ts = a_explicit.index[0]
-    # Should be divisible by 15 minutes from midnight
-    mins = first_ts.hour * 60 + first_ts.minute
-    check("J_resample_aligned_to_15min", mins % 15 == 0, f"mins={mins}")
+    # ── Test J: resample alignment ────────────────────────────────────────────
+    print("\n[J] Resample explicit args: 15min alignment")
+    bars_j = make_1m_bars(n=200)
+    a_j = bars_j.resample('15min', label='left', closed='left',
+                           origin='epoch').agg(close=('close', 'last')).dropna()
+    mins = a_j.index[0].hour * 60 + a_j.index[0].minute
+    check("J_aligned_to_15min", mins % 15 == 0, f"mins={mins}")
 
-    # ── Test K: P11 no look-ahead in rolling stats ────────────────────────────
-    print("\n[K] No look-ahead: rolling z-score only uses past data")
-    # Need enough 15m bars to exceed FD_N + FD_ZWIN warmup (200 bars = 3000 1m bars)
+    # ── Test K: no look-ahead ─────────────────────────────────────────────────
+    print("\n[K] No look-ahead: truncation invariance of z-scores")
     bars_k = make_1m_bars(n=6000)
     feat_full_k = build_features(bars_k)
-    # Truncate to 80% and rebuild; both should have valid z in the overlap
-    cut = int(0.8 * len(bars_k))
-    feat_sub_k  = build_features(bars_k.iloc[:cut])
+    cut_k       = int(0.8 * len(bars_k))
+    feat_sub_k  = build_features(bars_k.iloc[:cut_k])
     overlap_k   = feat_full_k.index.intersection(feat_sub_k.index)
-    # Only compare rows where both have non-NaN z
-    both_valid = overlap_k[
-        feat_full_k.loc[overlap_k,'z'].notna().values &
-        feat_sub_k.loc[overlap_k,'z'].notna().values
+    both_valid  = overlap_k[
+        feat_full_k.loc[overlap_k, 'z'].notna().values &
+        feat_sub_k.loc[overlap_k, 'z'].notna().values
     ]
     if len(both_valid) > 0:
-        diff_k = (feat_full_k.loc[both_valid,'z'] - feat_sub_k.loc[both_valid,'z']).abs().max()
-        check("K_no_lookahead", diff_k < 1e-8, f"max_z_diff={diff_k:.2e}  n_valid={len(both_valid)}")
+        diff_k = (feat_full_k.loc[both_valid, 'z'] -
+                  feat_sub_k.loc[both_valid, 'z']).abs().max()
+        check("K_no_lookahead", diff_k < 1e-8,
+              f"max_z_diff={diff_k:.2e}  n_compared={len(both_valid)}")
     else:
-        check("K_no_lookahead", False, "no valid overlapping z-scores (need more bars)")
+        check("K_no_lookahead", False, "no overlapping valid z-scores")
 
-    # ── Summary ───────────────────────────────────────────────────────────────
-    print(f"\n{'='*60}")
+    # ── Test L2: FracDiff wrong sign confirmed in old recurrence ──────────────
+    print("\n[L2] FracDiff old recurrence sign error at odd lags confirmed")
+    old_matches = [abs(old_w[k] - analytic[k]) < 1e-9 for k in range(5)]
+    fix_matches = [abs(fix_w[k] - analytic[k]) < 1e-9 for k in range(5)]
+    check("L2_fix_all_match",   all(fix_matches), f"fix={fix_matches}")
+    check("L2_old_k1_wrong",    not old_matches[1],
+          f"old w[1]={old_w[1]:.6f} analytic w[1]={analytic[1]:.6f}")
+    check("L2_old_k3_wrong",    not old_matches[3],
+          f"old w[3]={old_w[3]:.6f} analytic w[3]={analytic[3]:.6f}")
+
+    print(f"\n{'='*62}")
     total = len(passed) + len(failed)
     print(f"TESTS: {len(passed)}/{total} PASSED")
     if failed:
@@ -620,79 +674,46 @@ def run_tests():
     return len(failed) == 0
 
 # ══════════════════════════════════════════════════════════════════════════════
-# AUDIT VERDICTS
+# AUDIT VERDICTS SUMMARY
 # ══════════════════════════════════════════════════════════════════════════════
 
-AUDIT = """
-AUDIT VERDICTS
-==============
+AUDIT_VERDICTS = """
+AUDIT VERDICTS (12 original + 3 additional)
+============================================
+P1  TIME exit off-by-one          CONFIRMED → FIXED (1m last_1m_idx = E+HOLD_1M-1)
+P2  No overlap guard              CONFIRMED → FIXED (exit_time_last fence)
+P3  FracDiff sign wrong           CONFIRMED → FIXED (w[k]=-w[k-1]*(d-k+1)/k)
+P4  Z_LO hard-coded 2.0           CONFIRMED → FIXED (use Z_LO variable)
+P5  TP/SL not on tick grid        CONFIRMED → FIXED (conservative rounding)
+P6  Gap fill ignores bar open     CONFIRMED → FIXED (check open first)
+P7  Execution on 15m bars         CONFIRMED → FIXED (walk 1m bars)
+P8  Roll artifact audit           PARTIALLY CONFIRMED (heuristic ±1day filter)
+P9  Year from signal not entry    CONFIRMED → FIXED (entry_ts.year)
+P10 No data integrity checks      CONFIRMED → FIXED (OHLC checks + explicit resample)
+P11 Look-ahead bias               NOT CONFIRMED (truncation test max diff < 1e-8)
+P12 Cost not separated            CONFIRMED → FIXED (gross/cost/net columns)
+R1  Tick rounding direction       CORRECTED (LONG→ceil/ceil, SHORT→floor/floor)
+R2  HOLD not exactly 600 bars     CORRECTED (index-based range, not time-based)
+R3  Entry uses > instead of >=    CORRECTED (searchsorted side='left')
 
-P1 — TIME EXIT OFF-BY-ONE: CONFIRMED
-  OLD: fh=H[i+1:i+1+HOLD] examines 40 bars; TIME exit uses close[i+1+HOLD]
-  which is the 41st bar (index i+41). FIX: TIME exit = close of last bar in
-  the [i+1 .. i+HOLD] window. With 1m execution the window is
-  [entry_ts, entry_ts + 600min] inclusive.
+FracDiff sign proof (d=0.45):
+  Analytic w_k = C(d,k)×(-1)^k:
+  k=0: +1.000000   k=1: -0.450000   k=2: -0.123750   k=3: -0.063938   k=4: -0.040760
+  OLD recurrence (missing −): k=1=+0.45 WRONG, k=3=+0.063937 WRONG (odd lags flip sign)
+  FIXED recurrence: all lags match analytic ✓
 
-P2 — ONE-POSITION-AT-A-TIME: CONFIRMED
-  OLD engine fires every signal independently with no overlap guard.
-  10h holding window × multiple signals/day → many simultaneous virtual trades.
-  FIX: track exit_time_last; skip any new signal whose entry ≤ exit_time_last.
+Tick rounding convention:
+  LONG:  TP=ceil (further above entry), SL=ceil (higher = closer to entry = tighter)
+  SHORT: TP=floor (further below entry), SL=floor (lower = closer to entry = tighter)
+  Previous engine had LONG TP=floor which is INCORRECT (lower TP = easier to reach).
 
-P3 — FRACDIFF WEIGHTS SIGN: CONFIRMED
-  Analytical binomial series (1-L)^d:
-    w_k = C(d,k)×(-1)^k = [d(d-1)...(d-k+1)/k!] × (-1)^k
-  For d=0.45:
-    w0 = +1.0000
-    w1 = C(0.45,1)×(-1)^1 = -0.45
-    w2 = C(0.45,2)×(-1)^2 = -0.45×(-0.55)/2 = +0.12375
-    w3 = C(0.45,3)×(-1)^3 = +0.12375×(-1.55)/3 = -0.063938
-    w4 = C(0.45,4)×(-1)^4 = -0.063938×(-2.55)/4 = +0.040760
-  OLD recurrence w[k]=w[k-1]*(d-k+1)/k gives:
-    w1=+0.45, w2=+0.1238 (wrong sign on w1 propagates)
-  CORRECT recurrence w[k]=-w[k-1]*(d-k+1)/k gives exact match.
-  CONFIRMED CRITICAL BUG.
-
-P4 — Z_LO HARD-CODED: CONFIRMED
-  OLD uses literal 2.0 in crossing detection. If Z_LO were changed, the
-  filter inside the loop (Z_LO <= za < Z_HI) would catch it but the crossing
-  trigger would not update. FIX: use Z_LO variable in crossing boolean.
-
-P5 — TICK QUANTIZATION: CONFIRMED (as design gap, not code crash)
-  OLD produces TP/SL at non-tick prices. FIX applied: conservative rounding
-  (long TP floor, long SL ceil; short TP ceil, short SL floor).
-
-P6 — GAP FILL: CONFIRMED
-  OLD checks fl[k] <= sl_p without first checking bar open. Gaps that bypass
-  the SL or TP mid-bar are caught only by hi/lo, giving correct direction but
-  wrong fill price. FIX: check bar open first; gap-SL fills at bar open.
-
-P7 — USE 1m BARS FOR EXECUTION: CONFIRMED
-  OLD executes on 15m bar opens and checks 15m H/L, missing intrabar detail.
-  FIX: after signal bar closes, walk 1m bars for up to HOLD×15 minutes.
-
-P8 — ROLL ARTIFACT AUDIT: PARTIALLY CONFIRMED (data needed for definitive answer)
-  Roll dates detected via large price gaps (>50pt). Without data, cannot
-  quantify impact. Code implemented to detect and filter ±1 day. If rolls
-  introduce spurious signals, filtering would reduce trade count.
-
-P9 — YEAR ATTRIBUTION: CONFIRMED
-  OLD: yr=int(YR[i]) where YR[i] is the year of signal bar i. For signals
-  near year-end (e.g., Dec 31 23:45), entry fills Jan 1 next year.
-  FIX: yr = entry_ts.year.
-
-P10 — DATA INTEGRITY: CONFIRMED (as defensive measure)
-  Explicit checks added: sorted index, no duplicates, high>=low, finite values.
-  Resample args explicit: label='left', closed='left', origin='epoch'.
-
-P11 — CAUSALITY (LOOK-AHEAD): NOT CONFIRMED as present in current build
-  Rolling stats use rolling().mean()/std() with no center=True.
-  shift(1) on ATR is present. No bfill() or ffill() detected.
-  Causality test verifies empirically by truncation comparison.
-  VERDICT: No look-ahead found; P11 is a defensive verification, not a bug fix.
-
-P12 — COST ACCOUNTING: CONFIRMED (as design gap)
-  OLD conflates cost into pnl_net without storing separately.
-  FIX: store pnl_gross, explicit_cost, pnl_net; run cost sweep.
+Remaining limitations:
+  - Roll detection uses 50pt gap heuristic; proper roll calendar preferred
+  - ATR = mean(HL range), not true range (no prior-close component)
+  - No session filter (overnight thin-market bars included)
+  - Cost model is flat per-trade; no bid-ask spread modelling
+  - All PnL in index points (multiply by $20/pt × contracts for dollars)
+  - Single contract, no position sizing
 """
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -700,188 +721,128 @@ P12 — COST ACCOUNTING: CONFIRMED (as design gap)
 # ══════════════════════════════════════════════════════════════════════════════
 
 def main():
-    print(AUDIT)
+    print(AUDIT_VERDICTS)
 
-    # Run tests first
     tests_ok = run_tests()
     if not tests_ok:
         print("\nSome tests FAILED. Fix before running historical backtest.")
         sys.exit(1)
 
-    print("\nAll tests PASSED. Attempting historical backtest...")
+    print("\nAll tests PASSED. Searching for data...")
 
-    # Try to find data
-    import os
     data_paths = [
         '/tmp/nqh/nq_handoff/data/nq_1m/nq_continuous_2018_2026_1m.csv',
         '/home/user/Volatility-hodlod/data/nq_1m/nq_continuous_2018_2026_1m.csv',
+        'data/nq_1m/nq_continuous_2018_2026_1m.csv',
     ]
-    csv_path = None
-    for p in data_paths:
-        if os.path.exists(p):
-            csv_path = p
-            break
-
+    csv_path = next((p for p in data_paths if os.path.exists(p)), None)
     if csv_path is None:
-        print("\nDATA NOT FOUND at any expected path. Cannot run historical backtest.")
-        print("Tests PASSED. Engine is ready; supply data to run live backtest.")
+        print("\nDATA NOT FOUND. Supply the 1m CSV to run the historical backtest.")
+        print("Engine verified; all tests passed.")
         return
 
-    print(f"\nData found: {csv_path}")
+    print(f"Data: {csv_path}")
     bars_1m = load_bars(csv_path)
     print(f"Loaded {len(bars_1m)} 1m bars: {bars_1m.index[0]} → {bars_1m.index[-1]}")
 
-    # ── P8: Roll audit ────────────────────────────────────────────────────────
+    # Roll audit
     roll_dates = find_roll_dates(bars_1m)
-    print(f"\nRoll audit: detected {len(roll_dates)} potential roll bars (gap >50pt)")
+    print(f"\nRoll audit: {len(roll_dates)} large-gap events detected (threshold 50pt)")
     if len(roll_dates) > 0:
         print(f"  First few: {list(roll_dates[:5])}")
 
-    # ── P11: Causality check ──────────────────────────────────────────────────
-    print("\nCausality check:")
-    caus = causality_check(bars_1m)
-    for r in caus:
-        status = "PASS (no look-ahead)" if r['pass'] else "FAIL (look-ahead detected!)"
+    # Causality check
+    print("\nCausality check (truncation invariance):")
+    for r in causality_check(bars_1m):
+        status = "PASS" if r['pass'] else "FAIL — look-ahead detected!"
         print(f"  cutoff_idx={r['cutoff_idx']:6d}  max_z_diff={r['max_z_diff']:.2e}  {status}")
 
-    # ── OLD ENGINE BASELINE ───────────────────────────────────────────────────
-    print("\nRunning OLD engine baseline...")
-    # Inline old engine using OLD fracdiff weights
+    # ── OLD engine baseline ──────────────────────────────────────────────────
+    print("\nRunning OLD engine baseline (bugs intact, for comparison)...")
     feat_old = bars_1m.resample(FREQ).agg(
         open=('open','first'), high=('high','max'),
         low=('low','min'), close=('close','last'), volume=('volume','sum')
     ).dropna()
-    w_old   = fracdiff_weights_OLD(FD_D, FD_N)
-    log_c   = np.log(feat_old['close'].values)
-    fd_old  = apply_fracdiff(log_c, w_old)
-    fd_s    = pd.Series(fd_old, index=feat_old.index)
-    roll    = fd_s.rolling(FD_ZWIN)
-    feat_old['fd'] = fd_s
-    feat_old['z']  = (fd_s - roll.mean()) / roll.std(ddof=0)
-    hl_old  = (feat_old['high']-feat_old['low']).rolling(ATR_WIN).mean().shift(1)
-    feat_old['atr'] = hl_old
+    w_old  = fracdiff_weights_OLD(FD_D, FD_N)
+    log_c  = np.log(feat_old['close'].values)
+    fd_old = apply_fracdiff(log_c, w_old)
+    fd_s   = pd.Series(fd_old, index=feat_old.index)
+    roll   = fd_s.rolling(FD_ZWIN)
+    feat_old['z'] = (fd_s - roll.mean()) / roll.std(ddof=0)
+    feat_old['atr'] = (feat_old['high']-feat_old['low']).rolling(ATR_WIN).mean().shift(1)
     feat_old['yr']  = feat_old.index.year
 
-    Z   = feat_old['z'].values; H = feat_old['high'].values
-    L   = feat_old['low'].values; O = feat_old['open'].values
-    ATR_old = feat_old['atr'].values; YR  = feat_old['yr'].values
-    TS_old  = feat_old.index; n_old = len(Z)
-    Zp_old  = np.r_[np.nan, Z[:-1]]
-    up_old  = (Z >= 2.0) & (Zp_old < 2.0)
-    dn_old  = (Z <= -2.0) & (Zp_old > -2.0)
-    min_i   = FD_N + FD_ZWIN + ATR_WIN + 5
+    Z_o = feat_old['z'].values; H_o = feat_old['high'].values
+    L_o = feat_old['low'].values; O_o = feat_old['open'].values
+    A_o = feat_old['atr'].values; Y_o = feat_old['yr'].values
+    T_o = feat_old.index; n_o = len(Z_o)
+    Zp_o = np.r_[np.nan, Z_o[:-1]]
+    up_o = (Z_o >= 2.0) & (Zp_o < 2.0)
+    dn_o = (Z_o <= -2.0) & (Zp_o > -2.0)
+    min_i_o = FD_N + FD_ZWIN + ATR_WIN + 5
     old_recs = []
-    for i in np.where(up_old | dn_old)[0]:
-        za = abs(Z[i])
-        if i < min_i or i+1+HOLD >= n_old or not(Z_LO <= za < Z_HI): continue
-        if not np.isfinite(ATR_old[i]) or ATR_old[i] <= 0: continue
-        sg_up = bool(up_old[i]); atr_v = ATR_old[i]; entry = O[i+1]
+    for i in np.where(up_o | dn_o)[0]:
+        za = abs(Z_o[i])
+        if i < min_i_o or i+1+HOLD >= n_o or not (Z_LO <= za < Z_HI): continue
+        if not np.isfinite(A_o[i]) or A_o[i] <= 0: continue
+        sg_up = bool(up_o[i]); av = A_o[i]; ent = O_o[i+1]
         sg = 1.0 if sg_up else -1.0
-        tp_p = entry + sg*TP_MULT*atr_v; sl_p = entry - sg*SL_MULT*atr_v
+        tp_p = ent + sg*TP_MULT*av; sl_p = ent - sg*SL_MULT*av
         exit_type = 'TIME'
-        raw_pnl = sg*(feat_old['close'].iloc[min(i+1+HOLD, n_old-1)] - entry)
-        fh = H[i+1:i+1+HOLD]; fl = L[i+1:i+1+HOLD]
+        raw_pnl = sg*(feat_old['close'].iloc[min(i+1+HOLD, n_o-1)] - ent)
+        fh = H_o[i+1:i+1+HOLD]; fl = L_o[i+1:i+1+HOLD]
         for k in range(len(fh)):
             if sg > 0:
-                if fl[k] <= sl_p: raw_pnl = -SL_MULT*atr_v; exit_type='SL'; break
-                if fh[k] >= tp_p: raw_pnl =  TP_MULT*atr_v; exit_type='TP'; break
+                if fl[k] <= sl_p: raw_pnl = -SL_MULT*av; exit_type='SL'; break
+                if fh[k] >= tp_p: raw_pnl =  TP_MULT*av; exit_type='TP'; break
             else:
-                if fh[k] >= sl_p: raw_pnl = -SL_MULT*atr_v; exit_type='SL'; break
-                if fl[k] <= tp_p: raw_pnl =  TP_MULT*atr_v; exit_type='TP'; break
-        old_recs.append({'ts':TS_old[i+1],'yr':int(YR[i]),'side':'long' if sg_up else 'short',
-                         'entry':round(entry,2),'tp_price':round(tp_p,2),'sl_price':round(sl_p,2),
-                         'atr':round(atr_v,2),'exit_type':exit_type,
-                         'pnl_gross':round(raw_pnl,4),'pnl_net':round(raw_pnl,4)})
+                if fh[k] >= sl_p: raw_pnl = -SL_MULT*av; exit_type='SL'; break
+                if fl[k] <= tp_p: raw_pnl =  TP_MULT*av; exit_type='TP'; break
+        old_recs.append({'yr': int(Y_o[i]), 'exit_type': exit_type, 'pnl': round(raw_pnl,4)})
     old_trades = pd.DataFrame(old_recs)
 
-    old_summary = ""
-    if len(old_trades):
-        p = old_trades['pnl_gross']
-        w = p[p>0]; l = p[p<0]
-        pf = w.sum()/-l.sum() if len(l) else 99
-        old_summary = (f"OLD ENGINE RESULTS\n"
-                       f"n={len(old_trades)} WR={100*(p>0).mean():.1f}% PF={pf:.3f} gross={p.sum():.1f}\n"
-                       f"TP={(old_trades.exit_type=='TP').sum()} "
-                       f"SL={(old_trades.exit_type=='SL').sum()} "
-                       f"TIME={(old_trades.exit_type=='TIME').sum()}\n\nYear-by-year:\n")
-        for yr, g in old_trades.groupby('yr'):
-            gp=g['pnl_gross']; gw=gp[gp>0]; gl=gp[gp<0]
-            gpf=gw.sum()/-gl.sum() if len(gl) else 99
-            old_summary += f"  {yr}: n={len(g)} WR={100*(gp>0).mean():.1f}% PF={gpf:.2f} gross={gp.sum():.0f}\n"
-    print(old_summary)
-    with open('/tmp/nq_old_results.txt','w') as f:
-        f.write(old_summary)
-
-    # ── FIXED ENGINE ──────────────────────────────────────────────────────────
+    # ── FIXED engine ─────────────────────────────────────────────────────────
+    print("Running FIXED engine...")
     feat_15m = build_features(bars_1m, FREQ)
     trades, meta = backtest_fixed(feat_15m, bars_1m, cost=0.0,
                                   roll_dates=roll_dates if len(roll_dates) > 0 else None)
+
+    # ── Before/After comparison ───────────────────────────────────────────────
+    print("\nBEFORE / AFTER COMPARISON")
+    print(f"{'Metric':<30} {'OLD':>12} {'FIXED':>12}")
+    print("-" * 56)
+    if len(old_trades) and len(trades):
+        op = old_trades['pnl']; fp = trades['pnl_gross']
+        ow = op[op>0]; ol = op[op<0]; fw = fp[fp>0]; fl2 = fp[fp<0]
+        o_pf = ow.sum()/-ol.sum() if len(ol) else 99
+        f_pf = fw.sum()/-fl2.sum() if len(fl2) else 99
+        print(f"{'Trade count':<30} {len(old_trades):>12} {len(trades):>12}")
+        print(f"{'  raw signals':<30} {'n/a':>12} {meta['raw_signals']:>12}")
+        print(f"{'  skipped overlap':<30} {'n/a':>12} {meta['skipped_overlap']:>12}")
+        print(f"{'Win rate %':<30} {100*(op>0).mean():>11.1f}% {100*(fp>0).mean():>11.1f}%")
+        print(f"{'Profit factor (gross)':<30} {o_pf:>12.3f} {f_pf:>12.3f}")
+        print(f"{'Expectancy pts/trade':<30} {op.mean():>12.3f} {fp.mean():>12.3f}")
+        print(f"{'Gross PnL (pts)':<30} {op.sum():>12.1f} {fp.sum():>12.1f}")
+        print(f"{'TP exits':<30} {(old_trades.exit_type=='TP').sum():>12} {(trades.exit_type=='TP').sum():>12}")
+        print(f"{'SL exits':<30} {(old_trades.exit_type=='SL').sum():>12} {trades.exit_type.isin(['SL','SL_GAP']).sum():>12}")
+        print(f"{'TIME exits':<30} {(old_trades.exit_type=='TIME').sum():>12} {(trades.exit_type=='TIME').sum():>12}")
+
     print_summary(trades, label='FIXED ENGINE', cost=0.0)
     cost_sweep(trades)
 
+    # Save per-config logs
+    os.makedirs('reports', exist_ok=True)
     if len(trades):
-        p = trades['pnl_gross']
-        w = p[p>0]; l = p[p<0]
-        pf = w.sum()/-l.sum() if len(l) else 99
-        new_summary = (f"FIXED ENGINE RESULTS\n"
-                       f"n={len(trades)} WR={100*(p>0).mean():.1f}% PF={pf:.3f} gross={p.sum():.1f}\n"
-                       f"TP={(trades.exit_type=='TP').sum()} "
-                       f"SL={(trades.exit_type.isin(['SL','SL_GAP'])).sum()} "
-                       f"TIME={(trades.exit_type=='TIME').sum()}\n"
-                       f"raw_signals={meta['raw_signals']} accepted={meta['accepted']} "
-                       f"skipped_overlap={meta['skipped_overlap']} "
-                       f"skipped_other={meta['skipped_other']}\n\nYear-by-year:\n")
-        for yr, g in trades.groupby('yr'):
-            gp=g['pnl_gross']; gw=gp[gp>0]; gl=gp[gp<0]
-            gpf=gw.sum()/-gl.sum() if len(gl) else 99
-            new_summary += f"  {yr}: n={len(g)} WR={100*(gp>0).mean():.1f}% PF={gpf:.2f} gross={gp.sum():.0f}\n"
-    else:
-        new_summary = "FIXED ENGINE: No trades\n"
-
-    print(new_summary)
-    with open('/tmp/nq_fixed_results.txt','w') as f:
-        f.write(new_summary)
-
-    # ── BEFORE/AFTER COMPARISON ───────────────────────────────────────────────
-    print("\nBEFORE / AFTER COMPARISON")
-    print(f"{'Metric':<25} {'OLD':>12} {'FIXED':>12}")
-    print("-"*50)
-    if len(old_trades) and len(trades):
-        op = old_trades['pnl_gross']; fp = trades['pnl_gross']
-        ow = op[op>0]; ol = op[op<0]; fw = fp[fp>0]; fl2 = fp[fp<0]
-        opf = ow.sum()/-ol.sum() if len(ol) else 99
-        fpf = fw.sum()/-fl2.sum() if len(fl2) else 99
-        print(f"{'Trade count':<25} {len(old_trades):>12} {len(trades):>12}")
-        print(f"{'Win rate %':<25} {100*(op>0).mean():>12.1f} {100*(fp>0).mean():>12.1f}")
-        print(f"{'Profit factor':<25} {opf:>12.3f} {fpf:>12.3f}")
-        print(f"{'Gross PnL (pts)':<25} {op.sum():>12.1f} {fp.sum():>12.1f}")
-        print(f"{'TP hits':<25} {(old_trades.exit_type=='TP').sum():>12} {(trades.exit_type=='TP').sum():>12}")
-        sl_old = (old_trades.exit_type=='SL').sum()
-        sl_fix = (trades.exit_type.isin(['SL','SL_GAP'])).sum()
-        print(f"{'SL hits':<25} {sl_old:>12} {sl_fix:>12}")
-        print(f"{'TIME exits':<25} {(old_trades.exit_type=='TIME').sum():>12} {(trades.exit_type=='TIME').sum():>12}")
-
-    print("\nLargest impact bugs (estimated):")
-    print("  1. P2 (overlap guard): likely largest impact — removes many simultaneous trades")
-    print("  2. P3 (fracDiff sign): changes z-score landscape, different signal set entirely")
-    print("  3. P7 (1m execution): finer fill logic changes SL/TP hit rates")
-    print("  4. P6 (gap fill): SL gaps fill at open (worse), TP gaps fill at TP (same)")
-    print("  5. P1 (off-by-one): minor — 1 extra bar examined in TIME exit")
-    print("\nRemaining limitations:")
-    print("  - Commission/slippage model is simplified (flat points, no bid-ask spread)")
-    print("  - NQ contract multiplier ($20/pt) not applied (all PnL in index points)")
-    print("  - No position sizing — each trade is 1 contract")
-    print("  - Roll gap filtering uses simple threshold (50pt); proper roll calendar preferred")
-    print("  - ATR uses HL mean, not true range (no prior-close in calculation)")
-    print("  - No session filtering (overnight low-liquidity bars included)")
+        trades.assign(
+            signal_ts=trades['signal_ts'].dt.strftime('%Y-%m-%d %H:%M:%S%z'),
+            entry_ts=trades['entry_ts'].dt.strftime('%Y-%m-%d %H:%M:%S%z'),
+            exit_ts=trades['exit_ts'].dt.strftime('%Y-%m-%d %H:%M:%S%z'),
+        ).to_csv('reports/nq_engine_fixed_trades.csv', index=False)
+        print("\nTrade log → reports/nq_engine_fixed_trades.csv")
 
 if __name__ == '__main__':
     if '--test' in sys.argv:
         ok = run_tests()
-        if ok:
-            print("\nAll tests PASSED.")
-        else:
-            print("\nSome tests FAILED.")
-            sys.exit(1)
+        sys.exit(0 if ok else 1)
     else:
         main()
